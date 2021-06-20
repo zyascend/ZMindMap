@@ -8,6 +8,7 @@
   <style>
     body {
       background-color: #1f2329;
+      overflow: scroll;
     }
     canvas {
       position: absolute;
@@ -15,10 +16,19 @@
       left: 0;
       right: 0;
       top: 0;
+      z-index: -1;
+    }
+    .btn {
+      background-color: blanchedalmond;
+      position: relative;
+      width: 100px;
+      height: 30px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <div id="add" class="btn">添加节点</div>
   <canvas id="canvas"></canvas>
   <script src="index.js"></script>
 </body>
