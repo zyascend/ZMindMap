@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>D3</title>
+  <script src="https://d3js.org/d3.v5.min.js"></script>
+  <script src="./data.js"></script>
+  <script src="./clauster.js"></script>
+  <script src="./TreeData.js"></script>
+  <style>
+    .svg {
+      display: block;
+      width: 100%;
+      height: 100%;
+      background-color: #eeeef3;
+    }
+    .asstSvg {
+
+    }
+  </style>
+</head>
+
+<body>
+  <svg class="svg"></svg>
+  <svg class="asstSvg"></svg>
+  <script>
+    let W = window.innerWidth
+    let H = window.innerHeight
+    const svg = d3.select('.svg')
+    svg.attr('width', W)
+    svg.attr('height', H)
+
+    let marge = { top: 50, bottom: 0, left: 0, right: 0 }
+    let g = svg.append("g").attr("transform", "translate(" + marge.top + "," + marge.left + ")");
+    let scale = svg.append("g").attr("transform", "translate(" + marge.top + "," + marge.left + ")");
+
+    //创建一个hierarchy layout
+    const hierarchyData = d3.hierarchy(dataset).sum(d => d.value)
+    console.log(hierarchyData)
+
+    const asstSvg = d3.select('.asstSvg')
+    const creator = new TreeDataCreater({ measureSelection: asstSvg })
+    const treeData = creator.create(hierarchyData)
+
+    // //创建一个树状图
+    // const tree = cluster().size([W - 200, H - 200]).separation(function (a, b) {
+    //   // return (a.parent == b.parent ? 1 : 2) / a.depth;
+    //   return 20;
+    // })
+
+    // //初始化树状图，也就是传入数据,并得到绘制树基本数据
+    // const treeData = tree(hierarchyData)
+    // console.log(treeData)
+
+    //得到节点
+    const nodes = treeData.descendants()
+    const links = treeData.links()
+
+    //输出节点和边
+    console.log(nodes)
+    console.log(links)
+
+    // //创建一个贝塞尔生成曲线生成器
+    // const Bézier_curve_generator = d3.linkHorizontal()
+    //   .x(function (d) { return d.x; })
+    //   .y(function (d) { return d.y; });
+
+    // //有了节点和边集的数据后，我们就可以开始绘制了，
+    // //绘制边
+    // g.append("g")
+    //   .selectAll("path")
+    //   .data(links)
+    //   .enter()
+    //   .append("path")
+    //   .attr("d", function (d) {
+    //     var start = { x: d.source.x, y: d.source.y };
+    //     var end = { x: d.target.x, y: d.target.y };
+    //     return Bézier_curve_generator({ source: start, target: end });
+    //   })
+    //   .attr("fill", "none")
+    //   .attr("stroke", "black")
+    //   .attr("stroke-width", 2)
+    //绘制节点和文字
+    //老规矩，先创建用以绘制每个节点和对应文字的分组<g>
+    const gs = g.append("g")
+      .selectAll("g")
+      .data(nodes)
+      .enter()
+      .append("g")
+      .attr("transform", function (d) {
+        var cx = d.x;
+        var cy = d.y;
+        return "translate(" + cx + "," + cy + ")";
+      });
+    //绘制节点
+    gs.append("circle")
+      .attr("r", 6)
+      .attr("fill", "white")
+      .attr("stroke", "blue")
+      .attr("stroke-width", 1);
+
+    //文字
+    gs.append("text")
+      // .attr("x", function (d) {
+      //   return d.children ? -40 : 8;
+      // })
+      // .attr("y", -10)
+      .attr("dy", 10)
+      .text(function (d) {
+        return d.data.name;
+      });
+  </script>
+</body>
+
+</html>

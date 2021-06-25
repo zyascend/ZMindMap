@@ -8,7 +8,7 @@
   <style>
     body {
       background-color: #1f2329;
-      overflow: scroll;
+      overflow: auto;
     }
     canvas {
       position: absolute;
@@ -17,8 +17,9 @@
       right: 0;
       top: 0;
       z-index: -1;
+      overflow: auto;
     }
-    .btn {
+    button {
       background-color: blanchedalmond;
       position: relative;
       width: 100px;
@@ -28,7 +29,8 @@
   </style>
 </head>
 <body>
-  <div id="add" class="btn">添加节点</div>
+  <button id="add" class="btn">添加节点</button>
+  <button id="scale" class="scale">缩放</button>
   <canvas id="canvas"></canvas>
   <script src="index.js"></script>
 </body>

@@ -1,5 +1,6 @@
 const canvas = document.getElementById('canvas')
 const btn = document.getElementById('add')
+const btn_scale = document.getElementById('scale')
 const ctx = canvas.getContext('2d')
 
 let W = window.innerWidth
@@ -197,7 +198,13 @@ window.onload = () => {
   window.onresize = resize
   resize()
   btn.addEventListener('click', function(){
-    console.log('aaaaaaaaaaa')
     addNewDom()
   })
+  btn_scale.onclick = () => {
+    console.log('aaaaaaaaaaa')
+    ctx.clearRect(0, 0, W, H)
+    // ctx.translate(W/2, H/2)
+    ctx.scale(0.8, 0.8)
+    draw()
+  }
 }
