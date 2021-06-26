@@ -1,5 +1,5 @@
 class TreeDataCreater {
-  constructor ({ measureSelection, treeStyle, gapY = 5, gapX = 30 } = {}) {
+  constructor ({ measureSelection, treeStyle, gapY = 14, gapX = 70 } = {}) {
     this.measureSelection = measureSelection
     this.treeStyle = treeStyle
     this.gapY = gapY
@@ -9,30 +9,37 @@ class TreeDataCreater {
   create (root) {
     this.measureWidthAndHeight(root)
     this.caculateXY(root)
-    console.log('r', root)
     return root
   }
 
+
+  meanY(children) {
+    return children.reduce((y, c) => y + c.y, 0) / children.length
+  }
+
   caculateXY (root) {
-    const { depth, childHeight, height, children, width } = root
-    if(depth === 0) {
-      root.x = 10
-      root.y = 365
-    }
-    if (!children) return
-    const { x, y } = root
-    const startY = y - (childHeight - (childHeight - children[0].height)/2 - height)
-    for(let i = 0; i < children.length; i++) {
-      const child = children[i]
-      child.x = x + width + this.gapX
-      if (i === 0) {
-        child.y = startY
+    let preNode = undefined
+    root.eachAfter(node => {
+      const { depth, childHeight, height, children, width } = node
+      if (children) {
+        node.y = this.meanY(children)
       } else {
-        const lastChild = children[i-1]
-        child.y = lastChild.y + lastChild.height + this.gapY
+        node.y = preNode ? preNode.y + node.height + this.gapY : 30 + node.height
+        preNode = node
       }
-      this.caculateXY(child)
-    }
+    })
+    root.eachBefore(node => {
+      const { depth, children, width } = node
+      if (depth === 0) {
+        node.x = 10
+      } 
+      if (children) {
+        children.forEach(c => {
+          c.x = node.x + width + this.gapX
+        })
+      }
+    })
+    console.log('1111', root)
   }
 
   measureWidthAndHeight (root) {
