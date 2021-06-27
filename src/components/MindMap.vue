@@ -1,7 +1,7 @@
 <template>
   <div class="map-container">
-    <svg ref="mainSvg" class="main-svg">
-      <g ref="mainG">
+    <svg ref="mainSvg" class="main-svg" xmlns:xlink=http://www.w3.org/1999/xlink>
+      <g ref="mainG" class="main-g">
         <foreignObject ref="foreignObject" style="display: none">
           <div ref="foreignDiv" contenteditable></div>
         </foreignObject>
@@ -54,13 +54,32 @@ export default defineComponent({
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style lang="scss">
 @import '../assets/css/mixin';
 .map-container {
   @include wh100;
   .main-svg{
     @include wh100;
     background-color: #eeeef3;
+    text {
+      fill: #4B4B4B;
+      cursor: default;
+    }
+    rect {
+      stroke: gray;
+      stroke-width: 2px;
+      fill: transparent;
+      opacity: 0;
+    }
+    image {
+      opacity: 0;
+    }
+    .rect-selceted {
+      opacity: 1;
+    }
+    .rect-hovered {
+      opacity: 0.5;
+    }
   }
 }
 </style>

@@ -21,7 +21,10 @@ class TreeDataCreater {
 
   caculateXY (root) {
     let preNode
+    let id = 0
     root.eachAfter(node => {
+      node._id = id
+      id++
       const { children } = node
       if (children) {
         node.y = this.meanY(children)

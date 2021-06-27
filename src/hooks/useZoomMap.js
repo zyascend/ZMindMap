@@ -1,13 +1,16 @@
+import store from '../store'
 import * as d3 from './d3'
 let zoom
 /**
  * 使图具有缩放能力
  */
-const registerZoom = selections => {
+const registerZoom = () => {
+  const selections = store.getters.getSelections
   const { mainG, mainSvg } = selections
   zoom = d3.zoom().on('zoom', event => {
     mainG.attr('transform', event.transform)
   }).scaleExtent([0.1, 4])
+  // .translateExtent([[-1000, -1000], [1000, 800]])
 
   zoom(selections.mainSvg)
   mainSvg.on('dblclick.zoom', null)
@@ -15,7 +18,9 @@ const registerZoom = selections => {
 /**
  * 使导图适应当前屏幕大小
  */
-const fitView = (selections, refs) => {
+const fitView = () => {
+  const refs = store.getters.getRefs
+  const selections = store.getters.getSelections
   if (!zoom) return
   const gMetrics = refs.mainG.getBBox()
   const svgMetrics = refs.mainSvg.getBoundingClientRect()

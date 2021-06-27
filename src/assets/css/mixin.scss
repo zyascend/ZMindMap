@@ -5,12 +5,19 @@
   bottom: 0;
   right: 0;
 }
-@mixin abs00 {
-  position: absolute;
-  left: 0;
-  top: 0;
-}
 @mixin wh100 {
   width: 100%;
   height: 100%;
+}
+@mixin vertFlex {
+  display: flex;
+  flex-direction: column;
+}
+@mixin horiFlex {
+  display: flex;
+  flex-direction: row;
+}
+@mixin wh($w, $h){
+  width: $w;
+  height: $h;
 }
