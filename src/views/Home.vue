@@ -11,7 +11,6 @@
             class="tool-item"
             effect="light"
             content="适应当前大小"
-            offset="20"
             popper-class="popper"
             placement="left">
               <div class="" @click="fitView">

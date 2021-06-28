@@ -27,11 +27,9 @@ const store = createStore({
       for (const key in refs) {
         state.selections[key] = d3.select(refs[key])
       }
-      console.log('setRefs done', state.selections)
     },
     setTreedData (state, treedData) {
       state.treedData = treedData
-      console.log('setTreedData done', treedData)
     }
   },
   actions: {

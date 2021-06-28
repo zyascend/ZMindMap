@@ -3,6 +3,25 @@ import * as d3 from './d3'
 import { getMultiline } from './useTreeData'
 import PIC_ADD from '../assets/pic/add.svg'
 
+const onEditting = (data) => {
+  const foreignObject = store.getters.getSelections.foreignObject
+  const foreignDiv = store.getters.getRefs.foreignDiv
+  foreignObject
+    .attr('x', data.x)
+    .attr('y', data.y - data.height - 6)
+    .attr('data-id', data._id)
+    .attr('data-name', data.data.name)
+    .style('display', '')
+    .attr('width', data.width)
+    .attr('height', data.height)
+
+  foreignDiv.textContent = data.data.name
+  foreignDiv.focus()
+  // 自动选中所有文字
+  const currentSelection = getSelection()
+  if (currentSelection) currentSelection.selectAllChildren(foreignDiv)
+}
+
 const drawPath = (links, mainG) => {
   // 创建一个贝塞尔生成曲线生成器
   const bézierCurveGenerator = d3.linkHorizontal().x(d => d.x).y(d => d.y)
@@ -36,22 +55,33 @@ const drawText = (nodes, mainG) => {
     .data(nodes)
     .enter()
     .append('g')
-    .attr('transform', function (d) {
+    .attr('id', d => `g-id-${d._id}`)
+    .attr('transform', d => {
       var cx = d.x
       var cy = d.y - d.height - 6
       return 'translate(' + cx + ',' + cy + ')'
     })
     .on('mouseenter', (event, d) => {
-      d3.select(`#rect-id-${d._id}`).attr('class', 'rect-hovered')
+      d3.select(`#g-id-${d._id}`).attr('class', 'g-hover')
     })
     .on('mouseleave', (event, d) => {
-      d3.selectAll('.rect-hovered').attr('class', '')
+      const selectedG = d3.select(`#g-id-${d._id}`)
+      const editting = selectedG.nodes()[0].classList[0] === 'g-editting'
+      !editting && d3.selectAll('.g-hover').attr('class', '')
+      console.log('mouseleave', d.data.name, selectedG.nodes()[0].classList[0])
     })
     .on('mousedown', (event, d) => {
-      d3.selectAll('.rect-selceted').attr('class', '')
-      d3.select(`#rect-id-${d._id}`).attr('class', 'rect-selceted')
-      d3.select(`#image-id-${d._id}`).attr('class', 'rect-selceted')
-      console.log('mousedown', event, d)
+      const selectedG = d3.select(`#g-id-${d._id}`)
+      const selected = selectedG.nodes()[0].classList[0] === 'g-selected'
+      if (!selected) {
+        d3.selectAll('.g-selected').attr('class', '')
+        selectedG.attr('class', 'g-selected')
+      } else {
+        event.preventDefault()
+        const gs = d3.select(`#g-id-${d._id}`)
+        gs.attr('class', 'g-editting')
+        onEditting(d)
+      }
     })
 
   const getTspanData = d => {
@@ -61,6 +91,7 @@ const drawText = (nodes, mainG) => {
   }
 
   gs.append('text')
+    .attr('id', d => `text-id-${d._id}`)
     .selectAll('tspan').data(getTspanData).enter().append('tspan')
     .attr('alignment-baseline', 'text-before-edge')
     .text((d) => d.name || ' ')

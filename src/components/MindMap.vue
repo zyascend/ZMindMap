@@ -3,7 +3,11 @@
     <svg ref="mainSvg" class="main-svg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g ref="mainG" class="main-g">
         <foreignObject ref="foreignObject" style="display: none">
-          <div ref="foreignDiv" contenteditable></div>
+          <div ref="foreignDiv"
+            contenteditable
+            class="foreignDiv"
+            @blur="onEditDivBlur"
+          ></div>
         </foreignObject>
       </g>
     </svg>
@@ -35,6 +39,10 @@ export default defineComponent({
 
     onMounted(() => {
       if (!mainSvg.value || !mainG.value || !measureSvg.value || !foreignObject.value || !foreignDiv.value) return
+      foreignDiv.value.addEventListener('mousedown', e => {
+        console.log('foreignDiv mousedown')
+        e.stopPropagation()
+      })
       store.dispatch('setRefs', {
         mainSvg: mainSvg.value,
         mainG: mainG.value,
@@ -42,12 +50,20 @@ export default defineComponent({
         foreignObject: foreignObject.value,
         foreignDiv: foreignDiv.value
       })
-      const treedData = useTreeData(props.modelValue)
-      store.dispatch('setTreedData', treedData)
+      useTreeData.init(props.modelValue)
       useRender()
     })
+    const onEditDivBlur = () => {
+      console.log('onEditDivBlur')
+      useTreeData.afterEdit()
+    }
     return {
-      mainSvg, mainG, measureSvg, foreignObject, foreignDiv
+      mainSvg,
+      mainG,
+      measureSvg,
+      foreignObject,
+      foreignDiv,
+      onEditDivBlur
     }
   }
 })
@@ -66,7 +82,7 @@ export default defineComponent({
       cursor: default;
     }
     rect {
-      stroke: gray;
+      stroke: blue;
       stroke-width: 2px;
       fill: transparent;
       opacity: 0;
@@ -74,11 +90,31 @@ export default defineComponent({
     image {
       opacity: 0;
     }
-    .rect-selceted {
-      opacity: 1;
+    .g-hover {
+      rect {
+        opacity: 0.5;
+      }
     }
-    .rect-hovered {
-      opacity: 0.5;
+    .g-selected {
+      rect, image {
+        opacity: 1;
+      }
+    }
+    .g-editting {
+      rect {
+        opacity: 1;
+      }
+      image,text {
+        opacity: 0;
+      }
+    }
+    .foreignDiv {
+      display: inline-block;
+      outline: none;
+      width: max-content;
+      min-width: 22px;
+      padding: 1px;
+      white-space: pre;
     }
   }
 }
