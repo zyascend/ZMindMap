@@ -14,7 +14,7 @@ const onEditting = (data) => {
     .style('display', '')
     .attr('width', data.width)
     .attr('height', data.height)
-
+  console.log('y', data.y - data.height - 6)
   foreignDiv.textContent = data.data.name
   foreignDiv.focus()
   // 自动选中所有文字
@@ -62,13 +62,14 @@ const drawText = (nodes, mainG) => {
       return 'translate(' + cx + ',' + cy + ')'
     })
     .on('mouseenter', (event, d) => {
-      d3.select(`#g-id-${d._id}`).attr('class', 'g-hover')
+      const selectedG = d3.select(`#g-id-${d._id}`)
+      const editting = selectedG.nodes()[0].classList[0] === 'g-editting'
+      !editting && selectedG.attr('class', 'g-hover')
     })
     .on('mouseleave', (event, d) => {
       const selectedG = d3.select(`#g-id-${d._id}`)
       const editting = selectedG.nodes()[0].classList[0] === 'g-editting'
       !editting && d3.selectAll('.g-hover').attr('class', '')
-      console.log('mouseleave', d.data.name, selectedG.nodes()[0].classList[0])
     })
     .on('mousedown', (event, d) => {
       const selectedG = d3.select(`#g-id-${d._id}`)

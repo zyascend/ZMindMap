@@ -8,14 +8,14 @@
           <mind-map v-model="mapData"></mind-map>
           <div class="toolbar">
             <el-tooltip
-            class="tool-item"
-            effect="light"
-            content="适应当前大小"
-            popper-class="popper"
-            placement="left">
+              class="tool-item"
+              effect="light"
+              content="适应当前大小"
+              popper-class="popper"
+              placement="left">
               <div class="" @click="fitView">
                 <img src="../assets/pic/fit-view.svg" alt="">
-             </div>
+              </div>
             </el-tooltip>
           <div class="tool-item">
             <img src="../assets/pic/theme.svg" alt="">

@@ -99,6 +99,7 @@ const updateEdit = (newName, id) => {
   // 重新计算xy值
   creator.create(root)
   // 更新节点
+  console.log('更新节点')
 }
 
 const afterEdit = () => {
