@@ -1,5 +1,6 @@
 import * as d3 from './d3'
 import store from '../store'
+// import { deepClone } from '../hooks/utils.js'
 
 let creator = null
 class TreeDataCreater {
@@ -22,10 +23,8 @@ class TreeDataCreater {
 
   caculateXY (root) {
     let preNode
-    let id = 0
     root.eachAfter(node => {
-      node._id = id
-      id++
+      node._id = node.data.nid
       const { children } = node
       if (children) {
         node.y = this.meanY(children)
@@ -71,35 +70,41 @@ class TreeDataCreater {
   }
 }
 
-const init = (data) => {
+const init = data => {
   const hierarchyData = d3.hierarchy(data)
   const measureSvg = store.getters.getSelections.measureSvg
   creator = new TreeDataCreater({ measureSvg })
-  store.dispatch('setTreedData', creator.create(hierarchyData))
+  store.dispatch('setData', { treedData: creator.create(hierarchyData), originData: data })
 }
 
 const findNode = (root, id) => {
-  // TODO 待优化 怎样提前终止循环
-  let theNode = null
-  root.eachAfter(node => {
-    if (node._id === id) {
-      theNode = node
+  if (!root) return null
+  if (root.nid === id) return root
+  if (root.children && root.children.length) {
+    for (const child of root.children) {
+      const res = findNode(child, id)
+      if (res) return res
     }
-  })
-  return theNode
+  }
+  return null
 }
 
 const updateEdit = (newName, id) => {
-  const root = store.getters.getTreedData
+  // const root = store.getters.getTreedData
+  // // 找到待更新的节点
+  // const theNode = findNode(root, parseInt(id))
+  // theNode.data.name = newName
+  // // 重新计算宽高
+  // creator.measureWidthAndHeight(theNode, true)
+  // // 重新计算xy值
+  // creator.create(root)
+  // // 更新节点
+  // console.log('更新节点')
+  const root = store.getters.getOriginData
   // 找到待更新的节点
-  const theNode = findNode(root, parseInt(id))
-  theNode.data.name = newName
-  // 重新计算宽高
-  creator.measureWidthAndHeight(theNode, true)
-  // 重新计算xy值
-  creator.create(root)
-  // 更新节点
-  console.log('更新节点')
+  const theNode = findNode(root, id)
+  theNode.name = newName
+  init(root)
 }
 
 const afterEdit = () => {
@@ -111,6 +116,19 @@ const afterEdit = () => {
   gs.attr('class', '')
   const newName = foreignDiv.textContent
   updateEdit(newName, id)
+}
+
+export const appendNewChild = parentId => {
+  const root = store.getters.getOriginData
+  // 找到待更新的节点
+  const theNode = findNode(root, parentId)
+  theNode.children.push({
+    name: '输入文字',
+    nid: `${theNode.nid}-${theNode.children.length}`,
+    children: []
+  })
+  init(root)
+  console.log('appendNewChild => res: ', root)
 }
 
 export const getMultiline = TreeDataCreater.getMultiline

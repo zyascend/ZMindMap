@@ -18,7 +18,8 @@ const store = createStore({
       foreignDiv: undefined
     },
 
-    treedData: null
+    treedData: null,
+    originData: null
 
   },
   mutations: {
@@ -28,21 +29,25 @@ const store = createStore({
         state.selections[key] = d3.select(refs[key])
       }
     },
-    setTreedData (state, treedData) {
-      state.treedData = treedData
+    setData (state, data) {
+      state.treedData = data.treedData
+      state.originData = data.originData
     }
   },
   actions: {
     setRefs ({ commit }, refs) {
       return commit('setRefs', refs)
     },
-    setTreedData ({ commit }, treedData) {
-      return commit('setTreedData', treedData)
+    setData ({ commit }, data) {
+      return commit('setData', data)
     }
   },
   getters: {
     getTreedData: state => {
       return state.treedData
+    },
+    getOriginData: state => {
+      return state.originData
     },
     getSelections: state => {
       return state.selections

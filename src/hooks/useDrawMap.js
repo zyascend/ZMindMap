@@ -1,9 +1,10 @@
 import store from '../store'
 import * as d3 from './d3'
-import { getMultiline } from './useTreeData'
+import { getMultiline, appendNewChild } from './useTreeData'
 import PIC_ADD from '../assets/pic/add.svg'
 
-const onEditting = (data) => {
+const onEditting = data => {
+  console.log('onEditting', data)
   const foreignObject = store.getters.getSelections.foreignObject
   const foreignDiv = store.getters.getRefs.foreignDiv
   foreignObject
@@ -64,7 +65,8 @@ const drawText = (nodes, mainG) => {
     .on('mouseenter', (event, d) => {
       const selectedG = d3.select(`#g-id-${d._id}`)
       const editting = selectedG.nodes()[0].classList[0] === 'g-editting'
-      !editting && selectedG.attr('class', 'g-hover')
+      const selected = selectedG.nodes()[0].classList[0] === 'g-selected'
+      !editting && !selected && selectedG.attr('class', 'g-hover')
     })
     .on('mouseleave', (event, d) => {
       const selectedG = d3.select(`#g-id-${d._id}`)
@@ -78,10 +80,13 @@ const drawText = (nodes, mainG) => {
         d3.selectAll('.g-selected').attr('class', '')
         selectedG.attr('class', 'g-selected')
       } else {
-        event.preventDefault()
-        const gs = d3.select(`#g-id-${d._id}`)
-        gs.attr('class', 'g-editting')
-        onEditting(d)
+        const target = event.target.tagName
+        if (target !== 'image') {
+          event.preventDefault()
+          const gs = d3.select(`#g-id-${d._id}`)
+          gs.attr('class', 'g-editting')
+          onEditting(d)
+        }
       }
     })
 
@@ -118,6 +123,10 @@ const drawText = (nodes, mainG) => {
     .attr('width', '24')
     .attr('height', '24')
     .attr('xlink:href', PIC_ADD)
+    .on('mousedown', (event, d) => {
+      event.preventDefault()
+      appendNewChild(d._id)
+    })
 }
 
 const useDrawMap = () => {
