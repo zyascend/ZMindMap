@@ -1,6 +1,6 @@
 import * as d3 from './d3'
 import store from '../store'
-// import { deepClone } from '../hooks/utils.js'
+import useDrawMap from './useDrawMap'
 
 let creator = null
 class TreeDataCreater {
@@ -105,6 +105,7 @@ const updateEdit = (newName, id) => {
   const theNode = findNode(root, id)
   theNode.name = newName
   init(root)
+  useDrawMap()
 }
 
 const afterEdit = () => {
@@ -128,6 +129,7 @@ export const appendNewChild = parentId => {
     children: []
   })
   init(root)
+  useDrawMap()
   console.log('appendNewChild => res: ', root)
 }
 
