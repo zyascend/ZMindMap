@@ -26,42 +26,7 @@ const onEditting = data => {
   if (currentSelection) currentSelection.selectAllChildren(foreignDiv)
 }
 
-const drawPath = (links, mainG) => {
-  // 创建一个贝塞尔生成曲线生成器
-  const bézierCurveGenerator = d3.linkHorizontal().x(d => d.x).y(d => d.y)
-  const pathData = d => {
-    const { x, y, width } = d.source
-    const start = { x: x + width, y }
-    const end = { x: d.target.x, y: d.target.y }
-
-    const bottomLine = `M${x} ${y}L${start.x} ${y}`
-    let bottomLineLeaf = ''
-    const bezierLine = bézierCurveGenerator({ source: start, target: end })
-    if (!d.target.children) {
-      bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.width} ${end.y}`
-    }
-    return `${bottomLine}${bezierLine}${bottomLineLeaf}`
-  }
-  // update
-  pathG = pathG || mainG.append('g')
-  const path = pathG.selectAll('path').data(links)
-  path.attr('d', pathData)
-    .attr('fill', 'none')
-    .attr('stroke', 'black')
-    .attr('stroke-width', 2)
-  // enter
-  path.enter()
-    .append('path')
-    .attr('d', pathData)
-    .attr('fill', 'none')
-    .attr('stroke', 'black')
-    .attr('stroke-width', 2)
-    // .merge(gp)
-  // exit
-  path.exit().remove()
-}
-
-const drawText = (nodes, mainG) => {
+const getCallback = () => {
   const transformData = d => {
     const cx = d.x
     const cy = d.y - d.height - 6
@@ -100,18 +65,54 @@ const drawText = (nodes, mainG) => {
     const height = d.height / multiline.length
     return multiline.map((name) => ({ name, height }))
   }
+  return { transformData, onMouseEnter, onMouseLeave, onMouseDown, getTspanData }
+}
 
+const drawPath = (links, mainG) => {
+  // 创建一个贝塞尔生成曲线生成器
+  const bézierCurveGenerator = d3.linkHorizontal().x(d => d.x).y(d => d.y)
+  const pathData = d => {
+    const { x, y, width } = d.source
+    const start = { x: x + width, y }
+    const end = { x: d.target.x, y: d.target.y }
+
+    const bottomLine = `M${x} ${y}L${start.x} ${y}`
+    let bottomLineLeaf = ''
+    const bezierLine = bézierCurveGenerator({ source: start, target: end })
+    if (!d.target.children) {
+      bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.width} ${end.y}`
+    }
+    return `${bottomLine}${bezierLine}${bottomLineLeaf}`
+  }
+  // update
+  pathG = pathG || mainG.append('g')
+  const path = pathG.selectAll('path').data(links)
+  path.attr('d', pathData)
+    .attr('fill', 'none')
+    .attr('stroke', 'black')
+    .attr('stroke-width', 2)
+  // enter
+  path.enter()
+    .append('path')
+    .attr('d', pathData)
+    .attr('fill', 'none')
+    .attr('stroke', 'black')
+    .attr('stroke-width', 2)
+    // .merge(gp)
+  // exit
+  path.exit().remove()
+}
+
+const drawText = (nodes, mainG) => {
+  const { transformData, onMouseEnter, onMouseLeave, onMouseDown, getTspanData } = getCallback()
   const padding = 3
   const radius = 3
 
-  infoG = infoG || mainG.append('g')
-  let gs = infoG.selectAll('g').data(nodes)
-  gs = gs.attr('id', d => `g-id-${d._id}`)
-    .attr('transform', transformData)
-    .on('mouseenter', onMouseEnter)
-    .on('mouseleave', onMouseLeave)
-    .on('mousedown', onMouseDown)
-  gs = gs.enter()
+  infoG = infoG || mainG.append('g').attr('id', 'infoG')
+  const gs = infoG
+    .selectAll('g')
+    .data(nodes)
+    .enter()
     .append('g')
     .attr('id', d => `g-id-${d._id}`)
     .attr('transform', transformData)
@@ -122,7 +123,7 @@ const drawText = (nodes, mainG) => {
     .attr('id', d => `text-id-${d._id}`)
     .selectAll('tspan').data(getTspanData).enter().append('tspan')
     .attr('alignment-baseline', 'text-before-edge')
-    .text((d) => d.name || ' ')
+    .text(d => d.name || '')
     .attr('x', 0)
     .attr('dy', (d, i) => i ? d.height : 0)
   gs.append('rect')
@@ -145,43 +146,19 @@ const drawText = (nodes, mainG) => {
       event.preventDefault()
       appendNewChild(d._id)
     })
-  gs.exit().remove()
-
-  // gs.append('text')
-  //   .attr('id', d => `text-id-${d._id}`)
-  //   .selectAll('tspan').data(getTspanData).enter().append('tspan')
-  //   .attr('alignment-baseline', 'text-before-edge')
-  //   .text((d) => d.name || ' ')
-  //   .attr('x', 0)
-  //   .attr('dy', (d, i) => i ? d.height : 0)
-
-  // gs.append('rect')
-  //   .attr('id', d => `rect-id-${d._id}`)
-  //   .attr('x', -padding)
-  //   .attr('y', -padding)
-  //   .attr('rx', radius)
-  //   .attr('ry', radius)
-  //   .attr('width', d => d.width + padding * 2)
-  //   .attr('height', d => d.height + padding * 2)
-
-  // gs.append('image')
-  //   .attr('id', d => `image-id-${d._id}`)
-  //   .attr('alt', '')
-  //   .attr('x', d => d.width - 12)
-  //   .attr('y', d => d.height + 6 - 12)
-  //   .attr('width', '24')
-  //   .attr('height', '24')
-  //   .attr('xlink:href', PIC_ADD)
-  //   .on('mousedown', (event, d) => {
-  //     event.preventDefault()
-  //     appendNewChild(d._id)
-  //   })
 }
 
 const useDrawMap = () => {
   const treedData = store.getters.getTreedData
   const selections = store.getters.getSelections
+  // 使用d3.js的enter与exit结合进行节点更新
   drawPath(treedData.links(), selections.mainG)
+  // 暴力删除dom，然后全部绘制进行节点更新
+  // TODO 待优化
+  const g = document.querySelector('#infoG')
+  if (g) {
+    g.innerHTML = ''
+  }
   drawText(treedData.descendants(), selections.mainG)
 }
 
