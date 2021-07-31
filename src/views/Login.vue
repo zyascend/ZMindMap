@@ -37,7 +37,7 @@ export default defineComponent({
     const submitForm = () => {
       loginFormRef.value.validate(valid => {
         if (valid) {
-          useLogin.login(loginForm)
+          useLogin.doLogin(loginForm)
         } else {
           return false
         }

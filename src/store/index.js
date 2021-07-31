@@ -19,7 +19,9 @@ const store = createStore({
     },
 
     treedData: null,
-    originData: null
+    originData: null,
+
+    token: 
 
   },
   mutations: {
@@ -32,6 +34,9 @@ const store = createStore({
     setData (state, data) {
       state.treedData = data.treedData
       state.originData = data.originData
+    },
+    setToken (state, token) {
+      state.token = token
     }
   },
   actions: {
@@ -40,6 +45,9 @@ const store = createStore({
     },
     setData ({ commit }, data) {
       return commit('setData', data)
+    },
+    setToken ({ commit }, token) {
+      return commit('setToken', token)
     }
   },
   getters: {
@@ -54,6 +62,9 @@ const store = createStore({
     },
     getRefs: state => {
       return state.refs
+    },
+    getToken: state => {
+      return state.token
     }
   }
 })

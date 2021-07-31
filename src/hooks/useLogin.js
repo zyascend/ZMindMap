@@ -1,3 +1,8 @@
+import md5 from 'js-md5'
+import axios from './useHttp'
+import { loginUrl } from './api'
+import store from '../store'
+
 // 自定义验证规则
 const validatePass = (rule, value, callback) => {
   // 密码只能由大小写英文字母或数字开头，且由大小写英文字母_.组成
@@ -20,8 +25,19 @@ const loginRules = {
   ]
 }
 
-const login = form => {
-  console.log(form)
+const doLogin = form => {
+  const { email, pwd } = form
+  axios.post(loginUrl, { email, pwd: md5(pwd) })
+    .then(res => {
+      // 记录token
+      const { token } = res.data
+      store.dispatch('setToken', token)
+      // 记录user数据
+      store.dispatch('setUser', res.data)
+    })
+    .catch(err => {
+      console.log(err)
+    })
 }
 
-export default { loginRules, login }
+export default { loginRules, doLogin }
