@@ -1,5 +1,19 @@
 import { createStore } from 'vuex'
 import * as d3 from '../hooks/d3'
+import axios from '../hooks/useHttp'
+import API from '../hooks/api'
+
+const asyncAndCommit = async (url, mutationName, commit,
+  config = { method: 'get' }, extraData = undefined) => {
+  const { data } = await axios(url, config)
+  console.log('[store] asyncAndCommit', data)
+  if (extraData) {
+    commit(mutationName, { data, extraData })
+  } else {
+    commit(mutationName, data)
+  }
+  return data
+}
 
 const store = createStore({
   state: {
@@ -36,14 +50,15 @@ const store = createStore({
       state.treedData = data.treedData
       state.originData = data.originData
     },
-    setToken (state, token) {
-      const bearerToken = `Bearer ${token}`
-      localStorage.setItem('token', bearerToken)
-      state.token = bearerToken
-    },
-    setUser (state, user) {
+    fetchUser (state, user) {
+      console.log('[store] fetchUser ', user)
       state.user = user
-      console.log('[store] setUser ', user)
+    },
+    login (state, rawData) {
+      const { token, user } = rawData.data
+      state.token = token
+      state.user = user
+      localStorage.setItem('token', token)
     }
   },
   actions: {
@@ -53,11 +68,14 @@ const store = createStore({
     setData ({ commit }, data) {
       return commit('setData', data)
     },
-    setToken ({ commit }, token) {
-      return commit('setToken', token)
-    },
     setUser ({ commit }, user) {
       return commit('setUser', user)
+    },
+    login ({ commit }, payload) {
+      return asyncAndCommit(API.loginUrl, 'login', commit, { method: 'post', data: payload })
+    },
+    fetchUser ({ commit }) {
+      return asyncAndCommit(API.currentUserUrl, 'fetchUser', commit)
     }
   },
   getters: {

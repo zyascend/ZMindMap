@@ -24,11 +24,13 @@
 <script lang="ts">
 import { ref, defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
 import useLogin from '../hooks/useLogin'
 
 export default defineComponent({
   setup () {
     const router = useRouter()
+    const store = useStore()
     const loginForm = reactive({
       email: '',
       pwd: ''
@@ -39,7 +41,13 @@ export default defineComponent({
     const submitForm = () => {
       loginFormRef.value.validate(valid => {
         if (valid) {
-          useLogin.doLogin(loginForm, router)
+          store.dispatch('login', loginForm)
+            .then(() => {
+              router.push({ path: '/', replace: true })
+            })
+            .catch(e => {
+              console.log(e)
+            })
         } else {
           return false
         }

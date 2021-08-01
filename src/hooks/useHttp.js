@@ -62,7 +62,7 @@ instance.defaults.headers.post['Content-Type'] = 'application/json'
 instance.interceptors.request.use(
   config => {
     const token = store.getters.getToken
-    token && (config.headers.Authorization = token)
+    token && (config.headers.Authorization = `Bearer ${token}`)
     return config
   },
   error => Promise.error(error))

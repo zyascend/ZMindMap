@@ -28,8 +28,9 @@
 </template>
 
 <script>
-import { defineComponent, reactive } from 'vue'
-import { useFetchData, useZoomMap } from '../hooks'
+import { defineComponent, onMounted, computed } from 'vue'
+import { useStore } from 'vuex'
+import { useZoomMap } from '../hooks'
 import MindMap from '../components/MindMap.vue'
 
 export default defineComponent({
@@ -38,10 +39,15 @@ export default defineComponent({
     MindMap
   },
   setup () {
-    const mapData = reactive(useFetchData())
+    const store = useStore()
+    // const mapData = reactive(useFetchData())
+    const mapData = computed(() => store.getters.getColumns)
     const fitView = () => {
       useZoomMap.fitView()
     }
+    onMounted(() => {
+      store.dispatch('fetchColumns')
+    })
     return {
       mapData,
       fitView
