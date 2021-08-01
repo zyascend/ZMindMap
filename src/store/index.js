@@ -21,7 +21,8 @@ const store = createStore({
     treedData: null,
     originData: null,
 
-    token: 
+    token: '',
+    user: {}
 
   },
   mutations: {
@@ -36,7 +37,12 @@ const store = createStore({
       state.originData = data.originData
     },
     setToken (state, token) {
-      state.token = token
+      const bearerToken = `Bearer ${token}`
+      localStorage.setItem('token', bearerToken)
+      state.token = bearerToken
+    },
+    setUser (state, user) {
+      state.user = user
     }
   },
   actions: {
@@ -48,24 +54,18 @@ const store = createStore({
     },
     setToken ({ commit }, token) {
       return commit('setToken', token)
+    },
+    setUser ({ commit }, user) {
+      return commit('setUser', user)
     }
   },
   getters: {
-    getTreedData: state => {
-      return state.treedData
-    },
-    getOriginData: state => {
-      return state.originData
-    },
-    getSelections: state => {
-      return state.selections
-    },
-    getRefs: state => {
-      return state.refs
-    },
-    getToken: state => {
-      return state.token
-    }
+    getTreedData: state => state.treedData,
+    getOriginData: state => state.originData,
+    getSelections: state => state.selections,
+    getRefs: state => state.refs,
+    getToken: state => state.token,
+    getUser: state => state.user
   }
 })
 export default store

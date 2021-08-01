@@ -1,3 +1,5 @@
+import { ElMessage } from 'element-plus'
+
 /**
  * 深拷贝：新对象的改变不影响旧对象
  * 1. [JSON.stringfy JSON.parse]: 无法克隆方法/循环引用无法解决
@@ -24,4 +26,8 @@ export const deepClone = (target, map = new Map()) => {
     })
   }
   return result
+}
+
+export const ErrorTip = msg => {
+  ElMessage.error(msg)
 }

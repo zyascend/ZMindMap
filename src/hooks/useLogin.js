@@ -1,6 +1,6 @@
 import md5 from 'js-md5'
 import axios from './useHttp'
-import { loginUrl } from './api'
+import API from './api'
 import store from '../store'
 
 // 自定义验证规则
@@ -27,13 +27,14 @@ const loginRules = {
 
 const doLogin = form => {
   const { email, pwd } = form
-  axios.post(loginUrl, { email, pwd: md5(pwd) })
+  console.log('encypwd', md5(pwd))
+  axios.post(API.loginUrl, JSON.stringify({ email, pwd }))
     .then(res => {
       // 记录token
-      const { token } = res.data
-      store.dispatch('setToken', token)
+      const { data } = res.data
+      store.dispatch('setToken', data.token)
       // 记录user数据
-      store.dispatch('setUser', res.data)
+      store.dispatch('setUser', data.user)
     })
     .catch(err => {
       console.log(err)

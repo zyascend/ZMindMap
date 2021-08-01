@@ -4,7 +4,8 @@ import router from './router'
 import store from './store'
 import {
   ElContainer, ElHeader, ElMain, ElAside, ElTooltip,
-  ElForm, ElFormItem, ElRow, ElCol, ElButton, ElInput
+  ElForm, ElFormItem, ElRow, ElCol, ElButton, ElInput,
+  ElMessage
 } from 'element-plus'
 import './assets/css/reset.css'
 import 'element-plus/lib/theme-chalk/index.css'
@@ -23,5 +24,7 @@ app.component(ElRow.name, ElRow)
 app.component(ElCol.name, ElCol)
 app.component(ElButton.name, ElButton)
 app.component(ElInput.name, ElInput)
+
+app.component(ElMessage.name, ElMessage)
 
 app.use(store).use(router).mount('#app')
