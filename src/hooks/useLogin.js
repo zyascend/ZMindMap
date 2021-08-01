@@ -25,7 +25,7 @@ const loginRules = {
   ]
 }
 
-const doLogin = form => {
+const doLogin = (form, router) => {
   const { email, pwd } = form
   console.log('encypwd', md5(pwd))
   axios.post(API.loginUrl, JSON.stringify({ email, pwd }))
@@ -35,6 +35,8 @@ const doLogin = form => {
       store.dispatch('setToken', data.token)
       // 记录user数据
       store.dispatch('setUser', data.user)
+      // // 跳转首页
+      router.push({ path: '/', replace: true })
     })
     .catch(err => {
       console.log(err)

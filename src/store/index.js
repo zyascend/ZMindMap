@@ -43,6 +43,7 @@ const store = createStore({
     },
     setUser (state, user) {
       state.user = user
+      console.log('[store] setUser ', user)
     }
   },
   actions: {
