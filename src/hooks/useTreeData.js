@@ -133,6 +133,22 @@ export const appendNewChild = parentId => {
   console.log('appendNewChild => res: ', root)
 }
 
+export const deleteNode = (parentId, childId) => {
+  if (!parentId || !childId) {
+    return
+  }
+  const root = store.getters.getOriginData
+  const parentNode = findNode(root, parentId)
+  for (let i = 0; i < parentNode.children.length; i++) {
+    if (parentNode.children[i].nid === childId) {
+      parentNode.children.splice(i, 1)
+      break
+    }
+  }
+  init(root)
+  useDrawMap()
+}
+
 export const getMultiline = TreeDataCreater.getMultiline
 
 export default { init, afterEdit }

@@ -32,6 +32,7 @@ import { defineComponent, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useZoomMap } from '../hooks'
 import MindMap from '../components/MindMap.vue'
+import citys from '../mock/city'
 
 export default defineComponent({
   name: 'Home',
@@ -41,7 +42,8 @@ export default defineComponent({
   setup () {
     const store = useStore()
     // const mapData = reactive(useFetchData())
-    const mapData = computed(() => store.getters.getColumns)
+    // const mapData = computed(() => store.getters.getColumns)
+    const mapData = computed(() => citys)
     const fitView = () => {
       useZoomMap.fitView()
     }

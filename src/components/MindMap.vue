@@ -16,9 +16,9 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
-import { useTreeData, useRender } from '../hooks'
+import { useTreeData, useRender, useKeydownEvent } from '../hooks'
 
 export default defineComponent({
   name: 'MindMap',
@@ -52,6 +52,10 @@ export default defineComponent({
       })
       useTreeData.init(props.modelValue)
       useRender()
+      useKeydownEvent()
+    })
+    onUnmounted(() => {
+      document.onkeydown = undefined
     })
     const onEditDivBlur = () => {
       console.log('onEditDivBlur')

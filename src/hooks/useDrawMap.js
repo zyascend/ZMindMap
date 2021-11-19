@@ -1,10 +1,13 @@
 import store from '../store'
 import * as d3 from './d3'
-import { getMultiline, appendNewChild } from './useTreeData'
+import { getMultiline, appendNewChild, deleteNode } from './useTreeData'
 import PIC_ADD from '../assets/pic/add.svg'
+
+import emitter from './mitt'
 
 let pathG
 let infoG
+let currentData
 
 const onEditting = data => {
   console.log('onEditting', data)
@@ -24,6 +27,22 @@ const onEditting = data => {
   // 自动选中所有文字
   const currentSelection = getSelection()
   if (currentSelection) currentSelection.selectAllChildren(foreignDiv)
+}
+
+/**
+ * 检查当前节点的状态
+ * @param {*} id 节点id
+ * @param {*} status 需要检查的状态
+ * @returns
+ */
+const checkNodeStatus = (id, status) => {
+  const currentClass = d3.select(`#g-id-${id}`).nodes()[0].classList[0]
+  if (status === 'edit') {
+    return currentClass === 'g-editting'
+  }
+  if (status === 'select') {
+    return currentClass === 'g-selected'
+  }
 }
 
 const getCallback = () => {
@@ -49,6 +68,7 @@ const getCallback = () => {
     if (!selected) {
       d3.selectAll('.g-selected').attr('class', '')
       selectedG.attr('class', 'g-selected')
+      currentData = d
     } else {
       const target = event.target.tagName
       if (target !== 'image') {
@@ -160,6 +180,31 @@ const useDrawMap = () => {
     g.innerHTML = ''
   }
   drawText(treedData.descendants(), selections.mainG)
+  emitter.all.delete('map-key-down')
+  emitter.on('map-key-down', e => {
+    switch (e.keyCode) {
+      case 46:
+        // delete键 删除当前选中的节点
+        deleteNode(currentData.parent?._id, currentData._id)
+        break
+      case 13:
+        // enter键 添加兄弟节点
+        if (checkNodeStatus(currentData._id, 'select')) {
+          appendNewChild(currentData.parent?._id)
+        }
+        e.preventDefault()
+        break
+      case 9:
+        // tab键 添加子节点
+        if (checkNodeStatus(currentData._id, 'select')) {
+          appendNewChild(currentData._id)
+        }
+        e.preventDefault()
+        break
+      default:
+        break
+    }
+  })
 }
 
 export default useDrawMap

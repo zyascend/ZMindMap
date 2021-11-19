@@ -21,7 +21,7 @@
   </div>
 </template>
 
-<script lang="ts">
+<script>
 import { ref, defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
