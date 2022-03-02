@@ -190,9 +190,10 @@ const useDrawMap = () => {
       case 13:
         // enter键 添加兄弟节点
         if (checkNodeStatus(currentData._id, 'select')) {
-          appendNewChild(currentData.parent?._id)
+          if (currentData?.parent) {
+            appendNewChild(currentData.parent._id)
+          }
         }
-        e.preventDefault()
         break
       case 9:
         // tab键 添加子节点

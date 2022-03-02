@@ -1,0 +1,23 @@
+<svg width="20" height="21" viewBox="0 0 20 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g opacity="0.5" filter="url(#filter0_f)">
+<rect x="6" y="15.5" width="8" height="1" fill="#47494B"/>
+</g>
+<rect x="4.5" y="3.5" width="11" height="13" rx="1" fill="white" stroke="#959798" stroke-width="0.6"/>
+<rect x="4.5" y="3.5" width="11" height="13" rx="1" fill="white" stroke="#959798" stroke-width="0.6"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M8 7.48389C8 7.34582 8.11193 7.23389 8.25 7.23389H13.75C13.8881 7.23389 14 7.34582 14 7.48389C14 7.62196 13.8881 7.73389 13.75 7.73389H8.25C8.11193 7.73389 8 7.62196 8 7.48389Z" fill="#959798"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M10.5 9.25C10.5 9.11193 10.6119 9 10.75 9H13.25C13.3881 9 13.5 9.11193 13.5 9.25C13.5 9.38807 13.3881 9.5 13.25 9.5H10.75C10.6119 9.5 10.5 9.38807 10.5 9.25Z" fill="#959798"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M8 9.25C8 9.11193 8.11193 9 8.25 9H9.75C9.88807 9 10 9.11193 10 9.25C10 9.38807 9.88807 9.5 9.75 9.5H8.25C8.11193 9.5 8 9.38807 8 9.25Z" fill="#959798"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M8 11C8 10.8619 8.11193 10.75 8.25 10.75H11.75C11.8881 10.75 12 10.8619 12 11C12 11.1381 11.8881 11.25 11.75 11.25H8.25C8.11193 11.25 8 11.1381 8 11Z" fill="#959798"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M8 12.7639C8 12.6258 8.11193 12.5139 8.25 12.5139H13.75C13.8881 12.5139 14 12.6258 14 12.7639C14 12.902 13.8881 13.0139 13.75 13.0139H8.25C8.11193 13.0139 8 12.902 8 12.7639Z" fill="#959798"/>
+<circle cx="6.65002" cy="12.7639" r="0.5" fill="#696A6B"/>
+<circle cx="6.65002" cy="11" r="0.5" fill="#696A6B"/>
+<circle cx="6.65002" cy="9.25" r="0.5" fill="#696A6B"/>
+<circle cx="6.65002" cy="7.48389" r="0.5" fill="#696A6B"/>
+<defs>
+<filter id="filter0_f" x="2.46623" y="11.9662" width="15.0675" height="8.06753" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+<feFlood flood-opacity="0" result="BackgroundImageFix"/>
+<feBlend mode="normal" in="SourceGraphic" in2="BackgroundImageFix" result="shape"/>
+<feGaussianBlur stdDeviation="1.76688" result="effect1_foregroundBlur"/>
+</filter>
+</defs>
+</svg>

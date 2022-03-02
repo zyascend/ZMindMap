@@ -5,7 +5,8 @@ import store from './store'
 import {
   ElContainer, ElHeader, ElMain, ElAside, ElTooltip,
   ElForm, ElFormItem, ElRow, ElCol, ElButton, ElInput,
-  ElMessage
+  ElMessage, ElTree, ElIcon, ElTable, ElTableColumn,
+  ElPopover
 } from 'element-plus'
 import './assets/css/reset.css'
 import 'element-plus/lib/theme-chalk/index.css'
@@ -26,5 +27,11 @@ app.component(ElButton.name, ElButton)
 app.component(ElInput.name, ElInput)
 
 app.component(ElMessage.name, ElMessage)
+app.component(ElTree.name, ElTree)
+app.component(ElIcon.name, ElIcon)
+
+app.component(ElTable.name, ElTable)
+app.component(ElTableColumn.name, ElTableColumn)
+app.component(ElPopover.name, ElPopover)
 
 app.use(store).use(router).mount('#app')

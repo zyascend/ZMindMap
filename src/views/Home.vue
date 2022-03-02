@@ -1,90 +1,114 @@
 <template>
-  <el-container>
-    <el-aside width="150px">Aside</el-aside>
-    <el-container>
-      <el-header height="30px">Header</el-header>
-      <el-main>
-        <div class="map-wrapper">
-          <mind-map v-model="mapData"></mind-map>
-          <div class="toolbar">
-            <el-tooltip
-              class="tool-item"
-              effect="light"
-              content="适应当前大小"
-              popper-class="popper"
-              placement="left">
-              <div class="" @click="fitView">
-                <img src="../assets/pic/fit-view.svg" alt="">
-              </div>
-            </el-tooltip>
+  <div class="main">
+    <sider :width="300">
+      <div class="profile">
+        <div class="info">
+          <!-- <img src="https://api2.mubu.com/v3/photo/7aadfeca-72df-48b5-ad19-262432df8fa5.jpg" alt=""> -->
+          <img class="avatar" src="" alt="">
+          <p class="nickname">THE YANG</p>
+        </div>
+        <div class="message">
+          <img src="" alt="">
+        </div>
+      </div>
+      <el-tree
+        v-if="asideData.length"
+        :expand-on-click-node="false"
+        :data="asideData"
+        @node-click="onTreeNodeClick"
+      >
+        <template #default="scope">
           <div class="tool-item">
-            <img src="../assets/pic/theme.svg" alt="">
+            <img src="../assets/pic/theme.svg" alt="" />
           </div>
-        </div>
-        </div>
-      </el-main>
-    </el-container>
-  </el-container>
+          <router-link :to="getUrl(scope.data)">
+            <span>{{ scope.data.name }}</span>
+          </router-link>
+          <div class="tool-item">
+            <img src="../assets/pic/theme.svg" alt="" />
+          </div>
+          <div class="tool-item">
+            <img src="../assets/pic/theme.svg" alt="" />
+          </div>
+        </template>
+      </el-tree>
+      <a class="folders" href="/app/folder/quick">
+        <img src="../assets/pic/theme.svg" alt="" />
+        <span>快速访问</span>
+      </a>
+      <a class="folders" href="/app/folder/recent">
+        <img src="../assets/pic/theme.svg" alt="" />
+        <span>最近编辑</span>
+      </a>
+      <a class="folders" href="/app/folder/clb">
+        <img src="../assets/pic/theme.svg" alt="" />
+        <span>回收站</span>
+      </a>
+    </sider>
+    <router-view :key="route.fullPath"></router-view>
+  </div>
 </template>
 
 <script>
-import { defineComponent, onMounted, computed } from 'vue'
+import { defineComponent, onMounted, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useZoomMap } from '../hooks'
-import MindMap from '../components/MindMap.vue'
-import citys from '../mock/city'
+import Sider from '@/components/Sider.vue'
+import { useRoute } from 'vue-router'
 
 export default defineComponent({
   name: 'Home',
   components: {
-    MindMap
+    Sider
   },
   setup () {
     const store = useStore()
-    // const mapData = reactive(useFetchData())
-    // const mapData = computed(() => store.getters.getColumns)
-    const mapData = computed(() => citys)
+    const route = useRoute()
+    const asideData = computed(() => store.getters.getAllDocuments(null))
+    const isDrawerOpen = ref(true)
+    onMounted(() => {
+      store.dispatch('fetchAllDocuments')
+    })
     const fitView = () => {
       useZoomMap.fitView()
     }
-    onMounted(() => {
-      store.dispatch('fetchColumns')
-    })
+    const onTreeNodeClick = (data) => {
+      console.log(data)
+    }
+    const getUrl = (row) => {
+      const isFolder = 'folderType' in row
+      if (isFolder) {
+        return `/app/folder/${row.id}`
+      } else {
+        return `/app/edit/${row.id}`
+      }
+    }
     return {
-      mapData,
-      fitView
+      asideData,
+      fitView,
+      route,
+      isDrawerOpen,
+      onTreeNodeClick,
+      getUrl
     }
   }
 })
 </script>
 
 <style lang="scss">
-@import '../assets/css/mixin';
-.map-wrapper {
-  @include wh100;
+@import "@/assets/css/mixin";
+.main {
   position: relative;
-  .toolbar {
-    @include vertFlex;
-    position: absolute;
-    z-index: 2;
-    top: 50px;
-    right: 50px;
-    border: 1px solid #dee0e3;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 8px 4px rgba(31, 35, 41, .06);
-    user-select: none;
-    padding: 8px;
-    cursor: pointer;
-    .tool-item + .tool-item {
-      @include wh(16px, 16px);
-      margin-top: 8px;
+  @include wh100;
+  @include horiFlex;
+  .profile {
+    width: 100%;
+    @include horiFlex;
+    .info {
+      @include horiFlex;
+      .avatar {
+      }
     }
   }
-}
-
-.popper {
-  font-size: 10px !important;
-  padding: 6px !important;
 }
 </style>

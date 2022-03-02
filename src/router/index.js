@@ -1,11 +1,32 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/Home.vue'
+import Edit from '@/views/Edit.vue'
+import Folder from '@/views/Folder.vue'
 
 const routes = [
   {
     path: '/',
+    redirect: '/app'
+  },
+  {
+    path: '/app',
     name: 'Home',
-    component: Home
+    component: Home,
+    redirect: '/app/folder',
+    children: [
+      {
+        // 当 /user/:id/profile 匹配成功
+        // UserProfile 将被渲染到 User 的 <router-view> 内部
+        path: 'edit/:id',
+        component: Edit
+      },
+      {
+        // 当 /user/:id/posts 匹配成功
+        // UserPosts 将被渲染到 User 的 <router-view> 内部
+        path: 'folder/:id?',
+        component: Folder
+      }
+    ]
   },
   {
     path: '/login',
