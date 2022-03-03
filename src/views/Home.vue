@@ -7,9 +7,6 @@
           <img class="avatar" src="" alt="">
           <p class="nickname">THE YANG</p>
         </div>
-        <div class="message">
-          <img src="" alt="">
-        </div>
       </div>
       <el-tree
         v-if="asideData.length"

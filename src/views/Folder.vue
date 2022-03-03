@@ -16,15 +16,21 @@
             <li>最近编辑时间</li>
           </ul>
         </el-popover>
-        <div class="show" @click="onToggleStyle">{{ showStyle ? '表格展示' : 'grid展示' }}</div>
+        <div class="show" @click="onToggleStyle">{{ showTable ? '表格展示' : 'grid展示' }}</div>
       </div>
     </div>
-    <el-table :data="docTableData" style="width: 100%" @row-click="onRowClick">
+    <el-table v-if="showTable" :data="docTableData" style="width: 100%" @row-click="onRowClick">
       <el-table-column prop="name" label="文件名" width="300" />
       <el-table-column prop="itemCount" label="" width="180" />
       <el-table-column prop="formatedUpdateTime" label="最近编辑" width="200" />
       <el-table-column prop="formatedCreateTime" label="创建时间" width="300" />
     </el-table>
+    <div class="grid" v-else>
+      <div class="grid-item" v-for="row in docTableData" :key="row.id" @click="onRowClick(row)">
+        <img :src="getGridImg(row)" alt="">
+        <span>{{ row.name }}</span>
+      </div>
+    </div>
   </div>
 </template>
 <script>
@@ -35,6 +41,8 @@ import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 // import { useStore } from 'vuex'
 import BreadCrumb from '@/components/BreadCrumb.vue'
+import ICON_FOLDER from '@/assets/pic/folder-large.svg'
+import ICON_FILE from '@/assets/pic/file-large.svg'
 
 export default defineComponent({
   components: {
@@ -48,7 +56,7 @@ export default defineComponent({
     const navigationList = computed(() => store.getters.getNavigationLists(folderId))
     const docTableData = computed(() => store.getters.getAllDocuments(folderId))
     const pageParams = reactive({
-      showStyle: 0
+      showTable: true
     })
     onMounted(() => {
       // store.dispatch('changeNavigation', route.params.id)
@@ -68,7 +76,11 @@ export default defineComponent({
       console.log('')
     }
     const onToggleStyle = () => {
-      pageParams.showStyle = !pageParams.showStyle
+      pageParams.showTable = !pageParams.showTable
+    }
+    const getGridImg = row => {
+      const isFolder = 'folderType' in row
+      return isFolder ? ICON_FOLDER : ICON_FILE
     }
     return {
       ...toRefs(pageParams),
@@ -76,7 +88,8 @@ export default defineComponent({
       docTableData,
       onRowClick,
       onToggleStyle,
-      onSortTable
+      onSortTable,
+      getGridImg
     }
   }
 })
@@ -104,6 +117,30 @@ export default defineComponent({
       .show {
         margin-left: 30px;
       }
+    }
+  }
+  .grid {
+    @include wh100;
+    @include horiFlex;
+    flex-wrap: wrap;
+    padding: 20px;
+    .grid-item {
+      position: relative;
+      @include vertFlex;
+      width: 146px;
+      height: 142px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: box-shadow 100ms linear 0s;
+      box-sizing: border-box;
+      &:hover {
+        border: 1px solid rgb(222, 222, 225);
+        background-color: rgb(244, 244, 245);
+        box-shadow: rgb(17 34 51 / 15%) 0px 4px 8px;
+      }
+    }
+    .grid-item + .grid-item {
+      margin-left: 25px;
     }
   }
 }
