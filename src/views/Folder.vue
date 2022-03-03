@@ -20,14 +20,21 @@
       </div>
     </div>
     <el-table v-if="showTable" :data="docTableData" style="width: 100%" @row-click="onRowClick">
-      <el-table-column prop="name" label="文件名" width="300" />
+      <el-table-column prop="name" label="文件名" width="300">
+        <template #default="scope">
+          <div class="row">
+            <img :src="isFolder(scope.row) ? ICON_FOLDER : ICON_FILE" alt="" class="icon">
+            <p class="">{{ scope.row.name }}</p>
+          </div>
+      </template>
+      </el-table-column>
       <el-table-column prop="itemCount" label="" width="180" />
       <el-table-column prop="formatedUpdateTime" label="最近编辑" width="200" />
       <el-table-column prop="formatedCreateTime" label="创建时间" width="300" />
     </el-table>
     <div class="grid" v-else>
       <div class="grid-item" v-for="row in docTableData" :key="row.id" @click="onRowClick(row)">
-        <img :src="getGridImg(row)" alt="">
+        <img :src="isFolder(row) ? ICON_FOLDER_LARGE : ICON_FILE_LARGE" alt="">
         <span>{{ row.name }}</span>
       </div>
     </div>
@@ -41,8 +48,10 @@ import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 // import { useStore } from 'vuex'
 import BreadCrumb from '@/components/BreadCrumb.vue'
-import ICON_FOLDER from '@/assets/pic/folder-large.svg'
-import ICON_FILE from '@/assets/pic/file-large.svg'
+import ICON_FOLDER_LARGE from '@/assets/pic/folder-large.svg'
+import ICON_FOLDER from '@/assets/pic/folder-small.svg'
+import ICON_FILE_LARGE from '@/assets/pic/file-large.svg'
+import ICON_FILE from '@/assets/pic/file-small.svg'
 
 export default defineComponent({
   components: {
@@ -61,9 +70,11 @@ export default defineComponent({
     onMounted(() => {
       // store.dispatch('changeNavigation', route.params.id)
     })
+    const isFolder = row => {
+      return 'folderType' in row
+    }
     const onRowClick = (row, column, event) => {
-      const isFolder = 'folderType' in row
-      if (isFolder) {
+      if (isFolder(row)) {
         // 修改路由URL
         // `params` 不能与 `path` 一起使用
         router.push({ path: `/app/folder/${row.id}` })
@@ -78,10 +89,6 @@ export default defineComponent({
     const onToggleStyle = () => {
       pageParams.showTable = !pageParams.showTable
     }
-    const getGridImg = row => {
-      const isFolder = 'folderType' in row
-      return isFolder ? ICON_FOLDER : ICON_FILE
-    }
     return {
       ...toRefs(pageParams),
       navigationList,
@@ -89,7 +96,11 @@ export default defineComponent({
       onRowClick,
       onToggleStyle,
       onSortTable,
-      getGridImg
+      isFolder,
+      ICON_FOLDER_LARGE,
+      ICON_FILE_LARGE,
+      ICON_FOLDER,
+      ICON_FILE
     }
   }
 })
@@ -142,6 +153,10 @@ export default defineComponent({
     .grid-item + .grid-item {
       margin-left: 25px;
     }
+  }
+  .row {
+    @include horiFlex;
+    position: relative;
   }
 }
 </style>
