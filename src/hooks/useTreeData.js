@@ -133,6 +133,17 @@ export const appendNewChild = parentId => {
   console.log('appendNewChild => res: ', root)
 }
 
+export const toggleExpandOrCollapse = parentId => {
+  const root = store.getters.getOriginData
+  // 找到待更新的节点
+  const theNode = findNode(root, parentId)
+  theNode.collapsed = !theNode.collapsed
+  ;[theNode._children, theNode.children] = [theNode.children, theNode._children]
+  init(root)
+  useDrawMap()
+  console.log('collapseChildren => res: ', root)
+}
+
 export const deleteNode = (parentId, childId) => {
   if (!parentId || !childId) {
     return

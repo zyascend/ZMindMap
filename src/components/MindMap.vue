@@ -91,16 +91,19 @@ export default defineComponent({
       fill: transparent;
       opacity: 0;
     }
-    image {
+    .image-add, .image-collapse {
       opacity: 0;
     }
     .g-hover {
       rect {
         opacity: 0.5;
       }
+      .image-collapse {
+        opacity: 1;
+      }
     }
     .g-selected {
-      rect, image {
+      rect, .image-add {
         opacity: 1;
       }
     }
@@ -108,7 +111,7 @@ export default defineComponent({
       rect {
         opacity: 1;
       }
-      image,text {
+      .image-add,text {
         opacity: 0;
       }
     }

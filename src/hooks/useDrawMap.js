@@ -1,7 +1,8 @@
 import store from '../store'
 import * as d3 from './d3'
-import { getMultiline, appendNewChild, deleteNode } from './useTreeData'
-import PIC_ADD from '../assets/pic/add.svg'
+import { getMultiline, appendNewChild, deleteNode, toggleExpandOrCollapse } from './useTreeData'
+import PIC_ADD from '@/assets/pic/add.svg'
+import PIC_COLLAPSE from '@/assets/pic/arrow-left.svg'
 
 import emitter from './mitt'
 
@@ -155,8 +156,9 @@ const drawText = (nodes, mainG) => {
     .attr('width', d => d.width + padding * 2)
     .attr('height', d => d.height + padding * 2)
   gs.append('image')
-    .attr('id', d => `image-id-${d._id}`)
+    .attr('id', d => `image-add-id-${d._id}`)
     .attr('alt', '')
+    .attr('class', 'image-add')
     .attr('x', d => d.width - 12)
     .attr('y', d => d.height + 6 - 12)
     .attr('width', '24')
@@ -165,6 +167,20 @@ const drawText = (nodes, mainG) => {
     .on('mousedown', (event, d) => {
       event.preventDefault()
       appendNewChild(d._id)
+    })
+  gs.append('image')
+    .attr('id', d => `image-collapse-id-${d._id}`)
+    .attr('alt', '')
+    .attr('class', 'image-collapse')
+    .attr('x', d => d.width)
+    .attr('y', d => 0)
+    .attr('width', '24')
+    .attr('height', '24')
+    .attr('xlink:href', PIC_COLLAPSE)
+    .on('mousedown', (event, d) => {
+      event.preventDefault()
+      console.log('mousedown', d)
+      toggleExpandOrCollapse(d._id)
     })
 }
 
