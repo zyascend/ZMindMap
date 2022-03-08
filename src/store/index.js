@@ -84,7 +84,10 @@ const store = createStore({
       return commit('setUser', user)
     },
     login ({ commit }, payload) {
-      return asyncAndCommit(API.loginUrl, 'login', commit, { method: 'post', data: payload })
+      const { isLogin, loginForm } = payload
+      console.log(isLogin)
+      console.log(loginForm)
+      return asyncAndCommit(isLogin ? API.loginUrl : API.registerUrl, 'login', commit, { method: 'post', data: loginForm })
     },
     fetchUser ({ commit }) {
       return asyncAndCommit(API.currentUserUrl, 'fetchUser', commit)

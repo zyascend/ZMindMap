@@ -17,6 +17,11 @@
   display: flex;
   flex-direction: row;
 }
+@mixin centerFlex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 @mixin wh($w, $h){
   width: $w;
   height: $h;
@@ -27,4 +32,4 @@
   left: 50%;
   transform: translate(-50%, -50%);
 }
-$color-base: #409EFF
+$color-base: #5856d5
