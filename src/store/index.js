@@ -60,18 +60,26 @@ const store = createStore({
       console.log('[store] fetchUser ', user)
       state.user = user
     },
-    fetchAllDocuments (state, tables) {
-      state.originAllDocs = tables
-      state.allTreeDocs = handler.handleSiderData(tables)
+    fetchAllDocuments (state, data) {
+      state.originAllDocs = data
+      state.allTreeDocs = handler.handleSiderData(data)
     },
     login (state, rawData) {
-      const { token, user } = rawData.data
+      const { token, user } = rawData
       state.token = token
       state.user = user
       localStorage.setItem('token', token)
     }
   },
   actions: {
+    login ({ commit }, payload) {
+      const { isLogin, loginForm } = payload
+      return asyncAndCommit(isLogin ? API.login : API.register, 'login', commit, { method: 'post', data: loginForm })
+    },
+    setNavigationLists ({ commit }, id) {
+      commit('setNavigationLists', id)
+      return true
+    },
     setRefs ({ commit }, refs) {
       return commit('setRefs', refs)
     },
@@ -81,9 +89,13 @@ const store = createStore({
     setUser ({ commit }, user) {
       return commit('setUser', user)
     },
-    login ({ commit }, payload) {
-      const { isLogin, loginForm } = payload
-      return asyncAndCommit(isLogin ? API.login : API.register, 'login', commit, { method: 'post', data: loginForm })
+    postSetFolder ({ commit, getters }, data) {
+      const url = `${API.setFolder}/${getters.getUser._id}`
+      return asyncAndCommit(url, 'fetchAllDocuments', commit, { method: 'post', data })
+    },
+    postSetDoc ({ commit, getters }, data) {
+      const url = `${API.setDoc}/${getters.getUser._id}`
+      return asyncAndCommit(url, 'fetchAllDocuments', commit, { method: 'post', data })
     },
     fetchUser ({ commit }) {
       return asyncAndCommit(API.getCurrentUser, 'fetchUser', commit)
@@ -92,9 +104,9 @@ const store = createStore({
       const url = `${API.getAllDocs}/${getters.getUser._id}`
       return asyncAndCommit(url, 'fetchAllDocuments', commit)
     },
-    setNavigationLists ({ commit }, id) {
-      commit('setNavigationLists', id)
-      return true
+    fetchDocContent ({ commit, getters }, payload) {
+      const url = `${API.getDocContent}/${getters.getUser._id}/${payload}`
+      return asyncAndCommit(url, 'fetchAllDocuments', commit)
     }
   },
   getters: {

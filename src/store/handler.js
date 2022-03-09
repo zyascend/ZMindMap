@@ -27,10 +27,10 @@ export const handleSiderData = data => {
   }
   const appendChildren = (parent) => {
     if (!parent) return
-    const children = folderMap.get(parent._id)
+    const children = folderMap.get(parent.id)
     if (!children) return
     for (const child of children) {
-      if (folderMap.has(child._id)) {
+      if (folderMap.has(child.id)) {
         appendChildren(child)
       }
     }

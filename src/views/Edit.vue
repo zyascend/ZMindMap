@@ -23,7 +23,7 @@ import { defineComponent, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useZoomMap } from '@/hooks'
 import MindMap from '@/components/MindMap.vue'
-import citys from '@/mock/city'
+// import citys from '@/mock/city'
 import ICON_FITVIEW from '@/assets/pic/fit-view.svg'
 import ICON_THEME from '@/assets/pic/theme.svg'
 
@@ -34,7 +34,7 @@ export default defineComponent({
   setup () {
     const store = useStore()
     // const mapData = computed(() => store.getters.getColumns)
-    const mapData = computed(() => citys)
+    const mapData = computed(() => null)
     const fitView = () => {
       useZoomMap.fitView()
     }
