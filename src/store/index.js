@@ -1,15 +1,13 @@
+import persistedState from 'vuex-persistedstate'
 import { createStore } from 'vuex'
-import * as d3 from '../hooks/d3'
+import * as d3 from '@/hooks/d3'
 import * as handler from './handler'
-import axios from '../hooks/useHttp'
-import API from '../hooks/api'
-
-import tables from '@/mock/tables'
+import axios from '@/hooks/useHttp'
+import API from '@/hooks/api'
 
 const asyncAndCommit = async (url, mutationName, commit,
   config = { method: 'get' }, extraData = undefined) => {
   const { data } = await axios(url, config)
-  console.log('[store] asyncAndCommit', data)
   if (extraData) {
     commit(mutationName, { data, extraData })
   } else {
@@ -85,16 +83,14 @@ const store = createStore({
     },
     login ({ commit }, payload) {
       const { isLogin, loginForm } = payload
-      console.log(isLogin)
-      console.log(loginForm)
-      return asyncAndCommit(isLogin ? API.loginUrl : API.registerUrl, 'login', commit, { method: 'post', data: loginForm })
+      return asyncAndCommit(isLogin ? API.login : API.register, 'login', commit, { method: 'post', data: loginForm })
     },
     fetchUser ({ commit }) {
-      return asyncAndCommit(API.currentUserUrl, 'fetchUser', commit)
+      return asyncAndCommit(API.getCurrentUser, 'fetchUser', commit)
     },
-    fetchAllDocuments ({ commit }) {
-      commit('fetchAllDocuments', tables)
-      return tables
+    fetchAllDocuments ({ commit, getters }) {
+      const url = `${API.getAllDocs}/${getters.getUser._id}`
+      return asyncAndCommit(url, 'fetchAllDocuments', commit)
     },
     setNavigationLists ({ commit }, id) {
       commit('setNavigationLists', id)
@@ -118,6 +114,9 @@ const store = createStore({
     getNavigationLists: state => id => {
       return handler.findNavigationPaths(id, state.originAllDocs)
     }
-  }
+  },
+  plugins: [
+    persistedState({ storage: window.sessionStorage })
+  ]
 })
 export default store

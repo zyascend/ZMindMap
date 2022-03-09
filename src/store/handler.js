@@ -9,6 +9,7 @@
  */
 import { dateFormatter } from '@/hooks/utils'
 export const handleSiderData = data => {
+  console.log(data)
   const folderMap = new Map()
   const res = []
   for (const doc of [...data.folders, ...data.documents]) {
@@ -26,10 +27,10 @@ export const handleSiderData = data => {
   }
   const appendChildren = (parent) => {
     if (!parent) return
-    const children = folderMap.get(parent.id)
+    const children = folderMap.get(parent._id)
     if (!children) return
     for (const child of children) {
-      if (folderMap.has(child.id)) {
+      if (folderMap.has(child._id)) {
         appendChildren(child)
       }
     }

@@ -86,6 +86,7 @@ export default defineComponent({
   .main {
     position: relative;
     width: 800px;
+    min-width: 500px;
     height: 500px;
     margin: 20px;
     background-color: #2c3034;
