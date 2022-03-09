@@ -128,7 +128,7 @@ const store = createStore({
     }
   },
   plugins: [
-    persistedState({ storage: window.sessionStorage })
+    persistedState({ storage: window.localStorage })
   ]
 })
 export default store

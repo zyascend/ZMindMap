@@ -49,7 +49,7 @@ import { useRouter, useRoute } from 'vue-router'
 // import { useStore } from 'vuex'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import ICON_FOLDER_LARGE from '@/assets/pic/folder-large.svg'
-import ICON_FOLDER from '@/assets/pic/folder-small.svg'
+import ICON_FOLDER from '@/assets/pic/folder.svg'
 import ICON_FILE_LARGE from '@/assets/pic/file-large.svg'
 import ICON_FILE from '@/assets/pic/file-small.svg'
 

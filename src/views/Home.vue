@@ -12,20 +12,27 @@
         v-if="asideData.length"
         :expand-on-click-node="false"
         :data="asideData"
-        @node-click="onTreeNodeClick"
       >
         <template #default="scope">
           <div class="tool-item">
-            <img src="../assets/pic/theme.svg" alt="" />
+            <img :src="isFolder(scope.data) ? ICON_FOLDER : ICON_FILE" alt="" />
+            <router-link :to="getUrl(scope.data)">
+              <span>{{ scope.data.name }}</span>
+            </router-link>
           </div>
-          <router-link :to="getUrl(scope.data)">
-            <span>{{ scope.data.name }}</span>
-          </router-link>
-          <div class="tool-item">
-            <img src="../assets/pic/theme.svg" alt="" />
-          </div>
-          <div class="tool-item">
-            <img src="../assets/pic/theme.svg" alt="" />
+          <div class="tool-item" @click="onMore(scope.data)">
+            <el-popover
+              placement="bottom"
+              trigger="click"
+              :show-arrow="false">
+                <template #reference>
+                  <img :src="ICON_MORE" alt="" />
+                </template>
+                <ul>
+                  <li>创建时间</li>
+                  <li>最近编辑时间</li>
+                </ul>
+            </el-popover>
           </div>
         </template>
       </el-tree>
@@ -52,6 +59,10 @@ import { useStore } from 'vuex'
 import { useZoomMap } from '../hooks'
 import Sider from '@/components/Sider.vue'
 import { useRoute } from 'vue-router'
+import ICON_ADD from '@/assets/pic/add-file.svg'
+import ICON_MORE from '@/assets/pic/more.svg'
+import ICON_FOLDER from '@/assets/pic/folder.svg'
+import ICON_FILE from '@/assets/pic/file-small.svg'
 
 export default defineComponent({
   name: 'Home',
@@ -69,9 +80,6 @@ export default defineComponent({
     const fitView = () => {
       useZoomMap.fitView()
     }
-    const onTreeNodeClick = (data) => {
-      console.log(data)
-    }
     const getUrl = (row) => {
       const isFolder = 'folderType' in row
       if (isFolder) {
@@ -80,13 +88,24 @@ export default defineComponent({
         return `/app/edit/${row.id}`
       }
     }
+    const isFolder = row => {
+      return 'folderType' in row
+    }
+    const onMore = data => {
+      console.log(data)
+    }
     return {
       asideData,
-      fitView,
       route,
       isDrawerOpen,
-      onTreeNodeClick,
-      getUrl
+      fitView,
+      getUrl,
+      isFolder,
+      onMore,
+      ICON_ADD,
+      ICON_MORE,
+      ICON_FOLDER,
+      ICON_FILE
     }
   }
 })
