@@ -20,7 +20,7 @@
               <span>{{ scope.data.name }}</span>
             </router-link>
           </div>
-          <div class="tool-item" @click="onMore(scope.data)">
+          <div class="tool-item">
             <el-popover
               placement="bottom"
               trigger="click"
@@ -28,10 +28,16 @@
                 <template #reference>
                   <img :src="ICON_MORE" alt="" />
                 </template>
-                <ul>
-                  <li>创建时间</li>
-                  <li>最近编辑时间</li>
-                </ul>
+                <template v-if="isFolder(scope.data)">
+                  <div class="pop-item" @click="addNew(scope.data, true)">创建文件夹</div>
+                  <div class="pop-item" @click="addNew(scope.data)">创建文件</div>
+                  <div class="pop-item" @click="renameData(scope.data)">重命名</div>
+                  <div class="pop-item" @click="removeData(scope.data)">删除</div>
+                </template>
+                <template v-else>
+                  <div class="pop-item" @click="renameData(scope.data)">重命名</div>
+                  <div class="pop-item" @click="removeData(scope.data)">删除</div>
+                </template>
             </el-popover>
           </div>
         </template>
@@ -51,6 +57,24 @@
     </sider>
     <router-view :key="route.fullPath"></router-view>
   </div>
+  <el-dialog v-model="showDeleteDialog" title="删除文档">
+    <h2>确认删除此文档吗？</h2>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="showDeleteDialog = false">取消</el-button>
+        <el-button type="primary" @click="showDeleteDialog = false">确认</el-button>
+      </span>
+    </template>
+  </el-dialog>
+  <el-dialog v-model="showRenameDialog" title="重命名">
+    <el-input v-model="newName" placeholder="输入新的名字" />
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="showRenameDialog = false">取消</el-button>
+        <el-button type="primary" @click="showRenameDialog = false">确认</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -74,6 +98,9 @@ export default defineComponent({
     const route = useRoute()
     const asideData = computed(() => store.getters.getAllDocuments(null))
     const isDrawerOpen = ref(true)
+    const showDeleteDialog = ref(false)
+    const showRenameDialog = ref(false)
+    const newName = ref('')
     onMounted(() => {
       store.dispatch('fetchAllDocuments')
     })
@@ -91,17 +118,38 @@ export default defineComponent({
     const isFolder = row => {
       return 'folderType' in row
     }
-    const onMore = data => {
+    const addNew = (data, addFolder = false) => {
+      const newData = {
+        name: `${addFolder ? '新文件夹' : '无标题'}`,
+        folderId: data.id,
+        userId: store.getters.getUser._id
+      }
+      if (addFolder) {
+        Object.assign(newData, { ...newData, folderType: 0 })
+      }
+      store.dispatch(`${addFolder ? 'postSetFolder' : 'postSetDoc'}`, newData)
+    }
+    const renameData = data => {
+      newName.value = ''
+      showRenameDialog.value = true
+    }
+    const removeData = data => {
+      showDeleteDialog.value = true
       console.log(data)
     }
     return {
       asideData,
       route,
       isDrawerOpen,
+      newName,
+      showDeleteDialog,
+      showRenameDialog,
       fitView,
       getUrl,
       isFolder,
-      onMore,
+      addNew,
+      renameData,
+      removeData,
       ICON_ADD,
       ICON_MORE,
       ICON_FOLDER,

@@ -1,14 +1,14 @@
 import axios from 'axios'
-import { useRouter } from 'vue-router'
 import { ErrorTip } from './utils'
 import store from '../store'
-const router = useRouter()
+import router from '@/router/index'
 
 /**
  * 跳转登录页
  * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
  */
 const toLogin = () => {
+  console.log(router)
   router.replace({
     path: '/login',
     query: {

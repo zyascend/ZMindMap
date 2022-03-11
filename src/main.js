@@ -6,7 +6,7 @@ import {
   ElContainer, ElHeader, ElMain, ElAside, ElTooltip,
   ElForm, ElFormItem, ElRow, ElCol, ElButton, ElInput,
   ElMessage, ElTree, ElIcon, ElTable, ElTableColumn,
-  ElPopover
+  ElPopover, ElDialog
 } from 'element-plus'
 import './assets/css/reset.css'
 import 'element-plus/lib/theme-chalk/index.css'
@@ -18,6 +18,7 @@ app.component(ElHeader.name, ElHeader)
 app.component(ElMain.name, ElMain)
 app.component(ElAside.name, ElAside)
 app.component(ElTooltip.name, ElTooltip)
+app.component(ElDialog.name, ElDialog)
 
 app.component(ElForm.name, ElForm)
 app.component(ElFormItem.name, ElFormItem)
