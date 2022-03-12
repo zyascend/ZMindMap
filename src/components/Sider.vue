@@ -56,13 +56,14 @@ export default defineComponent({
 <style lang="scss">
 @import '@/assets/css/mixin';
 .sidebar {
-  /* @include wh100; */
+  height: 100%;
   @include vertFlex;
   position: relative;
   background-color: #f4f4f5;
   border-right: 1px #dedee1 solid;
   box-sizing: border-box;
   transition: 0.3s ease all;
+  min-width: 325px;
   .toggle-wrapper {
     position: absolute;
     width: 6px;
