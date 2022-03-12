@@ -19,18 +19,32 @@
         <div class="show" @click="onToggleStyle">{{ showTable ? '表格展示' : 'grid展示' }}</div>
       </div>
     </div>
-    <el-table v-if="showTable" :data="docTableData" style="width: 100%" @row-click="onRowClick">
-      <el-table-column prop="name" label="文件名" width="300">
+    <el-table
+      v-if="showTable"
+      :data="docTableData"
+      style="width: 100%"
+      row-class-name="table-row"
+      @row-click="onRowClick">
+      <el-table-column label="文件名" min-width="40%">
         <template #default="scope">
           <div class="row">
-            <img :src="isFolder(scope.row) ? ICON_FOLDER : ICON_FILE" alt="" class="icon">
+            <SvgIcon class="icon" :icon="isFolder(scope.row)?'folder':'file-small'" />
             <p class="">{{ scope.row.name }}</p>
           </div>
-      </template>
+        </template>
       </el-table-column>
-      <el-table-column prop="itemCount" label="" width="180" />
-      <el-table-column prop="formatedUpdateTime" label="最近编辑" width="200" />
-      <el-table-column prop="formatedCreateTime" label="创建时间" width="300" />
+      <el-table-column prop="itemCount" label="" min-width="20%"/>
+      <el-table-column prop="formatedUpdateTime" label="最近编辑" min-width="20%"/>
+      <el-table-column label="创建时间" min-width="20%">
+        <template #default="scope">
+          <div class="end-col">
+            <p class="">{{ scope.row.formatedCreateTime }}</p>
+            <div class="more">
+              <SvgIcon icon="more" />
+            </div>
+          </div>
+        </template>
+      </el-table-column>
     </el-table>
     <div class="grid" v-else>
       <div class="grid-item" v-for="row in docTableData" :key="row.id" @click="onRowClick(row)">
@@ -48,14 +62,18 @@ import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 // import { useStore } from 'vuex'
 import BreadCrumb from '@/components/BreadCrumb.vue'
-import ICON_FOLDER_LARGE from '@/assets/pic/folder-large.svg'
-import ICON_FOLDER from '@/assets/pic/folder.svg'
-import ICON_FILE_LARGE from '@/assets/pic/file-large.svg'
-import ICON_FILE from '@/assets/pic/file-small.svg'
+import SvgIcon from '@/components/SvgIcon.vue'
+
+import '@/assets/pic/file-small.svg'
+import '@/assets/pic/folder-large.svg'
+import '@/assets/pic/file-large.svg'
+import '@/assets/pic/folder.svg'
+import '@/assets/pic/more.svg'
 
 export default defineComponent({
   components: {
-    BreadCrumb
+    BreadCrumb,
+    SvgIcon
   },
   setup () {
     const store = useStore()
@@ -71,6 +89,7 @@ export default defineComponent({
       // store.dispatch('changeNavigation', route.params.id)
     })
     const isFolder = row => {
+      console.log(row)
       return 'folderType' in row
     }
     const onRowClick = (row, column, event) => {
@@ -96,26 +115,24 @@ export default defineComponent({
       onRowClick,
       onToggleStyle,
       onSortTable,
-      isFolder,
-      ICON_FOLDER_LARGE,
-      ICON_FILE_LARGE,
-      ICON_FOLDER,
-      ICON_FILE
+      isFolder
     }
   }
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/assets/css/mixin';
 .container {
   @include wh100;
   transition: 0.3s ease all;
+  padding: 0 82px;
+  box-sizing: border-box;
   .header {
     position: relative;
     @include horiFlex;
     justify-content: space-between;
-    padding: 10px;
+    padding: 31px 16px 9px 8px;
     .btn-wrapper {
       position: relative;
       @include horiFlex;
@@ -157,6 +174,47 @@ export default defineComponent({
   .row {
     @include horiFlex;
     position: relative;
+    height: 64px;
+    align-items: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    font-size: 16px;
+    .icon {
+      height: 40px;
+      width: 40px;
+      margin-right: 15px;
+    }
+  }
+  .end-col {
+    @include horiFlex;
+    position: relative;
+    /* height: 64px;
+    font-size: 16px; */
+    align-items: center;
+    justify-content: space-between;
+    .more {
+      @include centerFlex;
+      padding: 0px 4px;
+      margin-right: 4px;
+      border-radius: 4px;
+      color: #1d1d1f;
+      cursor: pointer;
+      &:hover {
+        background: #0000000d;
+      }
+      &>svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+  .el-table {
+    &::before {
+      height: 0;
+    }
+    td {
+      border-bottom: none;
+    }
   }
 }
 </style>

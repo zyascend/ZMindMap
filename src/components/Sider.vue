@@ -56,7 +56,7 @@ export default defineComponent({
 <style lang="scss">
 @import '@/assets/css/mixin';
 .sidebar {
-  height: 100%;
+  @include wh100;
   @include vertFlex;
   position: relative;
   background-color: #f4f4f5;

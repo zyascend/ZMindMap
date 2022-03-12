@@ -52,3 +52,7 @@ html {
    height: 100%;
    overflow: hidden;
 }
+a, button {
+   cursor: pointer;
+   text-decoration: none;
+}

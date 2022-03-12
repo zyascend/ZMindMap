@@ -19,51 +19,51 @@
         </div>
       </div>
       <div class="divider" />
+      <a class="folders" href="/app/folder">
+        <SvgIcon class="icon" icon="home" />
+        <span>我的文档</span>
+      </a>
       <el-tree
         v-if="asideData.length"
         :expand-on-click-node="false"
         :data="asideData"
       >
         <template #default="scope">
-          <div class="tool-item">
-            <img :src="isFolder(scope.data) ? ICON_FOLDER : ICON_FILE" alt="" />
-            <router-link :to="getUrl(scope.data)">
+          <div class="node">
+            <router-link :to="getUrl(scope.data)" class="link">
+              <SvgIcon class="icon" :icon="isFolder(scope.data)?'folder':'file-small'" />
               <span>{{ scope.data.name }}</span>
             </router-link>
-          </div>
-          <div class="tool-item">
             <el-popover
               placement="bottom"
               trigger="click"
               :show-arrow="false">
-                <template #reference>
-                  <img :src="ICON_MORE" alt="" />
-                </template>
-                <template v-if="isFolder(scope.data)">
-                  <div class="pop-item" @click="addNew(scope.data, true)">创建文件夹</div>
-                  <div class="pop-item" @click="addNew(scope.data)">创建文件</div>
-                  <div class="pop-item" @click="renameData(scope.data)">重命名</div>
-                  <div class="pop-item" @click="removeData(scope.data)">删除</div>
-                </template>
-                <template v-else>
-                  <div class="pop-item" @click="renameData(scope.data)">重命名</div>
-                  <div class="pop-item" @click="removeData(scope.data)">删除</div>
-                </template>
+              <template #reference>
+                <div class="more">
+                  <SvgIcon icon="more" />
+                </div>
+              </template>
+              <template v-if="isFolder(scope.data)">
+                <div class="pop-item" @click="addNew(scope.data, true)">创建文件夹</div>
+                <div class="pop-item" @click="addNew(scope.data)">创建文件</div>
+                <div class="pop-item" @click="renameData(scope.data)">重命名</div>
+                <div class="pop-item" @click="removeData(scope.data)">删除</div>
+              </template>
+              <template v-else>
+                <div class="pop-item" @click="renameData(scope.data)">重命名</div>
+                <div class="pop-item" @click="removeData(scope.data)">删除</div>
+              </template>
             </el-popover>
           </div>
         </template>
       </el-tree>
       <a class="folders" href="/app/folder/quick">
-        <img src="../assets/pic/theme.svg" alt="" />
+        <SvgIcon class="icon" icon="quick" />
         <span>快速访问</span>
       </a>
-      <a class="folders" href="/app/folder/recent">
-        <img src="../assets/pic/theme.svg" alt="" />
+      <a class="folders" href="/app/folder/latest">
+        <SvgIcon class="icon" icon="latest" />
         <span>最近编辑</span>
-      </a>
-      <a class="folders" href="/app/folder/clb">
-        <img src="../assets/pic/theme.svg" alt="" />
-        <span>回收站</span>
       </a>
     </sider>
     <router-view :key="route.fullPath"></router-view>
@@ -92,17 +92,22 @@
 import { defineComponent, onMounted, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { useZoomMap } from '../hooks'
-import Sider from '@/components/Sider.vue'
 import { useRoute } from 'vue-router'
-import ICON_ADD from '@/assets/pic/add-file.svg'
-import ICON_MORE from '@/assets/pic/more.svg'
-import ICON_FOLDER from '@/assets/pic/folder.svg'
-import ICON_FILE from '@/assets/pic/file-small.svg'
+import Sider from '@/components/Sider.vue'
+import SvgIcon from '@/components/SvgIcon.vue'
+import '@/assets/pic/add-file.svg'
+import '@/assets/pic/more.svg'
+import '@/assets/pic/home.svg'
+import '@/assets/pic/quick.svg'
+import '@/assets/pic/latest.svg'
+import '@/assets/pic/folder.svg'
+import '@/assets/pic/file-small.svg'
 
 export default defineComponent({
   name: 'Home',
   components: {
-    Sider
+    Sider,
+    SvgIcon
   },
   setup () {
     const store = useStore()
@@ -181,11 +186,7 @@ export default defineComponent({
       renameData,
       removeData,
       submitRemove,
-      submitRename,
-      ICON_ADD,
-      ICON_MORE,
-      ICON_FOLDER,
-      ICON_FILE
+      submitRename
     }
   }
 })
@@ -281,6 +282,85 @@ export default defineComponent({
     margin-bottom: 2px;
     height: 1px;
     background: #dedee1;
+  }
+  .folders {
+    position: relative;
+    height: 32px;
+    @include horiFlex;
+    align-items: center;
+    padding: 2px 8px;
+    margin: 2px 8px;
+    border-radius: 6px;
+    color: #75757d;
+    font-size: 14px;
+    transition: background 0.1s ease-in-out 0s, color 0.1s ease-in-out 0s;
+    user-select: none;
+    white-space: nowrap;
+    &:hover {
+      background-color: #deddf7;
+      color: $color-base;
+      .icon {
+        fill: $color-base;
+      }
+    }
+    .icon {
+      width: 20px;
+      height: 20px;
+      margin-right: 8px;
+      fill: #75757d;
+    }
+  }
+  .el-tree {
+    background-color: #F5F7FA;
+    .el-tree-node__content {
+      height: auto;
+      background-color: #F5F7FA;
+      .el-tree-node__expand-icon {
+        margin-left: 10px;
+        /* margin-right: 4px; */
+      }
+      &:hover {
+        background-color: #e9e9eb;
+        .more {
+          visibility: visible;
+        }
+      }
+  }
+  }
+  .node {
+    @include horiFlex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: auto !important;
+    padding: 2px 8px;
+    position: relative;
+    .link {
+      color: #75757d;
+      height: 32px;
+      @include horiFlex;
+      align-items: center;
+      .icon {
+        width: 20px !important;
+        width: 20px;
+        margin-right: 10px;
+      }
+    }
+    .more {
+      padding: 0px 4px;
+      margin-right: 4px;
+      border-radius: 4px;
+      color: #1d1d1f;
+      cursor: pointer;
+      visibility: hidden;
+      &:hover {
+        background: #0000000d;
+      }
+      &>svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
   }
 }
 </style>
