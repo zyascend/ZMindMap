@@ -62,7 +62,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showDeleteDialog = false">取消</el-button>
-        <el-button type="primary" @click="showDeleteDialog = false">确认</el-button>
+        <el-button type="primary" @click="submitRemove">确认</el-button>
       </span>
     </template>
   </el-dialog>
@@ -71,7 +71,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showRenameDialog = false">取消</el-button>
-        <el-button type="primary" @click="showRenameDialog = false">确认</el-button>
+        <el-button type="primary" @click="submitRename">确认</el-button>
       </span>
     </template>
   </el-dialog>
@@ -100,6 +100,7 @@ export default defineComponent({
     const isDrawerOpen = ref(true)
     const showDeleteDialog = ref(false)
     const showRenameDialog = ref(false)
+    const tempData = ref({})
     const newName = ref('')
     onMounted(() => {
       store.dispatch('fetchAllDocuments')
@@ -131,11 +132,27 @@ export default defineComponent({
     }
     const renameData = data => {
       newName.value = ''
+      tempData.value = data
       showRenameDialog.value = true
     }
+    const submitRename = () => {
+      showRenameDialog.value = false
+      const renameFolder = isFolder(tempData.value)
+      store.dispatch(`${renameFolder ? 'postSetFolder' : 'postSetDoc'}`, {
+        ...tempData.value,
+        name: newName.value
+      })
+    }
     const removeData = data => {
+      tempData.value = data
       showDeleteDialog.value = true
-      console.log(data)
+    }
+    const submitRemove = () => {
+      showDeleteDialog.value = false
+      store.dispatch('postRemove', {
+        id: tempData.value.id,
+        type: isFolder(tempData.value) ? 0 : 1
+      })
     }
     return {
       asideData,
@@ -150,6 +167,8 @@ export default defineComponent({
       addNew,
       renameData,
       removeData,
+      submitRemove,
+      submitRename,
       ICON_ADD,
       ICON_MORE,
       ICON_FOLDER,

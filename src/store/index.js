@@ -97,6 +97,10 @@ const store = createStore({
       const url = `${API.setDoc}/${getters.getUser._id}`
       return asyncAndCommit(url, 'fetchAllDocuments', commit, { method: 'post', data })
     },
+    postRemove ({ commit, getters }, data) {
+      const url = `${API.remove}/${getters.getUser._id}`
+      return asyncAndCommit(url, 'fetchAllDocuments', commit, { method: 'post', data })
+    },
     fetchUser ({ commit }) {
       return asyncAndCommit(API.getCurrentUser, 'fetchUser', commit)
     },

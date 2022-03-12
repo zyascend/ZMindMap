@@ -7,5 +7,6 @@ export default {
   getDocContent: 'docs/getDocContent',
   setFolder: 'docs/setFolder',
   setDoc: 'docs/setDoc',
-  setDocContent: 'docs/setDocContent'
+  setDocContent: 'docs/setDocContent',
+  remove: 'docs/remove'
 }
