@@ -35,38 +35,7 @@
               <SvgIcon class="icon" :icon="isFolder(scope.data)?'folder':'file-small'" />
               <span>{{ scope.data.name }}</span>
             </router-link>
-            <el-popover
-              placement="bottom"
-              trigger="click"
-              :show-arrow="false">
-              <template #reference>
-                <div class="more">
-                  <SvgIcon icon="more" />
-                </div>
-              </template>
-              <template v-if="isFolder(scope.data)">
-              </template>
-              <div class="pop-item" v-if="isFolder(scope.data)" @click="addNew(scope.data, true)">
-                <SvgIcon icon="folder" />
-                <span>新建文件夹</span>
-              </div>
-              <div class="pop-item" v-if="isFolder(scope.data)" @click="addNew(scope.data)">
-                <SvgIcon icon="file-small" />
-                <span>新建文件</span>
-              </div>
-              <div class="pop-item" @click="renameData(scope.data)">
-                <SvgIcon icon="rename" />
-                <span>重命名</span>
-              </div>
-              <div class="pop-item" v-if="isFolder(scope.data)" @click="addQuick(scope.data)">
-                <SvgIcon icon="add-quick" />
-                <span>添加到快捷访问</span>
-              </div>
-              <div class="pop-item" @click="removeData(scope.data)">
-                <SvgIcon icon="delete" />
-                <span>删除</span>
-              </div>
-            </el-popover>
+            <operate-popover :data="scope.data"/>
           </div>
         </template>
       </el-tree>
@@ -84,24 +53,6 @@
       </template>
     </sider>
   </div>
-  <el-dialog v-model="showDeleteDialog" title="删除文档">
-    <h2>确认删除此文档吗？</h2>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="showDeleteDialog = false">取消</el-button>
-        <el-button type="primary" @click="submitRemove"  native-type="submit">确认</el-button>
-      </span>
-    </template>
-  </el-dialog>
-  <el-dialog v-model="showRenameDialog" title="重命名">
-    <el-input v-model="newName" placeholder="输入新的名字" @keyup.enter="submitRename"/>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="showRenameDialog = false">取消</el-button>
-        <el-button type="primary" @click="submitRename">确认</el-button>
-      </span>
-    </template>
-  </el-dialog>
 </template>
 
 <script>
@@ -111,6 +62,7 @@ import { useZoomMap } from '../hooks'
 import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+import OperatePopover from '@/components/OperatePopover.vue'
 import '@/assets/pic/add-file.svg'
 import '@/assets/pic/more.svg'
 import '@/assets/pic/home.svg'
@@ -126,7 +78,8 @@ export default defineComponent({
   name: 'Home',
   components: {
     Sider,
-    SvgIcon
+    SvgIcon,
+    OperatePopover
   },
   setup () {
     const store = useStore()
