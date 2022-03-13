@@ -3,21 +3,30 @@
     <slot />
     <div class="toggle-wrapper">
       <div class="collapse" @click="collapse">
-        <img :src="ICON_LEFT_ARROW" alt="">
+        <SvgIcon class="icon" icon="arrow-left" />
       </div>
     </div>
   </div>
-  <div class="open" @click="open" v-show="isSiderCollapse">
-    <img :src="ICON_HAMBERGER" alt="">
+  <el-tooltip
+    effect="light"
+    content="打开侧边栏"
+    placement="right">
+      <div class="open" @click="open" v-show="isSiderCollapse">
+      <SvgIcon class="icon" icon="hamberger" />
   </div>
+  </el-tooltip>
 </template>
 
 <script>
 import { defineComponent, reactive, ref } from 'vue'
-import ICON_LEFT_ARROW from '@/assets/pic/arrow-left.svg'
-import ICON_HAMBERGER from '@/assets/pic/hamberger.svg'
+import SvgIcon from '@/components/SvgIcon.vue'
+import '@/assets/pic/arrow-left.svg'
+import '@/assets/pic/hamberger.svg'
 export default defineComponent({
   name: 'Sider',
+  components: {
+    SvgIcon
+  },
   props: {
     width: {
       type: Object,
@@ -44,16 +53,13 @@ export default defineComponent({
       isSiderCollapse,
       siderStyle,
       collapse,
-      open,
-      ICON_LEFT_ARROW,
-      ICON_HAMBERGER
+      open
     }
   }
 })
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/assets/css/mixin';
 .sidebar {
   @include wh100;
@@ -86,42 +92,42 @@ export default defineComponent({
       opacity: 1;
     }
     .collapse {
+      @include centerFlex;
       position: absolute;
       top: 26px;
       left: 50%;
-      width: 20px;
-      height: 20px;
-      padding: 0px;
+      width: 24px;
+      height: 24px;
       z-index: 100;
+      box-sizing: border-box;
       border: 1px solid #5856d5;
       background-color: #ffffff;
-      /* background: url("~@/assets/pic/arrow-left.svg") no-repeat; 必须是 ~@; */
       border-radius: 100%;
       cursor: pointer;
       transform: translateX(-50%) translateY(-50%) rotateY(0deg);
-      transition: transform 0.2s ease 0s, color 0.2s ease 0s, background-color 0.2s ease 0s;
-      &::before {
-        position: absolute;
-        top: 0px;
-        left: 0px;
-        width: 100%;
-        height: 100%;
-        background-color: transparent;
-        border-radius: 4px;
-        content: "";
+      transition: all .2s ease-in-out;
+      .icon {
+        @include wh100;
+        fill: $color-base;
       }
     }
   }
 }
 .open {
   position: fixed;
+  @include centerFlex;
+  box-sizing: border-box;
   top: 20px;
   left: 20px;
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
+  padding: 2px;
   z-index: 200;
-  background-color: #ffffff;
   cursor: pointer;
-  transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
+  transition: all 0.2s ease 0s;
+  .icon {
+    width: 20px;
+    height: 20px;
+  }
 }
 </style>
