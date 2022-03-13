@@ -7,13 +7,16 @@
       </div>
     </div>
   </div>
+  <div class="content" :style="contentStyle">
+    <slot name="sideContent" />
+  </div>
   <el-tooltip
     effect="light"
     content="打开侧边栏"
     placement="right">
       <div class="open" @click="open" v-show="isSiderCollapse">
-      <SvgIcon class="icon" icon="hamberger" />
-  </div>
+        <SvgIcon class="icon" icon="hamberger" />
+      </div>
   </el-tooltip>
 </template>
 
@@ -36,22 +39,32 @@ export default defineComponent({
   setup (props) {
     const siderStyle = reactive({
       width: `${props.width}px`,
-      transform: 'translateX(0)'
+      transform: 'translateX(0)',
+      zIndex: 0
+    })
+    const contentStyle = reactive({
+      marginLeft: `${props.width}px`,
+      width: `calc(100% - ${props.width}px)`
     })
     const isSiderCollapse = ref(false)
     const collapse = () => {
       isSiderCollapse.value = true
-      siderStyle.width = 0
       siderStyle.transform = `translateX(-${props.width}px)`
+      siderStyle.zIndex = '-1'
+      contentStyle.marginLeft = '0'
+      contentStyle.width = '100%'
     }
     const open = () => {
       isSiderCollapse.value = false
-      siderStyle.width = `${props.width}px`
+      siderStyle.zIndex = '0'
       siderStyle.transform = 'translateX(0)'
+      contentStyle.marginLeft = `${props.width}px`
+      contentStyle.width = `calc(100% - ${props.width}px)`
     }
     return {
       isSiderCollapse,
       siderStyle,
+      contentStyle,
       collapse,
       open
     }
@@ -64,7 +77,7 @@ export default defineComponent({
 .sidebar {
   @include wh100;
   @include vertFlex;
-  position: relative;
+  position: fixed;
   background-color: #f4f4f5;
   border-right: 1px #dedee1 solid;
   box-sizing: border-box;
@@ -112,6 +125,11 @@ export default defineComponent({
       }
     }
   }
+}
+.content {
+  @include wh100;
+  position: relative;
+  transition: all .2s ease-in-out;
 }
 .open {
   position: fixed;

@@ -1,7 +1,8 @@
 <template>
   <div class="main">
     <sider :width="325">
-      <div class="profile">
+      <template #default>
+        <div class="profile">
         <div class="avatar">
           <img class="avatar" src="https://api2.mubu.com/v3/photo/7aadfeca-72df-48b5-ad19-262432df8fa5.jpg" alt="">
         </div>
@@ -65,8 +66,11 @@
         <SvgIcon class="icon" icon="latest" />
         <span>最近编辑</span>
       </a>
+      </template>
+      <template #sideContent>
+        <router-view :key="route.fullPath"></router-view>
+      </template>
     </sider>
-    <router-view :key="route.fullPath"></router-view>
   </div>
   <el-dialog v-model="showDeleteDialog" title="删除文档">
     <h2>确认删除此文档吗？</h2>
