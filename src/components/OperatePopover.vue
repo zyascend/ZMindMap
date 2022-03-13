@@ -9,8 +9,6 @@
         <SvgIcon icon="more" />
       </div>
     </template>
-    <template v-if="isFolder(data)">
-    </template>
     <div class="pop-item" v-if="isFolder(data)" @click="addNew(data, true)">
       <SvgIcon icon="folder" />
       <span>新建文件夹</span>
@@ -23,7 +21,7 @@
       <SvgIcon icon="rename" />
       <span>重命名</span>
     </div>
-    <div class="pop-item" v-if="isFolder(data)" @click="addQuick(data)">
+    <div class="pop-item" @click="addQuick(data)">
       <SvgIcon icon="add-quick" />
       <span>添加到快捷访问</span>
     </div>
@@ -43,7 +41,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showDeleteDialog = false">取消</el-button>
-        <el-button type="primary" @click="submitRemove"  native-type="submit">确认</el-button>
+        <el-button type="danger" @click="submitRemove"  native-type="submit">确认</el-button>
       </span>
     </template>
   </el-dialog>
@@ -57,7 +55,7 @@
     <el-input v-model="newName" placeholder="输入新的名字" @keyup.enter="submitRename"/>
     <template #footer>
       <span class="dialog-footer">
-        <el-button color="#2c2c2f" plain @click="showRenameDialog = false">取消</el-button>
+        <el-button @click="showRenameDialog = false">取消</el-button>
         <el-button type="primary" @click="submitRename">确认</el-button>
       </span>
     </template>

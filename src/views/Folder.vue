@@ -9,7 +9,7 @@
       </div>
     </div>
     <el-table
-      v-if="showTable"
+      v-if="hasData && showTable"
       :data="docTableData"
       style="width: 100%"
       row-class-name="table-row"
@@ -28,18 +28,23 @@
         <template #default="scope">
           <div class="end-col">
             <p class="">{{ scope.row.formatedCreateTime }}</p>
-            <div class="more">
-              <SvgIcon icon="more" />
-            </div>
+            <operate-popover :data="scope.row"/>
           </div>
         </template>
       </el-table-column>
     </el-table>
-    <div class="grid" v-else>
+    <div class="grid" v-if="hasData && !showTable">
       <div class="grid-item" v-for="row in docTableData" :key="row.id" @click="onRowClick(row)">
         <SvgIcon class="icon" :icon="isFolder(row)?'folder-large':'file-large'" />
         <span>{{ row.name }}</span>
+        <div class="popover">
+          <operate-popover :data="row"/>
+        </div>
       </div>
+    </div>
+    <div class="empty" v-if="!hasData">
+      <img :src="ICON_EMPTY" alt="">
+      <p class="empty-info">暂无文件，点击左上角"+"新建文件</p>
     </div>
   </div>
 </template>
@@ -49,6 +54,7 @@ import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+import OperatePopover from '@/components/OperatePopover.vue'
 
 import '@/assets/pic/file-small.svg'
 import '@/assets/pic/folder-large.svg'
@@ -57,11 +63,13 @@ import '@/assets/pic/folder.svg'
 import '@/assets/pic/more.svg'
 import '@/assets/pic/table.svg'
 import '@/assets/pic/grid.svg'
+import ICON_EMPTY from '@/assets/pic/empty.png'
 
 export default defineComponent({
   components: {
     BreadCrumb,
-    SvgIcon
+    SvgIcon,
+    OperatePopover
   },
   setup () {
     const store = useStore()
@@ -70,6 +78,7 @@ export default defineComponent({
     const folderId = route.params?.id
     const navigationList = computed(() => store.getters.getNavigationLists(folderId))
     const docTableData = computed(() => store.getters.getAllDocuments(folderId))
+    const hasData = computed(() => docTableData.value?.length)
     const showTable = computed(() => store.getters.showTable)
     onMounted(() => {
       // store.dispatch('changeNavigation', route.params.id)
@@ -95,13 +104,15 @@ export default defineComponent({
       store.dispatch('toggleShowTable')
     }
     return {
+      hasData,
       showTable,
       navigationList,
       docTableData,
       onRowClick,
       onToggleStyle,
       onSortTable,
-      isFolder
+      isFolder,
+      ICON_EMPTY
     }
   }
 })
@@ -178,6 +189,11 @@ export default defineComponent({
         border: 1px solid #dedee1;
         background-color: #f4f4f5;
         box-shadow: rgb(17 34 51 / 15%) 0px 4px 8px;
+        .popover {
+          .more {
+            visibility: visible !important;
+          }
+        }
       }
       span {
         width: 123px;
@@ -198,6 +214,11 @@ export default defineComponent({
         width: 57px;
         height: 57px;
       }
+      .popover {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+      }
     }
   }
   .row {
@@ -217,24 +238,10 @@ export default defineComponent({
   .end-col {
     @include horiFlex;
     position: relative;
-    /* height: 64px;
-    font-size: 16px; */
     align-items: center;
     justify-content: space-between;
     .more {
-      @include centerFlex;
-      padding: 0px 4px;
-      margin-right: 4px;
-      border-radius: 4px;
-      color: #1d1d1f;
-      cursor: pointer;
-      &:hover {
-        background: #0000000d;
-      }
-      &>svg {
-        width: 20px;
-        height: 20px;
-      }
+      visibility: visible !important;
     }
   }
   .el-table {
@@ -244,6 +251,16 @@ export default defineComponent({
     td {
       border-bottom: none;
     }
+  }
+  .empty {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #92929c;
+    font-size: 14px;
+    line-height: 1.45;
+    transition: .2s all ease;
   }
 }
 </style>

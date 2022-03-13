@@ -39,7 +39,7 @@ export const dateFormatter = timestamp => {
   let month = date.getMonth() + 1
   let day = date.getDate()
   const hour = date.getHours()
-  const minutes = date.getMinutes()
+  let minutes = date.getMinutes()
   if (year === new Date().getFullYear()) {
     year = ''
   }
@@ -48,6 +48,9 @@ export const dateFormatter = timestamp => {
   }
   if (day < 10) {
     day = '0' + day
+  }
+  if (minutes < 10) {
+    minutes = '0' + minutes
   }
   return `${year ? `${year}年` : ''}${month}月${day}日 ${hour}:${minutes}`
 }

@@ -12,18 +12,34 @@
       </div>
       <div class="inputer">
         <div class="input-wrapper">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 14 14" type="search" color="#2C2C2F" class="Iconstyle__StyledIcon-sc-8g7jb-0 cFoaNV" cursor="pointer" fill="currentColor" overflow="visible" style="display: inline-block; width: 14px; height: 14px; flex-shrink: 0;"><path d="M6 1.5a4.5 4.5 0 100 9 4.5 4.5 0 000-9zm0 1a3.5 3.5 0 110 7 3.5 3.5 0 010-7z"></path><path d="M9 8.306l3.242 3.548a.499.499 0 11-.738.674L8.28 9H9v-.694z"></path></svg>
+          <SvgIcon class="icon" icon="search" />
           <input type="text" class="" placeholder="全局搜索 Ctrl+Shift+F " value="">
         </div>
         <div class="adder">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 14 14" type="add" cursor="pointer" fill="currentColor" overflow="visible" style="width: 14px; height: 14px;"><path fill-rule="evenodd" d="M7 2a.5.5 0 01.5.5v4h4a.5.5 0 010 1H7.499l.001 4a.5.5 0 01-1 0l-.001-4H2.5a.5.5 0 010-1h4v-4A.5.5 0 017 2z"></path></svg>
+          <el-popover
+            placement="bottom"
+            trigger="hover"
+            :show-arrow="false"
+          >
+            <template #reference>
+              <SvgIcon class="icon" icon="add-file" />
+            </template>
+            <div class="pop-item" @click="addNew(true)">
+              <SvgIcon icon="folder" />
+              <span>新建文件夹</span>
+            </div>
+            <div class="pop-item" @click="addNew(false)">
+              <SvgIcon icon="file-small" />
+              <span>新建文件</span>
+            </div>
+          </el-popover>
         </div>
       </div>
       <div class="divider" />
-      <a class="folders" href="/app/folder">
+      <router-link class="folders" to="/app/folder" active-class="folder-active">
         <SvgIcon class="icon" icon="home" />
         <span>我的文档</span>
-      </a>
+      </router-link>
       <el-tree
         v-if="asideData.length"
         :expand-on-click-node="false"
@@ -39,14 +55,14 @@
           </div>
         </template>
       </el-tree>
-      <a class="folders" href="/app/folder/quick">
+      <router-link class="folders" to="/app/folder/quick" active-class="folder-active">
         <SvgIcon class="icon" icon="quick" />
         <span>快速访问</span>
-      </a>
-      <a class="folders" href="/app/folder/latest">
+      </router-link>
+      <router-link class="folders" to="/app/folder/latest" active-class="folder-active">
         <SvgIcon class="icon" icon="latest" />
         <span>最近编辑</span>
-      </a>
+      </router-link>
       </template>
       <template #sideContent>
         <router-view :key="route.fullPath"></router-view>
@@ -63,16 +79,13 @@ import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import OperatePopover from '@/components/OperatePopover.vue'
-import '@/assets/pic/add-file.svg'
-import '@/assets/pic/more.svg'
 import '@/assets/pic/home.svg'
 import '@/assets/pic/quick.svg'
 import '@/assets/pic/latest.svg'
 import '@/assets/pic/folder.svg'
-import '@/assets/pic/delete.svg'
-import '@/assets/pic/add-quick.svg'
-import '@/assets/pic/rename.svg'
 import '@/assets/pic/file-small.svg'
+import '@/assets/pic/search.svg'
+import '@/assets/pic/add-file.svg'
 
 export default defineComponent({
   name: 'Home',
@@ -89,8 +102,6 @@ export default defineComponent({
     const showDeleteDialog = ref(false)
     const showRenameDialog = ref(false)
     const searchText = ref('')
-    const tempData = ref({})
-    const newName = ref('')
     onMounted(() => {
       store.dispatch('fetchAllDocuments')
     })
@@ -108,10 +119,10 @@ export default defineComponent({
     const isFolder = row => {
       return 'folderType' in row
     }
-    const addNew = (data, addFolder = false) => {
+    const addNew = addFolder => {
       const newData = {
         name: `${addFolder ? '新文件夹' : '无标题'}`,
-        folderId: data.id,
+        folderId: '0',
         userId: store.getters.getUser._id
       }
       if (addFolder) {
@@ -119,50 +130,17 @@ export default defineComponent({
       }
       store.dispatch(`${addFolder ? 'postSetFolder' : 'postSetDoc'}`, newData)
     }
-    const renameData = data => {
-      newName.value = data.name
-      tempData.value = data
-      showRenameDialog.value = true
-    }
-    const submitRename = () => {
-      showRenameDialog.value = false
-      const renameFolder = isFolder(tempData.value)
-      store.dispatch(`${renameFolder ? 'postSetFolder' : 'postSetDoc'}`, {
-        ...tempData.value,
-        name: newName.value
-      })
-    }
-    const removeData = data => {
-      tempData.value = data
-      showDeleteDialog.value = true
-    }
-    const submitRemove = () => {
-      showDeleteDialog.value = false
-      store.dispatch('postRemove', {
-        id: tempData.value.id,
-        type: isFolder(tempData.value) ? 0 : 1
-      })
-    }
-    const addQuick = data => {
-      console.log('[click]addQuick')
-    }
     return {
       asideData,
       route,
       isDrawerOpen,
-      newName,
       showDeleteDialog,
       showRenameDialog,
       searchText,
       fitView,
       getUrl,
       isFolder,
-      addNew,
-      renameData,
-      removeData,
-      submitRemove,
-      submitRename,
-      addQuick
+      addNew
     }
   }
 })
@@ -247,11 +225,16 @@ export default defineComponent({
       justify-content: center;
       background-color: #2c2c2f;
       border-radius: 16px;
+      cursor: pointer;
       &>svg {
-        width: 14px;
-        height: 14px;
-        fill: #f4f4f5;
+        width: 15px;
+        height: 15px;
+        fill: #F5F7FA;
       }
+    }
+    .icon {
+      width: 20px;
+      height: 20px;
     }
   }
   .divider {
@@ -265,13 +248,16 @@ export default defineComponent({
     @include horiFlex;
     align-items: center;
     padding: 2px 8px;
-    margin: 2px 8px;
+    margin: 5px 8px;
     border-radius: 6px;
     color: #75757d;
     font-size: 14px;
     transition: background 0.1s ease-in-out 0s, color 0.1s ease-in-out 0s;
     user-select: none;
     white-space: nowrap;
+    &:first-child {
+      margin: 5px 8px;
+    }
     &:hover {
       background-color: #deddf7;
       color: $color-base;
@@ -284,6 +270,13 @@ export default defineComponent({
       height: 20px;
       margin-right: 8px;
       fill: #75757d;
+    }
+  }
+  .folder-active {
+    background-color: #deddf7;
+    color: $color-base;
+    .icon {
+      fill: $color-base;
     }
   }
   .el-tree {
