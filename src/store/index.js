@@ -18,6 +18,7 @@ const asyncAndCommit = async (url, mutationName, commit,
 
 const store = createStore({
   state: {
+    // TODO 待改造 分模块 https://vuex.vuejs.org/zh/guide/modules.html
     refs: {
       mainSvg: undefined,
       mainG: undefined,
@@ -40,9 +41,14 @@ const store = createStore({
     user: {},
     allTreeDocs: [],
     originAllDocs: [],
-    navigationLists: []
+    navigationLists: [],
+
+    showTable: false
   },
   mutations: {
+    toggleShowTable (state) {
+      state.showTable = !state.showTable
+    },
     setRefs (state, refs) {
       state.refs = refs
       for (const key in refs) {
@@ -72,6 +78,9 @@ const store = createStore({
     }
   },
   actions: {
+    toggleShowTable ({ commit }) {
+      commit('toggleShowTable')
+    },
     login ({ commit }, payload) {
       const { isLogin, loginForm } = payload
       return asyncAndCommit(isLogin ? API.login : API.register, 'login', commit, { method: 'post', data: loginForm })
@@ -114,6 +123,7 @@ const store = createStore({
     }
   },
   getters: {
+    showTable: state => state.showTable,
     getTreedData: state => state.treedData,
     getOriginData: state => state.originData,
     getSelections: state => state.selections,

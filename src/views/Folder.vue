@@ -37,14 +37,14 @@
     </el-table>
     <div class="grid" v-else>
       <div class="grid-item" v-for="row in docTableData" :key="row.id" @click="onRowClick(row)">
-        <img :src="isFolder(row) ? ICON_FOLDER_LARGE : ICON_FILE_LARGE" alt="">
+        <SvgIcon class="icon" :icon="isFolder(row)?'folder-large':'file-large'" />
         <span>{{ row.name }}</span>
       </div>
     </div>
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, computed, reactive, toRefs } from 'vue'
+import { defineComponent, onMounted, computed } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter, useRoute } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'
@@ -70,9 +70,7 @@ export default defineComponent({
     const folderId = route.params?.id
     const navigationList = computed(() => store.getters.getNavigationLists(folderId))
     const docTableData = computed(() => store.getters.getAllDocuments(folderId))
-    const pageParams = reactive({
-      showTable: true
-    })
+    const showTable = computed(() => store.getters.showTable)
     onMounted(() => {
       // store.dispatch('changeNavigation', route.params.id)
     })
@@ -94,10 +92,10 @@ export default defineComponent({
       console.log('')
     }
     const onToggleStyle = () => {
-      pageParams.showTable = !pageParams.showTable
+      store.dispatch('toggleShowTable')
     }
     return {
-      ...toRefs(pageParams),
+      showTable,
       navigationList,
       docTableData,
       onRowClick,
@@ -157,27 +155,49 @@ export default defineComponent({
     }
   }
   .grid {
-    @include wh100;
-    @include horiFlex;
-    flex-wrap: wrap;
-    padding: 20px;
+    width: 100%;
+    height: auto;
+    display: grid;
+    /* grid-template-columns: repeat(8,1fr); */
+    grid-template-columns: repeat(auto-fill, 146px);
+    row-gap: 30px;
+    column-gap: 30px;
+    padding: 25px 5px;
+    box-sizing: border-box;
     .grid-item {
       position: relative;
       @include vertFlex;
       width: 146px;
       height: 142px;
       border-radius: 8px;
+      align-items: center;
       cursor: pointer;
       transition: box-shadow 100ms linear 0s;
       box-sizing: border-box;
       &:hover {
-        border: 1px solid rgb(222, 222, 225);
-        background-color: rgb(244, 244, 245);
+        border: 1px solid #dedee1;
+        background-color: #f4f4f5;
         box-shadow: rgb(17 34 51 / 15%) 0px 4px 8px;
       }
-    }
-    .grid-item + .grid-item {
-      margin-left: 25px;
+      span {
+        width: 123px;
+        height: 40px;
+        color: #2c2c2f;
+        font-size: 14px;
+        line-height: 20px;
+        text-align: center;
+        overflow: hidden;
+        box-orient: vertical;
+        line-clamp: 2;
+        text-overflow: ellipsis;
+        word-break: break-all;
+      }
+      .icon {
+        margin: 27px 0px 12px;
+        transform: translateZ(0px) scale(1, 1);
+        width: 57px;
+        height: 57px;
+      }
     }
   }
   .row {
