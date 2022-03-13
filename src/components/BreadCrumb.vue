@@ -1,20 +1,24 @@
 <template>
   <div class="bread-wrapper">
-    <template v-for="(item, index) in list" :key="item.id">
-      <router-link :to="`/app/folder/${ item.id }`">
+    <template v-for="item in list" :key="item.id">
+      <router-link :to="`/app/folder/${ item.id }`" active-class="link-active" class="link">
         <span>{{ item.name }}</span>
       </router-link>
-      <span v-if="showSeparator(index)">/</span>
+      <SvgIcon class="icon" icon="arrow-right" />
     </template>
   </div>
 </template>
 
 <script>
 import { defineComponent, computed } from 'vue'
-// import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
+import SvgIcon from '@/components/SvgIcon.vue'
+import '@/assets/pic/arrow-right.svg'
 
 export default defineComponent({
   name: 'BreadCrumb',
+  components: {
+    SvgIcon
+  },
   props: {
     list: {
       type: Array,
@@ -30,52 +34,36 @@ export default defineComponent({
 })
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 @import '../assets/css/mixin';
-.map-container {
-  @include wh100;
-  .main-svg{
-    @include wh100;
-    background-color: #eeeef3;
-    text {
-      fill: #4B4B4B;
-      cursor: default;
-    }
-    rect {
-      stroke: blue;
-      stroke-width: 2px;
-      fill: transparent;
-      opacity: 0;
-    }
-    image {
-      opacity: 0;
-    }
-    .g-hover {
-      rect {
-        opacity: 0.5;
-      }
-    }
-    .g-selected {
-      rect, image {
-        opacity: 1;
-      }
-    }
-    .g-editting {
-      rect {
-        opacity: 1;
-      }
-      image,text {
-        opacity: 0;
-      }
-    }
-    .foreignDiv {
-      display: inline-block;
-      outline: none;
-      width: max-content;
-      min-width: 22px;
-      padding: 1px;
-      white-space: pre;
+.bread-wrapper {
+  width: 100%;
+  @include horiFlex;
+  align-items: center;
+  .link {
+    position: relative;
+    overflow: hidden;
+    max-width: 220px;
+    box-sizing: border-box;
+    padding: 0px 4px;
+    border-radius: 4px;
+    color: #92929c;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 22px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .link-active {
+    color: #1d1d1f;
+  }
+  .icon {
+    width: 14px;
+    height: 14px;
+    margin: 0px 6px;
+    fill: #92929c;
+    &:last-child {
+      display: none;
     }
   }
 }

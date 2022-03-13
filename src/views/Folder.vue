@@ -3,20 +3,9 @@
     <div class="header">
       <bread-crumb :list="navigationList" />
       <div class="btn-wrapper">
-        <el-popover
-          placement="bottom"
-          trigger="click"
-          :show-arrow="false"
-        >
-          <template #reference>
-            <div class="sort" @click="onSortTable">自定义排序</div>
-          </template>
-          <ul>
-            <li>创建时间</li>
-            <li>最近编辑时间</li>
-          </ul>
-        </el-popover>
-        <div class="show" @click="onToggleStyle">{{ showTable ? '表格展示' : 'grid展示' }}</div>
+        <button class="btn-show" @click="onToggleStyle">
+          <SvgIcon class="icon" :icon="showTable ? 'table':'grid'" />
+        </button>
       </div>
     </div>
     <el-table
@@ -57,10 +46,7 @@
 <script>
 import { defineComponent, onMounted, computed, reactive, toRefs } from 'vue'
 import { useStore } from 'vuex'
-// import tables from '@/mock/tables'
-// import { ref, defineComponent, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-// import { useStore } from 'vuex'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 
@@ -69,6 +55,8 @@ import '@/assets/pic/folder-large.svg'
 import '@/assets/pic/file-large.svg'
 import '@/assets/pic/folder.svg'
 import '@/assets/pic/more.svg'
+import '@/assets/pic/table.svg'
+import '@/assets/pic/grid.svg'
 
 export default defineComponent({
   components: {
@@ -142,8 +130,29 @@ export default defineComponent({
       border-radius: 4px;
       cursor: pointer;
       user-select: none;
-      .show {
-        margin-left: 30px;
+      .btn-show {
+        position: relative;
+        display: inline-flex;
+        width: auto;
+        height: 28px;
+        box-sizing: border-box;
+        align-items: center;
+        justify-content: center;
+        padding: 0px 8px;
+        border: none;
+        color: #1d1d1f;
+        cursor: pointer;
+        font-size: 14px;
+        outline: none;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 4px;
+        background-color: #ffffff;
+        .icon {
+          width: 14px;
+          height: 14px;
+          fill: #1d1d1f;
+        }
       }
     }
   }
