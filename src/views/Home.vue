@@ -45,15 +45,27 @@
                 </div>
               </template>
               <template v-if="isFolder(scope.data)">
-                <div class="pop-item" @click="addNew(scope.data, true)">创建文件夹</div>
-                <div class="pop-item" @click="addNew(scope.data)">创建文件</div>
-                <div class="pop-item" @click="renameData(scope.data)">重命名</div>
-                <div class="pop-item" @click="removeData(scope.data)">删除</div>
               </template>
-              <template v-else>
-                <div class="pop-item" @click="renameData(scope.data)">重命名</div>
-                <div class="pop-item" @click="removeData(scope.data)">删除</div>
-              </template>
+              <div class="pop-item" v-if="isFolder(scope.data)" @click="addNew(scope.data, true)">
+                <SvgIcon icon="folder" />
+                <span>新建文件夹</span>
+              </div>
+              <div class="pop-item" v-if="isFolder(scope.data)" @click="addNew(scope.data)">
+                <SvgIcon icon="file-small" />
+                <span>新建文件</span>
+              </div>
+              <div class="pop-item" @click="renameData(scope.data)">
+                <SvgIcon icon="rename" />
+                <span>重命名</span>
+              </div>
+              <div class="pop-item" v-if="isFolder(scope.data)" @click="addQuick(scope.data)">
+                <SvgIcon icon="add-quick" />
+                <span>添加到快捷访问</span>
+              </div>
+              <div class="pop-item" @click="removeData(scope.data)">
+                <SvgIcon icon="delete" />
+                <span>删除</span>
+              </div>
             </el-popover>
           </div>
         </template>
@@ -105,6 +117,9 @@ import '@/assets/pic/home.svg'
 import '@/assets/pic/quick.svg'
 import '@/assets/pic/latest.svg'
 import '@/assets/pic/folder.svg'
+import '@/assets/pic/delete.svg'
+import '@/assets/pic/add-quick.svg'
+import '@/assets/pic/rename.svg'
 import '@/assets/pic/file-small.svg'
 
 export default defineComponent({
@@ -175,6 +190,9 @@ export default defineComponent({
         type: isFolder(tempData.value) ? 0 : 1
       })
     }
+    const addQuick = data => {
+      console.log('[click]addQuick')
+    }
     return {
       asideData,
       route,
@@ -190,7 +208,8 @@ export default defineComponent({
       renameData,
       removeData,
       submitRemove,
-      submitRename
+      submitRename,
+      addQuick
     }
   }
 })
@@ -364,6 +383,33 @@ export default defineComponent({
         width: 20px;
         height: 20px;
       }
+    }
+  }
+}
+.el-popper {
+  padding: 7px 0 !important;
+  .pop-item {
+    @include horiFlex;
+    width: 100%;
+    position: relative;
+    align-items: center;
+    color: #1d1d1f;
+    cursor: pointer;
+    font-size: 14px;
+    height: 32px;
+    line-height: 32px;
+    box-sizing: border-box;
+    padding: 0px 10px;
+    &:hover {
+      background-color: rgb(0 0 0 / 3%);
+    }
+    svg {
+      width: 20px;
+      height: 20px;
+      fill: #75757d;
+    }
+    span {
+      margin-left: 12px;
     }
   }
 }
