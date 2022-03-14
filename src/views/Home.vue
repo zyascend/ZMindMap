@@ -2,67 +2,61 @@
   <div class="main">
     <sider :width="325">
       <template #default>
-        <div class="profile">
-        <div class="avatar">
-          <img class="avatar" src="https://api2.mubu.com/v3/photo/7aadfeca-72df-48b5-ad19-262432df8fa5.jpg" alt="">
-        </div>
-        <div class="nickname">
-          <p>THE YANG</p>
-        </div>
-      </div>
-      <div class="inputer">
-        <div class="input-wrapper">
-          <SvgIcon class="icon" icon="search" />
-          <input type="text" class="" placeholder="全局搜索 Ctrl+Shift+F " value="">
-        </div>
-        <div class="adder">
-          <el-popover
-            placement="bottom"
-            trigger="hover"
-            :show-arrow="false"
-          >
-            <template #reference>
-              <SvgIcon class="icon" icon="add-file" />
-            </template>
-            <div class="pop-item" @click="addNew(true)">
-              <SvgIcon icon="folder" />
-              <span>新建文件夹</span>
-            </div>
-            <div class="pop-item" @click="addNew(false)">
-              <SvgIcon icon="file-small" />
-              <span>新建文件</span>
-            </div>
-          </el-popover>
-        </div>
-      </div>
-      <div class="divider" />
-      <router-link class="folders" to="/app/folder" active-class="folder-active">
-        <SvgIcon class="icon" icon="home" />
-        <span>我的文档</span>
-      </router-link>
-      <el-tree
-        v-if="asideData.length"
-        :expand-on-click-node="false"
-        :data="asideData"
-      >
-        <template #default="scope">
-          <div class="node">
-            <router-link :to="getUrl(scope.data)" class="link">
-              <SvgIcon class="icon" :icon="isFolder(scope.data)?'folder':'file-small'" />
-              <span>{{ scope.data.name }}</span>
-            </router-link>
-            <operate-popover :data="scope.data"/>
+        <profile-popover />
+        <div class="inputer">
+          <div class="input-wrapper">
+            <SvgIcon class="icon" icon="search" />
+            <input type="text" class="" placeholder="全局搜索" value="">
           </div>
-        </template>
-      </el-tree>
-      <router-link class="folders" to="/app/folder/quick" active-class="folder-active">
-        <SvgIcon class="icon" icon="quick" />
-        <span>快速访问</span>
-      </router-link>
-      <router-link class="folders" to="/app/folder/latest" active-class="folder-active">
-        <SvgIcon class="icon" icon="latest" />
-        <span>最近编辑</span>
-      </router-link>
+          <div class="adder">
+            <el-popover
+              placement="bottom"
+              trigger="hover"
+              :show-arrow="false"
+              popper-class="add-popper"
+            >
+              <template #reference>
+                <SvgIcon class="icon" icon="add-file" />
+              </template>
+              <div class="pop-item" @click="addNew(true)">
+                <SvgIcon icon="folder" />
+                <span>新建文件夹</span>
+              </div>
+              <div class="pop-item" @click="addNew(false)">
+                <SvgIcon icon="file-small" />
+                <span>新建文件</span>
+              </div>
+            </el-popover>
+          </div>
+        </div>
+        <div class="divider" />
+        <router-link class="folders" to="/app/folder" active-class="folder-active">
+          <SvgIcon class="icon" icon="home" />
+          <span>我的文档</span>
+        </router-link>
+        <el-tree
+          v-if="asideData.length"
+          :expand-on-click-node="false"
+          :data="asideData"
+        >
+          <template #default="scope">
+            <div class="node">
+              <router-link :to="getUrl(scope.data)" class="link">
+                <SvgIcon class="icon" :icon="isFolder(scope.data)?'folder':'file-small'" />
+                <span>{{ scope.data.name }}</span>
+              </router-link>
+              <operate-popover :data="scope.data"/>
+            </div>
+          </template>
+        </el-tree>
+        <router-link class="folders" to="/app/folder/quick" active-class="folder-active">
+          <SvgIcon class="icon" icon="quick" />
+          <span>快速访问</span>
+        </router-link>
+        <router-link class="folders" to="/app/folder/latest" active-class="folder-active">
+          <SvgIcon class="icon" icon="latest" />
+          <span>最近编辑</span>
+        </router-link>
       </template>
       <template #sideContent>
         <router-view :key="route.fullPath"></router-view>
@@ -79,6 +73,7 @@ import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import OperatePopover from '@/components/OperatePopover.vue'
+import ProfilePopover from '@/components/ProfilePopover.vue'
 import '@/assets/pic/home.svg'
 import '@/assets/pic/quick.svg'
 import '@/assets/pic/latest.svg'
@@ -92,7 +87,8 @@ export default defineComponent({
   components: {
     Sider,
     SvgIcon,
-    OperatePopover
+    OperatePopover,
+    ProfilePopover
   },
   setup () {
     const store = useStore()
@@ -152,40 +148,6 @@ export default defineComponent({
   position: relative;
   @include wh100;
   @include horiFlex;
-  .profile {
-    width: 100%;
-    @include horiFlex;
-    padding: 13px 16px 5px;
-    position: relative;
-    align-items: center;
-    .avatar {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    .nickname {
-      @include horiFlex;
-      height: 24px;
-      padding: 0px 4px;
-      margin-left: 6px;
-      border-radius: 4px;
-      align-items: center;
-      cursor: pointer;
-      &:hover {
-        background-color: #e9e9eb;
-      }
-      &>p {
-        font-size: 14px;
-        overflow: hidden;
-        max-width: 140px;
-        margin: 0px 2px 0px 0px;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        line-height: 24px;
-      }
-    }
-  }
   .inputer {
     display: flex;
     align-items: center;
@@ -333,7 +295,7 @@ export default defineComponent({
     }
   }
 }
-.el-popper {
+.add-popper {
   padding: 7px 0 !important;
   .pop-item {
     @include horiFlex;

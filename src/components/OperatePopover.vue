@@ -3,6 +3,7 @@
     placement="bottom"
     trigger="click"
     :show-arrow="false"
+    popper-class="op-popper"
   >
     <template #reference>
       <div class="more">
@@ -166,7 +167,7 @@ export default defineComponent({
     height: 20px;
   }
 }
-.el-popper {
+.op-popper {
   padding: 7px 0 !important;
   .pop-item {
     @include horiFlex;

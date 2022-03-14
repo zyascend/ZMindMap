@@ -36,3 +36,6 @@ https://blog.csdn.net/qq_52151772/article/details/119756511
 
 > TODO 右键菜单
 https://www.cnblogs.com/gaofz/p/11995001.html
+
+> TODO 头像上传裁剪
+https://www.cnblogs.com/eightFlying/p/cropper-demo.html
