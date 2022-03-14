@@ -34,8 +34,8 @@ const store = createStore({
       foreignDiv: undefined
     },
 
-    treedData: null,
-    originData: null,
+    originMapData: null,
+    // originData: null,
 
     token: '',
     user: {},
@@ -55,9 +55,10 @@ const store = createStore({
         state.selections[key] = d3.select(refs[key])
       }
     },
-    setData (state, data) {
-      state.treedData = data.treedData
-      state.originData = data.originData
+    setMapData (state, data) {
+      console.log('setMapData')
+      console.log(data)
+      state.originMapData = data
     },
     setNavigationLists (state, id) {
       // 根据当前Id找到父文件夹
@@ -92,9 +93,6 @@ const store = createStore({
     setRefs ({ commit }, refs) {
       return commit('setRefs', refs)
     },
-    setData ({ commit }, data) {
-      return commit('setData', data)
-    },
     setUser ({ commit }, user) {
       return commit('setUser', user)
     },
@@ -119,13 +117,11 @@ const store = createStore({
     },
     fetchDocContent ({ commit, getters }, payload) {
       const url = `${API.getDocContent}/${getters.getUser._id}/${payload}`
-      return asyncAndCommit(url, 'fetchAllDocuments', commit)
+      return asyncAndCommit(url, 'setMapData', commit)
     }
   },
   getters: {
     showTable: state => state.showTable,
-    getTreedData: state => state.treedData,
-    getOriginData: state => state.originData,
     getSelections: state => state.selections,
     getRefs: state => state.refs,
     getToken: state => state.token,
@@ -139,6 +135,11 @@ const store = createStore({
     },
     getNavigationLists: state => id => {
       return handler.findNavigationPaths(id, state.originAllDocs)
+    },
+    getMapData: state => {
+      return {
+        originMapData: state.originMapData
+      }
     }
   },
   plugins: [

@@ -305,6 +305,7 @@ export default defineComponent({
     padding: 2px 8px;
     position: relative;
     .link {
+      flex: 1;
       color: #75757d;
       height: 32px;
       @include horiFlex;

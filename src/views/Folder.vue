@@ -42,7 +42,7 @@
         </div>
       </div>
     </div>
-    <div class="empty" v-if="!hasData">
+    <div class="empty" v-show="!hasData">
       <img :src="ICON_EMPTY" alt="">
       <p class="empty-info">暂无文件，点击左上角"+"新建文件</p>
     </div>
