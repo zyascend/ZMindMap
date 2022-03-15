@@ -12,7 +12,8 @@
           <img class="avatar" src="http://cdn.kimjisoo.cn/pic/20211201094227.jpg" alt="">
         </div>
         <div class="nickname">
-          <p>THE YANG</p>
+          <p>{{ user?.email.split('@')[0] || '' }}</p>
+          <svg-icon icon="triangle"/>
         </div>
       </div>
     </template>
@@ -20,7 +21,7 @@
       <div class="img">
         <img class="avatar" src="http://cdn.kimjisoo.cn/pic/20211201094227.jpg" alt="">
       </div>
-      <p>THE YANG</p>
+      <p>{{ user?.email.split('@')[0] || '' }}</p>
     </div>
     <div class="divider" />
     <div class="pop-item" @click="openSettings">
@@ -78,12 +79,14 @@
 </template>
 
 <script>
-import { defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import SvgIcon from '@/components/SvgIcon.vue'
 import '@/assets/pic/settings.svg'
 import '@/assets/pic/logout.svg'
 import '@/assets/pic/skin.svg'
+import '@/assets/pic/triangle.svg'
 
 export default defineComponent({
   name: 'ProfilePopover',
@@ -98,19 +101,24 @@ export default defineComponent({
   },
   setup () {
     const store = useStore()
-    // const showDeleteDialog = ref(false)
-    // const showRenameDialog = ref(false)
-    // const searchText = ref('')
-    // const tempData = ref({})
+    const router = useRouter()
+    const user = computed(() => store.getters.getUser)
     const isDarkMode = ref(store.getters.isDark)
     watch(isDarkMode, () => {
       store.dispatch('toggleDarkMode')
-    }, { immediate: true })
+    })
 
     const openSettings = () => {
     }
 
     const logout = () => {
+      store.dispatch('logout')
+      router.replace({
+        path: '/login',
+        query: {
+          redirect: router.currentRoute.fullPath
+        }
+      })
     }
 
     const toggleSkin = () => {
@@ -119,7 +127,7 @@ export default defineComponent({
       // newName,
       // showDeleteDialog,
       // showRenameDialog,
-      // searchText,
+      user,
       isDarkMode,
       openSettings,
       logout,
@@ -162,6 +170,11 @@ export default defineComponent({
       text-overflow: ellipsis;
       white-space: nowrap;
       line-height: 24px;
+    }
+    &>svg {
+      height: 10px;
+      width: 10px;
+      transform: rotate(-90deg);
     }
   }
 }

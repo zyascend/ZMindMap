@@ -60,8 +60,6 @@ const store = createStore({
       }
     },
     setMapData (state, data) {
-      console.log('setMapData')
-      console.log(data)
       state.originMapData = data
     },
     setNavigationLists (state, id) {
@@ -79,7 +77,11 @@ const store = createStore({
       const { token, user } = rawData
       state.token = token
       state.user = user
-      localStorage.setItem('token', token)
+      // localStorage.setItem('token', token)
+    },
+    logout (state) {
+      state.token = ''
+      localStorage.removeItem('vuex')
     }
   },
   actions: {
@@ -92,6 +94,9 @@ const store = createStore({
     login ({ commit }, payload) {
       const { isLogin, loginForm } = payload
       return asyncAndCommit(isLogin ? API.login : API.register, 'login', commit, { method: 'post', data: loginForm })
+    },
+    logout ({ commit }) {
+      return commit('logout')
     },
     setNavigationLists ({ commit }, id) {
       commit('setNavigationLists', id)
