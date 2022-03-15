@@ -27,14 +27,22 @@
       <SvgIcon icon="settings" />
       <span>账号设置</span>
     </div>
-    <div class="pop-item">
-      <SvgIcon icon="skin" />
-      <span>黑暗模式</span>
+    <div class="pop-item pop-switch">
+      <div>
+        <SvgIcon icon="skin" />
+        <span>黑暗模式</span>
+      </div>
+      <el-switch
+        :width="37"
+        v-model="isDarkMode"
+        class="ml-2"
+        active-color="#5856d5"
+        inactive-color="#b3b3ba"/>
     </div>
     <div class="divider" />
     <div class="pop-item" @click="logout">
       <SvgIcon icon="logout" />
-      <span>推出登录</span>
+      <span>退出登录</span>
     </div>
   </el-popover>
   <!-- <el-dialog
@@ -70,7 +78,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import SvgIcon from '@/components/SvgIcon.vue'
 import '@/assets/pic/settings.svg'
@@ -94,12 +102,17 @@ export default defineComponent({
     // const showRenameDialog = ref(false)
     // const searchText = ref('')
     // const tempData = ref({})
-    // const newName = ref('')
+    const isDarkMode = ref(store.getters.isDark)
+    watch(isDarkMode, () => {
+      store.dispatch('toggleDarkMode')
+    }, { immediate: true })
 
     const openSettings = () => {
     }
+
     const logout = () => {
     }
+
     const toggleSkin = () => {
     }
     return {
@@ -107,6 +120,7 @@ export default defineComponent({
       // showDeleteDialog,
       // showRenameDialog,
       // searchText,
+      isDarkMode,
       openSettings,
       logout,
       toggleSkin
@@ -153,7 +167,8 @@ export default defineComponent({
 }
 .divider {
   height: 1px;
-  margin: 4px 14px;
+  margin: 4px 5px;
+  box-sizing: border-box;
   background-color: #e9e9eb;
 }
 .profile-popover {
@@ -168,7 +183,7 @@ export default defineComponent({
       height: 42px;
       border-radius: 50%;
       overflow: hidden;
-      margin-bottom: 7px;
+      margin-bottom: 10px;
       &>img {
         width: 42px;
         height: 42px;
@@ -192,8 +207,9 @@ export default defineComponent({
     font-size: 14px;
     height: 32px;
     line-height: 32px;
+    text-align: center;
     box-sizing: border-box;
-    padding: 0px 15px;
+    padding: 5px 0px;
     &:hover {
       background-color: rgb(0 0 0 / 3%);
     }
@@ -201,9 +217,18 @@ export default defineComponent({
       width: 20px;
       height: 20px;
       fill: #75757d;
+      /* margin-right: 10px; */
     }
     span {
-      margin-left: 12px;
+      margin-left: 15px;
+    }
+  }
+  .pop-switch {
+    justify-content: space-between;
+    padding-right: 5px;
+    div {
+      @include horiFlex;
+      align-items: center;
     }
   }
 }

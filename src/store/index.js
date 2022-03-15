@@ -42,12 +42,16 @@ const store = createStore({
     allTreeDocs: [],
     originAllDocs: [],
     navigationLists: [],
-
-    showTable: false
+    // 页面全局属性
+    showTable: false,
+    isDark: false
   },
   mutations: {
     toggleShowTable (state) {
       state.showTable = !state.showTable
+    },
+    toggleDarkMode (state) {
+      state.isDark = !state.isDark
     },
     setRefs (state, refs) {
       state.refs = refs
@@ -81,6 +85,9 @@ const store = createStore({
   actions: {
     toggleShowTable ({ commit }) {
       commit('toggleShowTable')
+    },
+    toggleDarkMode ({ commit }) {
+      commit('toggleDarkMode')
     },
     login ({ commit }, payload) {
       const { isLogin, loginForm } = payload
@@ -122,6 +129,7 @@ const store = createStore({
   },
   getters: {
     showTable: state => state.showTable,
+    isDark: state => state.isDark,
     getSelections: state => state.selections,
     getRefs: state => state.refs,
     getToken: state => state.token,
