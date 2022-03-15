@@ -10,7 +10,7 @@
       </div>
       <p class="saved">已保存</p>
       <div class="show-map" @click="toggleShowMap">
-        <template v-if="showMap">
+        <template v-if="!showMap">
           <svg-icon icon="tree"/>
           <span>思维导图</span>
         </template>
@@ -21,6 +21,7 @@
       </div>
     </header>
     <!-- <mind-map v-model="mapData"></mind-map> -->
+    <note v-if="!showMap" :data="noteData" />
     <!-- <div class="toolbar">
       <el-tooltip
         class="tool-item"
@@ -45,6 +46,8 @@ import { useRoute } from 'vue-router'
 import { useZoomMap } from '@/hooks'
 // import MindMap from '@/components/MindMap.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+import Note from '@/components/Note.vue'
+import note from '@/mock/note'
 import '@/assets/pic/fit-view.svg'
 import '@/assets/pic/folder.svg'
 import '@/assets/pic/theme.svg'
@@ -54,6 +57,7 @@ import '@/assets/pic/note.svg'
 export default defineComponent({
   components: {
     // MindMap,
+    Note,
     SvgIcon
   },
   setup () {
@@ -61,6 +65,7 @@ export default defineComponent({
     const route = useRoute()
     const docId = route.params?.id
     const mapData = computed(() => store.getters.getMapData)
+    const noteData = computed(() => note)
     const showMap = ref(false)
     const fitView = () => {
       useZoomMap.fitView()
@@ -75,6 +80,7 @@ export default defineComponent({
       docId,
       showMap,
       mapData,
+      noteData,
       fitView,
       toggleShowMap
     }
