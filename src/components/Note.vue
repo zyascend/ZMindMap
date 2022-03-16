@@ -37,7 +37,7 @@ import { defineComponent, onMounted, onUnmounted, ref, nextTick } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { note } from '@/mock/note'
 import { debounce } from '@/hooks/utils'
-import { flatter } from '@/hooks/useNote'
+import { flatter, updateTab } from '@/hooks/useNote'
 import '@/assets/pic/triangle.svg'
 
 export default defineComponent({
@@ -123,7 +123,6 @@ export default defineComponent({
           }
         }
       }
-      console.log('addNewNode = ', node)
       if (node.children.length) {
         // 代表该节点现在有子节点且处于展开状态
         addChild(node, originData)
@@ -131,16 +130,7 @@ export default defineComponent({
         // 代表该节点没有子节点或者处于折叠状态
         addBrother(node, originData)
       }
-      const flattendList = []
-      const iter = list => {
-        if (!list || !list.length) return
-        for (const v of list) {
-          flattendList.push(v)
-          iter(v.children)
-        }
-      }
-      iter(originData)
-      noteList.value = flattendList
+      noteList.value = flatter(originData)
       nextTick(() => {
         document.getElementById(`note-node-${newId}`).focus()
       })
@@ -164,6 +154,38 @@ export default defineComponent({
     }
     const tabNode = (node, event) => {
       event.preventDefault()
+      // 首先要找到此节点
+      const findAndTab = list => {
+        if (!list || !list.length) return
+        for (const i in list) {
+          if (list[i].id === node.id) {
+            const index = Number(i)
+            if (index !== 0) {
+              // 不是第一个子节点 可以tab成它的兄弟的子节点
+              // 首先如果兄弟节点折叠了 那么打开
+              if (list[index - 1]._children.length) {
+                [list[index - 1]._children, list[index - 1].children] = [list[index - 1].children, list[index - 1]._children]
+              }
+              // 兄弟节点没折叠或者没子节点
+              // TODO 首先要更新当前节点的数据：[pId, id, level, children的[pId, id, level]]
+              const _node = list[index]
+              _node.pId = list[index - 1].id
+              _node.id = `${list[index - 1].id}-${list[index - 1].children.length + 1}`
+              _node.level = _node.level + 1
+              const updatedNode = updateTab(_node)
+              // 原层级要删除当前节点
+              list.splice(index, 1)
+              // 添加
+              list[index - 1].children.push(updatedNode)
+            }
+            break
+          } else {
+            findAndTab(list[i].children)
+          }
+        }
+      }
+      findAndTab(originData)
+      noteList.value = flatter(originData)
     }
     const onKeyDown = (event, node) => {
       switch (event.keyCode) {
@@ -173,9 +195,9 @@ export default defineComponent({
           break
         case 8:
           // BackSpace键处理逻辑
-          deleteNode(node)
+          deleteNode(node, event)
           break
-        case 0:
+        case 9:
           // Tab键处理逻辑
           tabNode(node, event)
           break
@@ -185,20 +207,17 @@ export default defineComponent({
     }
     const onNodeInput = debounce((event, node) => {
       const newText = event.target.innerText
-      console.log('onNodeInput', newText)
       const update = list => {
         if (!list || !list.length) return
         for (const n of list) {
           if (n.id === node.id) {
             n.name = newText
-            console.log('n.name = newText', newText)
           } else {
             update(n.children)
           }
         }
       }
       update(originData)
-      console.log('updated', originData)
     }, 1000)
     return {
       noteList,
