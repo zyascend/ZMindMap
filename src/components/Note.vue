@@ -37,7 +37,7 @@ import { defineComponent, onMounted, onUnmounted, ref, nextTick } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { note } from '@/mock/note'
 import { debounce } from '@/hooks/utils'
-import { flatter, updateTab } from '@/hooks/useNote'
+import { flatter, updateTab, moveToLastFocus } from '@/hooks/useNote'
 import '@/assets/pic/triangle.svg'
 
 export default defineComponent({
@@ -137,7 +137,16 @@ export default defineComponent({
     }
     const deleteNode = (node, event) => {
       // 节点文字删除完毕才删除此节点
-      if (event.target.innerText !== '') return
+      if (event.target.innerText !== '') return false
+      event.preventDefault()
+      let lastNode = null
+      // 找到上一个节点 方便聚焦
+      for (const i in noteList.value) {
+        if (noteList.value[i].id === node.id) {
+          // ! 有问题 => noteList.value[1]
+          lastNode = i === '0' ? noteList.value[1] : noteList.value[i - 1]
+        }
+      }
       const findAndDelete = list => {
         if (!list || !list.length) return
         for (const i in list) {
@@ -149,8 +158,13 @@ export default defineComponent({
           }
         }
       }
+      // TODO 删光了怎么办
       findAndDelete(originData)
       noteList.value = flatter(originData)
+      nextTick(() => {
+        // 上一个节点自动获得光标 并将光标移动到最后的位置
+        moveToLastFocus(`note-node-${lastNode.id}`)
+      })
     }
     const tabNode = (node, event) => {
       event.preventDefault()

@@ -36,3 +36,13 @@ export const updateTab = _node => {
   console.log('HOOKS-updateTab ', _node)
   return _node
 }
+
+export function moveToLastFocus (id) {
+  const $el = document.getElementById(id)
+  const range = document.createRange()
+  range.selectNodeContents($el)
+  range.collapse(false)
+  const sel = window.getSelection()
+  sel.removeAllRanges()
+  sel.addRange(range)
+}
