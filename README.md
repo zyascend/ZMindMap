@@ -26,10 +26,16 @@ for-in循环存在缺陷：会遍历对象自身的和继承的可枚举属性(�
 适用遍历数/数组对象/字符串/map/set等拥有迭代器对象的集合
 它可以正确响应break、continue和return语句  
 
+**for in 得到的数组下标是字符串形式的**
+
 > vuex state持久化——vuex-persistedstate
 
 > 使用svg：https://blog.csdn.net/qq_37059838/article/details/108980970  
 如果需要修改svg的颜色，svg文件中的填充色fill必须删除
+
+> vue div contenteditable属性，模拟v-model双向数据绑定功能 
+` <div  v-html="item.journey_detail"  @input="item.journey_detail=$event.target.innerHTML" contenteditable="true"></div>
+`
 
 > TODO 数据更新后取消默认收起
 https://blog.csdn.net/qq_52151772/article/details/119756511

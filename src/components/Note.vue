@@ -3,7 +3,7 @@
     <div class="doc-main">
       <h1 class="name">{{ data.name }}</h1>
       <div class="content">
-        <div class="note-node" v-show="node.show" v-for="node in noteList" :key="node.id">
+        <div class="note-node" v-for="node in noteList" :key="node.id">
           <div class="indent" v-for="i in node.level" :key="`${index}-${i}`" />
           <div class="node-content">
             <div
@@ -15,8 +15,13 @@
             <div class="bullet-wrapper">
               <div class="bullet" />
             </div>
-            <div class="text-wrapper">
-              <span>{{ node.name }}</span>
+            <div
+              :id="`note-node-${node.id}`"
+              class="text-wrapper"
+              contenteditable="true"
+              @input="onNodeInput($event, node)"
+              @keydown="onKeyDown($event, node)">
+              {{ node.name }}
             </div>
           </div>
         </div>
@@ -26,11 +31,13 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, onUnmounted, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, ref, nextTick } from 'vue'
 // import { useStore } from 'vuex'
 // import { useTreeData, useRender, useKeydownEvent } from '../hooks'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { note } from '@/mock/note'
+import { debounce } from '@/hooks/utils'
+import { flatter } from '@/hooks/useNote'
 import '@/assets/pic/triangle.svg'
 
 export default defineComponent({
@@ -54,38 +61,77 @@ export default defineComponent({
       document.onkeydown = undefined
     })
     const toggleCollapse = _id => {
-      console.log('toggleCollapse> ', _id)
       const flattendList = []
-      // const iter = list => {
-      //   if (!list || !list.length) return
-      //   for (const v of list) {
-      //     if (v.id === _id) {
-      //       if (v.collapsed) v.collapsed = false
-      //       else {
-      //         v.collapsed = true
-      //       }
-      //       [v.children, v._children] = [v._children, v.children]
-      //     }
-      //     flattendList.push(v)
-      //     iter(v.children)
-      //   }
-      // }
-      const toggleShow = (list, isParentNotShow = false) => {
+      const iter = list => {
         if (!list || !list.length) return
         for (const v of list) {
-          // 如果父节点不显示 那么子节点也不显示
-          if (isParentNotShow) {
-            v.show = false
-            toggleShow(v.children, true)
+          if (v.id === _id) {
+            if (v.collapsed) v.collapsed = false
+            else {
+              v.collapsed = true
+            }
+            [v.children, v._children] = [v._children, v.children]
           }
-          if (v.pid === _id) {
-            v.show = !v.show
-            toggleShow(v.children, v.show)
-          }
-          toggleShow(v.children)
+          flattendList.push(v)
+          iter(v.children)
         }
       }
-      toggleShow(originData)
+      iter(originData)
+      noteList.value = flattendList
+    }
+    const addNewNode = (node, event) => {
+      event.preventDefault()
+      let newId = ''
+      const addBrother = (node, list) => {
+        if (!list || !list.length) return
+        for (const i in list) {
+          if (list[i].id === node.id) {
+            newId = `${node.pId}-${list.length}`
+            // ! 大坑：【for in】得到的数组下标是字符串形式的 typeof i == string
+            list.splice(Number(i) + 1, 0, {
+              name: '',
+              collapsed: false,
+              level: node.level,
+              id: newId,
+              pId: node.pId,
+              _children: [],
+              children: []
+            })
+            break
+          } else {
+            addBrother(node, list[i].children)
+          }
+        }
+      }
+      const addChild = (node, list) => {
+        if (!list || !list.length) return
+        for (const n of list) {
+          if (n.id === node.id) {
+            newId = `${n.id}-${n.children.length}`
+            n.children.splice(0, 0, {
+              name: '',
+              collapsed: false,
+              level: node.level + 1,
+              id: newId,
+              pId: n.id,
+              _children: [],
+              children: []
+            })
+            break
+          } else {
+            addChild(node, n.children)
+          }
+        }
+      }
+      console.log('addNewNode = ', node)
+      if (node.children.length) {
+        // 代表该节点现在有子节点且处于展开状态
+        addChild(node, originData)
+      } else {
+        // 代表该节点没有子节点或者处于折叠状态
+        addBrother(node, originData)
+      }
+      const flattendList = []
       const iter = list => {
         if (!list || !list.length) return
         for (const v of list) {
@@ -94,12 +140,72 @@ export default defineComponent({
         }
       }
       iter(originData)
-      console.log(flattendList)
       noteList.value = flattendList
+      nextTick(() => {
+        document.getElementById(`note-node-${newId}`).focus()
+      })
     }
+    const deleteNode = (node, event) => {
+      // 节点文字删除完毕才删除此节点
+      if (event.target.innerText !== '') return
+      const findAndDelete = list => {
+        if (!list || !list.length) return
+        for (const i in list) {
+          if (list[i].id === node.id) {
+            list.splice(i, 1)
+            break
+          } else {
+            findAndDelete(list[i].children)
+          }
+        }
+      }
+      findAndDelete(originData)
+      noteList.value = flatter(originData)
+    }
+    const tabNode = (node, event) => {
+      event.preventDefault()
+    }
+    const onKeyDown = (event, node) => {
+      switch (event.keyCode) {
+        case 13:
+          // 回车键处理逻辑
+          addNewNode(node, event)
+          break
+        case 8:
+          // BackSpace键处理逻辑
+          deleteNode(node)
+          break
+        case 0:
+          // Tab键处理逻辑
+          tabNode(node, event)
+          break
+        default:
+          break
+      }
+    }
+    const onNodeInput = debounce((event, node) => {
+      const newText = event.target.innerText
+      console.log('onNodeInput', newText)
+      const update = list => {
+        if (!list || !list.length) return
+        for (const n of list) {
+          if (n.id === node.id) {
+            n.name = newText
+            console.log('n.name = newText', newText)
+          } else {
+            update(n.children)
+          }
+        }
+      }
+      update(originData)
+      console.log('updated', originData)
+    }, 1000)
     return {
       noteList,
-      toggleCollapse
+      toggleCollapse,
+      onKeyDown,
+      onNodeInput,
+      addNewNode
     }
   }
 })
@@ -109,6 +215,7 @@ export default defineComponent({
 @import '../assets/css/mixin';
 .note-container {
   @include wh100;
+  overflow-y: auto;
   .doc-main {
     max-width: 872px;
     min-height: calc(100vh - 252px);
@@ -135,11 +242,18 @@ export default defineComponent({
         transition-timing-function: cubic-bezier(0.3, 1.02, 0.68, 1.01);
         .indent {
           width: 26px;
-          height: 30px;
+          height: 34px;
           padding-left: 1px;
           box-sizing: border-box;
           border-left: 1px solid #dee0e3;
           transform: translateX(8px);
+        }
+        &:hover {
+          .node-content {
+            .action-wrapper {
+              display: flex;
+            }
+          }
         }
         .node-content {
           position: relative;
@@ -148,6 +262,7 @@ export default defineComponent({
           align-items: center;
           .action-wrapper {
             @include centerFlex;
+            /* display: none; */
             z-index: 2;
             position: absolute;
             top: 0;
@@ -159,13 +274,7 @@ export default defineComponent({
             .icon-collapsed {
               transform: rotate(-90deg);
             }
-            &:hover {
-              svg {
-                display: block;
-              }
-            }
             svg {
-              display: block;
               width: 12px;
               height: 12px;
               transition: .2s ease all;
@@ -189,6 +298,16 @@ export default defineComponent({
             padding: 2px 0 2px 8px;
             line-height: 26px;
             color: #1d1d1f;
+            min-height: 24px;
+            font-size: 16px;
+            user-select: text;
+            word-wrap: break-word;
+            -webkit-nbsp-mode: space;
+            box-sizing: content-box;
+            color: #1f2329;
+            cursor: text;
+            outline: 0;
+            white-space: pre-wrap;
           }
         }
       }

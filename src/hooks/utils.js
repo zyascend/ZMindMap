@@ -54,3 +54,32 @@ export const dateFormatter = timestamp => {
   }
   return `${year ? `${year}年` : ''}${month}月${day}日 ${hour}:${minutes}`
 }
+
+export function debounce (fn, wait) {
+  let timer
+  return function () {
+    const _this = this
+    const args = arguments
+    if (timer) {
+      clearTimeout(timer)
+    }
+    timer = setTimeout(function () {
+      fn.apply(_this, args)
+    }, wait)
+  }
+}
+
+export function thorttle (fn, wait) {
+  let timer
+  return function () {
+    const _this = this
+    const args = arguments
+
+    if (!timer) {
+      timer = setTimeout(function () {
+        timer = null
+        fn.apply(_this, args)
+      }, wait)
+    }
+  }
+}
