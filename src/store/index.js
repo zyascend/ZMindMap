@@ -120,6 +120,11 @@ const store = createStore({
       const url = `${API.remove}/${getters.getUser._id}`
       return asyncAndCommit(url, 'fetchAllDocuments', commit, { method: 'post', data })
     },
+    postSetDocContent ({ commit, getters }, data) {
+      const url = `${API.setDocContent}/${getters.getUser._id}`
+      // TODO 需要JSON化Content
+      return asyncAndCommit(url, 'setMapData', commit, { method: 'post', data })
+    },
     fetchUser ({ commit }) {
       return asyncAndCommit(API.getCurrentUser, 'fetchUser', commit)
     },
@@ -151,7 +156,8 @@ const store = createStore({
     },
     getMapData: state => {
       return {
-        originMapData: state.originMapData
+        originMapData: state.originMapData,
+        content: JSON.parse(state.originMapData.definition)
       }
     }
   },

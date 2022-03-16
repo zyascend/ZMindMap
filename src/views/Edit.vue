@@ -21,7 +21,7 @@
       </div>
     </header>
     <!-- <mind-map v-model="mapData"></mind-map> -->
-    <note v-if="!showMap" :data="noteData" />
+    <note v-if="!showMap" v-model:content="content" />
     <!-- <div class="toolbar">
       <el-tooltip
         class="tool-item"
@@ -40,14 +40,13 @@
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, computed, ref } from 'vue'
+import { defineComponent, onMounted, computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRoute } from 'vue-router'
 import { useZoomMap } from '@/hooks'
 // import MindMap from '@/components/MindMap.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import Note from '@/components/Note.vue'
-import note from '@/mock/note'
 import '@/assets/pic/fit-view.svg'
 import '@/assets/pic/folder.svg'
 import '@/assets/pic/theme.svg'
@@ -65,7 +64,7 @@ export default defineComponent({
     const route = useRoute()
     const docId = route.params?.id
     const mapData = computed(() => store.getters.getMapData)
-    const noteData = computed(() => note)
+    const content = computed(() => store.getters.getMapData.content)
     const showMap = ref(false)
     const fitView = () => {
       useZoomMap.fitView()
@@ -76,11 +75,16 @@ export default defineComponent({
     const toggleShowMap = () => {
       showMap.value = !showMap.value
     }
+    watch(content, () => {
+      store.dispatch('postSetDocContent', {
+        content
+      })
+    })
     return {
       docId,
       showMap,
       mapData,
-      noteData,
+      content,
       fitView,
       toggleShowMap
     }

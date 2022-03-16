@@ -1,7 +1,7 @@
 <template>
   <div class="note-container">
     <div class="doc-main">
-      <h1 class="name">{{ data.name }}</h1>
+      <h1 class="name">{{ content.name }}</h1>
       <div class="content">
         <div class="note-node" v-for="node in noteList" :key="node.id">
           <div class="indent" v-for="i in node.level" :key="`${index}-${i}`" />
@@ -31,11 +31,12 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, onUnmounted, ref, nextTick } from 'vue'
+import {
+  defineComponent, onMounted, onUnmounted,
+  computed, nextTick, ref
+} from 'vue'
 // import { useStore } from 'vuex'
-// import { useTreeData, useRender, useKeydownEvent } from '../hooks'
 import SvgIcon from '@/components/SvgIcon.vue'
-import { note } from '@/mock/note'
 import { debounce } from '@/hooks/utils'
 import { flatter, updateTab, moveToLastFocus } from '@/hooks/useNote'
 import '@/assets/pic/triangle.svg'
@@ -46,15 +47,14 @@ export default defineComponent({
     SvgIcon
   },
   props: {
-    data: {
+    content: {
       type: Object,
       required: true
     }
   },
-  setup (props) {
-    // const store = useStore()
-    const noteList = ref(props.data.content)
-    const originData = note
+  setup (props, context) {
+    const noteList = computed(() => flatter(props.content.noteList) || [])
+    const originData = ref(props.content.noteList)
     onMounted(() => {
     })
     onUnmounted(() => {
@@ -232,6 +232,10 @@ export default defineComponent({
         }
       }
       update(originData)
+      context.emit('update:content', {
+        name: '新的名字',
+        noteList: originData.value
+      })
     }, 1000)
     return {
       noteList,
