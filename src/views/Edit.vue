@@ -2,11 +2,11 @@
   <div class="map-wrapper">
     <header class="map-header">
       <div class="info">
-        <a :href="`/app/folder/${mapData?.originMapData?.directory[0]?.id}`" class="name">
+        <a :href="`/app/folder/${mapData?.directory[0]?.id}`" class="name">
           <svg-icon icon="folder"/>
-          <span>{{ mapData?.originMapData?.directory[0]?.name }}</span>
+          <span>{{ mapData?.directory[0]?.name }}</span>
         </a>
-        <span>&nbsp;|&nbsp;&nbsp;{{ mapData?.originMapData?.name || '' }}</span>
+        <span>&nbsp;|&nbsp;&nbsp;{{ mapData?.name || '' }}</span>
       </div>
       <p class="saved">已保存</p>
       <div class="show-map" @click="toggleShowMap">
@@ -21,7 +21,7 @@
       </div>
     </header>
     <!-- <mind-map v-model="mapData"></mind-map> -->
-    <note v-if="!showMap" v-model:content="content" />
+    <note v-if="!showMap && content" v-model:content="content" />
     <!-- <div class="toolbar">
       <el-tooltip
         class="tool-item"
@@ -40,13 +40,15 @@
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, computed, ref, watch } from 'vue'
-import { useStore } from 'vuex'
+import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useZoomMap } from '@/hooks'
+import { useStore } from 'vuex'
 // import MindMap from '@/components/MindMap.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import Note from '@/components/Note.vue'
+import axios from '@/hooks/useHttp'
+import API from '@/hooks/api'
 import '@/assets/pic/fit-view.svg'
 import '@/assets/pic/folder.svg'
 import '@/assets/pic/theme.svg'
@@ -63,22 +65,31 @@ export default defineComponent({
     const store = useStore()
     const route = useRoute()
     const docId = route.params?.id
-    const mapData = computed(() => store.getters.getMapData)
-    const content = computed(() => store.getters.getMapData.content)
+    const mapData = ref(null)
+    const content = ref(null)
     const showMap = ref(false)
     const fitView = () => {
       useZoomMap.fitView()
     }
-    onMounted(() => {
-      store.dispatch('fetchDocContent', docId)
+    onMounted(async () => {
+      const url = `${API.getDocContent}/${store.getters.getUser._id}/${docId}`
+      const { data } = await axios(url, { method: 'get' })
+      console.log('EDIT > onMounted > ', data)
+      mapData.value = data
+      content.value = JSON.parse(data.definition)
     })
     const toggleShowMap = () => {
       showMap.value = !showMap.value
     }
-    watch(content, () => {
-      store.dispatch('postSetDocContent', {
-        content
-      })
+    watch(content, async (newVal, oldVal) => {
+      if (!oldVal) return
+      const url = `${API.setDocContent}/${store.getters.getUser._id}`
+      const body = {
+        ...mapData.value,
+        definition: JSON.stringify(newVal)
+      }
+      const { data } = await axios(url, { method: 'post', data: body })
+      console.log(data)
     })
     return {
       docId,

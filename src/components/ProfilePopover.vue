@@ -12,7 +12,7 @@
           <img class="avatar" src="http://cdn.kimjisoo.cn/pic/20211201094227.jpg" alt="">
         </div>
         <div class="nickname">
-          <p>{{ user?.email.split('@')[0] || '' }}</p>
+          <p>{{ user?.email || '' }}</p>
           <svg-icon icon="triangle"/>
         </div>
       </div>
@@ -21,7 +21,7 @@
       <div class="img">
         <img class="avatar" src="http://cdn.kimjisoo.cn/pic/20211201094227.jpg" alt="">
       </div>
-      <p>{{ user?.email.split('@')[0] || '' }}</p>
+      <p>{{ user?.email || '' }}</p>
     </div>
     <div class="divider" />
     <div class="pop-item" @click="openSettings">

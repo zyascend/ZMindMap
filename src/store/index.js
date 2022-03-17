@@ -35,7 +35,6 @@ const store = createStore({
     },
 
     originMapData: null,
-    // originData: null,
 
     token: '',
     user: {},
@@ -131,10 +130,6 @@ const store = createStore({
     fetchAllDocuments ({ commit, getters }) {
       const url = `${API.getAllDocs}/${getters.getUser._id}`
       return asyncAndCommit(url, 'fetchAllDocuments', commit)
-    },
-    fetchDocContent ({ commit, getters }, payload) {
-      const url = `${API.getDocContent}/${getters.getUser._id}/${payload}`
-      return asyncAndCommit(url, 'setMapData', commit)
     }
   },
   getters: {
@@ -153,12 +148,6 @@ const store = createStore({
     },
     getNavigationLists: state => id => {
       return handler.findNavigationPaths(id, state.originAllDocs)
-    },
-    getMapData: state => {
-      return {
-        originMapData: state.originMapData,
-        content: JSON.parse(state.originMapData.definition)
-      }
     }
   },
   plugins: [

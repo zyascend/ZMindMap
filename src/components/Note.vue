@@ -55,6 +55,8 @@ export default defineComponent({
   setup (props, context) {
     const noteList = computed(() => flatter(props.content.noteList) || [])
     const originData = ref(props.content.noteList)
+    console.log(noteList.value)
+    console.log(originData.value)
     onMounted(() => {
     })
     onUnmounted(() => {
@@ -76,7 +78,7 @@ export default defineComponent({
           iter(v.children)
         }
       }
-      iter(originData)
+      iter(originData.value)
       noteList.value = flattendList
     }
     const addNewNode = (node, event) => {
@@ -125,12 +127,12 @@ export default defineComponent({
       }
       if (node.children.length) {
         // 代表该节点现在有子节点且处于展开状态
-        addChild(node, originData)
+        addChild(node, originData.value)
       } else {
         // 代表该节点没有子节点或者处于折叠状态
-        addBrother(node, originData)
+        addBrother(node, originData.value)
       }
-      noteList.value = flatter(originData)
+      noteList.value = flatter(originData.value)
       nextTick(() => {
         document.getElementById(`note-node-${newId}`).focus()
       })
@@ -159,8 +161,8 @@ export default defineComponent({
         }
       }
       // TODO 删光了怎么办
-      findAndDelete(originData)
-      noteList.value = flatter(originData)
+      findAndDelete(originData.value)
+      noteList.value = flatter(originData.value)
       nextTick(() => {
         // 上一个节点自动获得光标 并将光标移动到最后的位置
         moveToLastFocus(`note-node-${lastNode.id}`)
@@ -198,8 +200,8 @@ export default defineComponent({
           }
         }
       }
-      findAndTab(originData)
-      noteList.value = flatter(originData)
+      findAndTab(originData.value)
+      noteList.value = flatter(originData.value)
     }
     const onKeyDown = (event, node) => {
       switch (event.keyCode) {
@@ -231,9 +233,9 @@ export default defineComponent({
           }
         }
       }
-      update(originData)
+      update(originData.value)
       context.emit('update:content', {
-        name: '新的名字',
+        name: props.content.name,
         noteList: originData.value
       })
     }, 1000)
