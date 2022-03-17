@@ -1,7 +1,7 @@
 <template>
   <div class="note-container">
     <div class="doc-main">
-      <h1 class="name">{{ content.name }}</h1>
+      <div class="name" @input="onNameInput($event)" contenteditable="true">{{ content.name }}</div>
       <div class="content">
         <div class="note-node" v-for="node in noteList" :key="node.id">
           <div class="indent" v-for="i in node.level" :key="`${index}-${i}`" />
@@ -31,11 +31,7 @@
 </template>
 
 <script>
-import {
-  defineComponent, onMounted, onUnmounted,
-  computed, nextTick, ref
-} from 'vue'
-// import { useStore } from 'vuex'
+import { defineComponent, onMounted, onUnmounted, nextTick, ref } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { debounce } from '@/hooks/utils'
 import { flatter, updateTab, moveToLastFocus } from '@/hooks/useNote'
@@ -53,17 +49,22 @@ export default defineComponent({
     }
   },
   setup (props, context) {
-    const noteList = computed(() => flatter(props.content.noteList) || [])
+    const noteList = ref(flatter(props.content.noteList))
     const originData = ref(props.content.noteList)
-    console.log(noteList.value)
-    console.log(originData.value)
+    const contentName = ref(props.content.name)
     onMounted(() => {
     })
     onUnmounted(() => {
       document.onkeydown = undefined
     })
+    const emitUpdate = () => {
+      context.emit('update:content', {
+        name: contentName.value,
+        noteList: originData.value
+      })
+    }
     const toggleCollapse = _id => {
-      const flattendList = []
+      const flatList = []
       const iter = list => {
         if (!list || !list.length) return
         for (const v of list) {
@@ -74,12 +75,13 @@ export default defineComponent({
             }
             [v.children, v._children] = [v._children, v.children]
           }
-          flattendList.push(v)
+          flatList.push(v)
           iter(v.children)
         }
       }
       iter(originData.value)
-      noteList.value = flattendList
+      noteList.value = flatList
+      emitUpdate()
     }
     const addNewNode = (node, event) => {
       event.preventDefault()
@@ -136,6 +138,7 @@ export default defineComponent({
       nextTick(() => {
         document.getElementById(`note-node-${newId}`).focus()
       })
+      emitUpdate()
     }
     const deleteNode = (node, event) => {
       // 节点文字删除完毕才删除此节点
@@ -167,6 +170,7 @@ export default defineComponent({
         // 上一个节点自动获得光标 并将光标移动到最后的位置
         moveToLastFocus(`note-node-${lastNode.id}`)
       })
+      emitUpdate()
     }
     const tabNode = (node, event) => {
       event.preventDefault()
@@ -202,6 +206,7 @@ export default defineComponent({
       }
       findAndTab(originData.value)
       noteList.value = flatter(originData.value)
+      emitUpdate()
     }
     const onKeyDown = (event, node) => {
       switch (event.keyCode) {
@@ -221,6 +226,7 @@ export default defineComponent({
           break
       }
     }
+
     const onNodeInput = debounce((event, node) => {
       const newText = event.target.innerText
       const update = list => {
@@ -234,17 +240,20 @@ export default defineComponent({
         }
       }
       update(originData.value)
-      context.emit('update:content', {
-        name: props.content.name,
-        noteList: originData.value
-      })
+      emitUpdate()
+    }, 1000)
+    const onNameInput = debounce((event) => {
+      console.log('onNameInput', event.target.innerText)
+      contentName.value = event.target.innerText
+      emitUpdate()
     }, 1000)
     return {
       noteList,
+      contentName,
       toggleCollapse,
       onKeyDown,
       onNodeInput,
-      addNewNode
+      onNameInput
     }
   }
 })
@@ -268,6 +277,13 @@ export default defineComponent({
       line-height: 48px;
       padding: 62px 0 0;
       margin-bottom: 27px;
+      user-select: text;
+      word-wrap: break-word;
+      -webkit-nbsp-mode: space;
+      box-sizing: content-box;
+      cursor: text;
+      outline: 0;
+      white-space: pre-wrap;
     }
     .content {
       width: 100%;
