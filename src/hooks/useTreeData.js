@@ -2,8 +2,7 @@ import * as d3 from './d3'
 import store from '../store'
 import useDrawMap from './useDrawMap'
 
-let creator = null
-class TreeDataCreater {
+export class TreeDataCreater {
   constructor ({ measureSvg, treeStyle, gapY = 14, gapX = 70 } = {}) {
     this.measureSvg = measureSvg
     this.treeStyle = treeStyle
@@ -24,7 +23,7 @@ class TreeDataCreater {
   caculateXY (root) {
     let preNode
     root.eachAfter(node => {
-      node._id = node.data.nid
+      node._id = node.data.id
       const { children } = node
       if (children) {
         node.y = this.meanY(children)
@@ -70,16 +69,26 @@ class TreeDataCreater {
   }
 }
 
-const init = data => {
-  const hierarchyData = d3.hierarchy(data)
-  const measureSvg = store.getters.getSelections.measureSvg
-  creator = new TreeDataCreater({ measureSvg })
-  store.dispatch('setData', { treedData: creator.create(hierarchyData), originData: data })
+const init = content => {
+  const { name, noteList } = content
+  const data = {
+    name,
+    id: '-1',
+    children: noteList,
+    _children: [],
+    collapsed: false
+  }
+  // const hierarchyData = d3.hierarchy(data)
+  // console.log('hierarchyData', hierarchyData)
+  // const measureSvg = store.getters.getSelections.measureSvg
+  // creator = new TreeDataCreater({ measureSvg })
+  // console.log('TreedData', creator.create(hierarchyData))
+  store.dispatch('setTreeData', data)
 }
 
 const findNode = (root, id) => {
   if (!root) return null
-  if (root.nid === id) return root
+  if (root.id === id) return root
   if (root.children && root.children.length) {
     for (const child of root.children) {
       const res = findNode(child, id)
@@ -125,7 +134,7 @@ export const appendNewChild = parentId => {
   const theNode = findNode(root, parentId)
   theNode.children.push({
     name: '输入文字',
-    nid: `${theNode.nid}-${theNode.children.length}`,
+    id: `${theNode.id}-${theNode.children.length}`,
     children: []
   })
   init(root)
@@ -151,7 +160,7 @@ export const deleteNode = (parentId, childId) => {
   const root = store.getters.getOriginData
   const parentNode = findNode(root, parentId)
   for (let i = 0; i < parentNode.children.length; i++) {
-    if (parentNode.children[i].nid === childId) {
+    if (parentNode.children[i].id === childId) {
       parentNode.children.splice(i, 1)
       break
     }

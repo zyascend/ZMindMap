@@ -23,7 +23,7 @@ import { useTreeData, useRender, useKeydownEvent } from '../hooks'
 export default defineComponent({
   name: 'MindMap',
   props: {
-    modelValue: {
+    content: {
       type: Object,
       required: true
     }
@@ -50,7 +50,7 @@ export default defineComponent({
         foreignObject: foreignObject.value,
         foreignDiv: foreignDiv.value
       })
-      useTreeData.init(props.modelValue)
+      useTreeData.init(props.content)
       useRender()
       useKeydownEvent()
     })

@@ -35,6 +35,7 @@ const store = createStore({
     },
 
     originMapData: null,
+    treeData: null,
 
     token: '',
     user: {},
@@ -53,13 +54,14 @@ const store = createStore({
       state.isDark = !state.isDark
     },
     setRefs (state, refs) {
+      console.log('store setRefs', refs)
       state.refs = refs
       for (const key in refs) {
         state.selections[key] = d3.select(refs[key])
       }
     },
-    setMapData (state, data) {
-      state.originMapData = data
+    setTreeData (state, data) {
+      state.treeData = data
     },
     setNavigationLists (state, id) {
       // 根据当前Id找到父文件夹
@@ -104,6 +106,9 @@ const store = createStore({
     setRefs ({ commit }, refs) {
       return commit('setRefs', refs)
     },
+    setTreeData ({ commit }, data) {
+      return commit('setTreeData', data)
+    },
     setUser ({ commit }, user) {
       return commit('setUser', user)
     },
@@ -118,11 +123,6 @@ const store = createStore({
     postRemove ({ commit, getters }, data) {
       const url = `${API.remove}/${getters.getUser._id}`
       return asyncAndCommit(url, 'fetchAllDocuments', commit, { method: 'post', data })
-    },
-    postSetDocContent ({ commit, getters }, data) {
-      const url = `${API.setDocContent}/${getters.getUser._id}`
-      // TODO 需要JSON化Content
-      return asyncAndCommit(url, 'setMapData', commit, { method: 'post', data })
     },
     fetchUser ({ commit }) {
       return asyncAndCommit(API.getCurrentUser, 'fetchUser', commit)
@@ -139,6 +139,7 @@ const store = createStore({
     getRefs: state => state.refs,
     getToken: state => state.token,
     getUser: state => state.user,
+    getTreeData: state => state.treeData,
     getAllDocuments: state => id => {
       if (!id) {
         return state.allTreeDocs

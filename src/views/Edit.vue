@@ -20,8 +20,8 @@
         </template>
       </div>
     </header>
-    <!-- <mind-map v-model="mapData"></mind-map> -->
     <note v-if="!showMap && content" v-model:content="content" />
+    <mind-map v-if="showMap && content" v-model:content="content" />
     <!-- <div class="toolbar">
       <el-tooltip
         class="tool-item"
@@ -44,7 +44,7 @@ import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useZoomMap } from '@/hooks'
 import { useStore } from 'vuex'
-// import MindMap from '@/components/MindMap.vue'
+import MindMap from '@/components/MindMap.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import Note from '@/components/Note.vue'
 import axios from '@/hooks/useHttp'
@@ -57,7 +57,7 @@ import '@/assets/pic/note.svg'
 
 export default defineComponent({
   components: {
-    // MindMap,
+    MindMap,
     Note,
     SvgIcon
   },

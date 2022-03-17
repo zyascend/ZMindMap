@@ -1,14 +1,14 @@
 import store from '../store'
 import * as d3 from './d3'
-import { getMultiline, appendNewChild, deleteNode, toggleExpandOrCollapse } from './useTreeData'
+import { TreeDataCreater, getMultiline, appendNewChild, toggleExpandOrCollapse } from './useTreeData'
 import PIC_ADD from '@/assets/pic/add.svg'
 import PIC_COLLAPSE from '@/assets/pic/arrow-left.svg'
 
-import emitter from './mitt'
+// import emitter from './mitt'
 
-let pathG
-let infoG
-let currentData
+// let pathG
+// let infoG
+// let currentData
 
 const onEditting = data => {
   console.log('onEditting', data)
@@ -36,15 +36,15 @@ const onEditting = data => {
  * @param {*} status 需要检查的状态
  * @returns
  */
-const checkNodeStatus = (id, status) => {
-  const currentClass = d3.select(`#g-id-${id}`).nodes()[0].classList[0]
-  if (status === 'edit') {
-    return currentClass === 'g-editting'
-  }
-  if (status === 'select') {
-    return currentClass === 'g-selected'
-  }
-}
+// const checkNodeStatus = (id, status) => {
+//   const currentClass = d3.select(`#g-id-${id}`).nodes()[0].classList[0]
+//   if (status === 'edit') {
+//     return currentClass === 'g-editting'
+//   }
+//   if (status === 'select') {
+//     return currentClass === 'g-selected'
+//   }
+// }
 
 const getCallback = () => {
   const transformData = d => {
@@ -69,7 +69,7 @@ const getCallback = () => {
     if (!selected) {
       d3.selectAll('.g-selected').attr('class', '')
       selectedG.attr('class', 'g-selected')
-      currentData = d
+      // currentData = d
     } else {
       const target = event.target.tagName
       if (target !== 'image') {
@@ -106,12 +106,12 @@ const drawPath = (links, mainG) => {
     return `${bottomLine}${bezierLine}${bottomLineLeaf}`
   }
   // update
-  pathG = pathG || mainG.append('g')
+  const pathG = mainG.append('g')
   const path = pathG.selectAll('path').data(links)
-  path.attr('d', pathData)
-    .attr('fill', 'none')
-    .attr('stroke', 'black')
-    .attr('stroke-width', 2)
+  // path.attr('d', pathData)
+  //   .attr('fill', 'none')
+  //   .attr('stroke', 'black')
+  //   .attr('stroke-width', 2)
   // enter
   path.enter()
     .append('path')
@@ -121,7 +121,7 @@ const drawPath = (links, mainG) => {
     .attr('stroke-width', 2)
     // .merge(gp)
   // exit
-  path.exit().remove()
+  // path.exit().remove()
 }
 
 const drawText = (nodes, mainG) => {
@@ -129,7 +129,7 @@ const drawText = (nodes, mainG) => {
   const padding = 3
   const radius = 3
 
-  infoG = infoG || mainG.append('g').attr('id', 'infoG')
+  const infoG = mainG.append('g').attr('id', 'infoG')
   const gs = infoG
     .selectAll('g')
     .data(nodes)
@@ -185,43 +185,53 @@ const drawText = (nodes, mainG) => {
 }
 
 const useDrawMap = () => {
-  const treedData = store.getters.getTreedData
+  const originTreeData = store.getters.getTreeData
   const selections = store.getters.getSelections
+
+  const hierarchyData = d3.hierarchy(originTreeData)
+  console.log('hierarchyData', hierarchyData)
+
+  const measureSvg = store.getters.getSelections.measureSvg
+  const creator = new TreeDataCreater({ measureSvg })
+  const treedData = creator.create(hierarchyData)
+  console.log('TreedData', treedData)
+
   // 使用d3.js的enter与exit结合进行节点更新
   drawPath(treedData.links(), selections.mainG)
   // 暴力删除dom，然后全部绘制进行节点更新
   // TODO 待优化
-  const g = document.querySelector('#infoG')
-  if (g) {
-    g.innerHTML = ''
-  }
+  // const g = document.querySelector('#infoG')
+  // if (g) {
+  //   g.innerHTML = ''
+  // }
+  console.log('before drawText')
   drawText(treedData.descendants(), selections.mainG)
-  emitter.all.delete('map-key-down')
-  emitter.on('map-key-down', e => {
-    switch (e.keyCode) {
-      case 46:
-        // delete键 删除当前选中的节点
-        deleteNode(currentData.parent?._id, currentData._id)
-        break
-      case 13:
-        // enter键 添加兄弟节点
-        if (checkNodeStatus(currentData._id, 'select')) {
-          if (currentData?.parent) {
-            appendNewChild(currentData.parent._id)
-          }
-        }
-        break
-      case 9:
-        // tab键 添加子节点
-        if (checkNodeStatus(currentData._id, 'select')) {
-          appendNewChild(currentData._id)
-        }
-        e.preventDefault()
-        break
-      default:
-        break
-    }
-  })
+  // emitter.all.delete('map-key-down')
+  // emitter.on('map-key-down', e => {
+  //   switch (e.keyCode) {
+  //     case 46:
+  //       // delete键 删除当前选中的节点
+  //       deleteNode(currentData.parent?._id, currentData._id)
+  //       break
+  //     case 13:
+  //       // enter键 添加兄弟节点
+  //       if (checkNodeStatus(currentData._id, 'select')) {
+  //         if (currentData?.parent) {
+  //           appendNewChild(currentData.parent._id)
+  //         }
+  //       }
+  //       break
+  //     case 9:
+  //       // tab键 添加子节点
+  //       if (checkNodeStatus(currentData._id, 'select')) {
+  //         appendNewChild(currentData._id)
+  //       }
+  //       e.preventDefault()
+  //       break
+  //     default:
+  //       break
+  //   }
+  // })
 }
 
 export default useDrawMap
