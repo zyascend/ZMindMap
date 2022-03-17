@@ -3,16 +3,17 @@ import store from '../store'
 import useDrawMap from './useDrawMap'
 
 export class TreeDataCreater {
-  constructor ({ measureSvg, treeStyle, gapY = 14, gapX = 70 } = {}) {
+  constructor ({ measureSvg, treeStyle, gapY = 14, gapX = 60, maxNodeWidth = 350 } = {}) {
     this.measureSvg = measureSvg
     this.treeStyle = treeStyle
     this.gapY = gapY
     this.gapX = gapX
+    this.maxNodeWidth = maxNodeWidth
   }
 
   create (root, isUpdate = false) {
     !isUpdate && this.measureWidthAndHeight(root)
-    this.caculateXY(root)
+    this.calculateXY(root)
     return root
   }
 
@@ -20,7 +21,7 @@ export class TreeDataCreater {
     return children.reduce((y, c) => y + c.y, 0) / children.length
   }
 
-  caculateXY (root) {
+  calculateXY (root) {
     let preNode
     root.eachAfter(node => {
       node._id = node.data.id
@@ -46,26 +47,23 @@ export class TreeDataCreater {
   }
 
   measureWidthAndHeight (root, isUpdate = false) {
-    const multiline = TreeDataCreater.getMultiline(root.data.name)
-    const t = this.measureSvg.append('text')
-    t.selectAll('tspan').data(multiline).enter().append('tspan').text((d) => d).attr('x', 0)
-    const tBox = t.node().getBBox()
-    t.remove()
-    root.width = Math.max(tBox.width, 22)
-    root.height = Math.max(tBox.height, 22) * multiline.length
+    // ! 通过下面方式动态计算宽高 配合foreignObject实现自动换行
+    const f = this.measureSvg.append('foreignObject').attr('width', this.maxNodeWidth)
+    // 根节点字大一点
+    const fontSize = root.depth === 0 ? 16 : 14
+    f.append('xhtml:div')
+      .attr('style', `word-break:normal; width:auto;width:fit-content;display:block;white-space:pre-wrap;word-wrap:break-word;overflow:hidden;font-size:${fontSize}px;`)
+      .text(root.data.name)
+    // ! 【大坑】：取这两值一定要在 f.remove() 之前
+    const { clientWidth, clientHeight } = f.node().firstElementChild
+    f.remove()
+    root.width = clientWidth
+    root.height = clientHeight
     if (!isUpdate && root.children && root.children.length) {
       for (const child of root.children) {
         this.measureWidthAndHeight(child)
       }
     }
-  }
-
-  static getMultiline (str) {
-    const multiline = str.split('\n')
-    if (multiline.length > 1 && multiline[multiline.length - 1] === '') {
-      multiline.pop()
-    }
-    return multiline
   }
 }
 
@@ -78,11 +76,6 @@ const init = content => {
     _children: [],
     collapsed: false
   }
-  // const hierarchyData = d3.hierarchy(data)
-  // console.log('hierarchyData', hierarchyData)
-  // const measureSvg = store.getters.getSelections.measureSvg
-  // creator = new TreeDataCreater({ measureSvg })
-  // console.log('TreedData', creator.create(hierarchyData))
   store.dispatch('setTreeData', data)
 }
 
@@ -168,7 +161,5 @@ export const deleteNode = (parentId, childId) => {
   init(root)
   useDrawMap()
 }
-
-export const getMultiline = TreeDataCreater.getMultiline
 
 export default { init, afterEdit }

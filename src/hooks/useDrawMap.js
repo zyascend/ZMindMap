@@ -1,8 +1,9 @@
 import store from '../store'
 import * as d3 from './d3'
-import { TreeDataCreater, getMultiline, appendNewChild, toggleExpandOrCollapse } from './useTreeData'
-import PIC_ADD from '@/assets/pic/add.svg'
-import PIC_COLLAPSE from '@/assets/pic/arrow-left.svg'
+// import { TreeDataCreater, getMultiline, appendNewChild, toggleExpandOrCollapse } from './useTreeData'
+import { TreeDataCreater } from './useTreeData'
+// import PIC_ADD from '@/assets/pic/add.svg'
+// import PIC_COLLAPSE from '@/assets/pic/arrow-left.svg'
 
 // import emitter from './mitt'
 
@@ -10,25 +11,30 @@ import PIC_COLLAPSE from '@/assets/pic/arrow-left.svg'
 // let infoG
 // let currentData
 
-const onEditting = data => {
-  console.log('onEditting', data)
-  const foreignObject = store.getters.getSelections.foreignObject
-  const foreignDiv = store.getters.getRefs.foreignDiv
-  foreignObject
-    .attr('x', data.x)
-    .attr('y', data.y - data.height - 6)
-    .attr('data-id', data._id)
-    .attr('data-name', data.data.name)
-    .style('display', '')
-    .attr('width', data.width)
-    .attr('height', data.height)
-  console.log('y', data.y - data.height - 6)
-  foreignDiv.textContent = data.data.name
-  foreignDiv.focus()
-  // 自动选中所有文字
-  const currentSelection = getSelection()
-  if (currentSelection) currentSelection.selectAllChildren(foreignDiv)
-}
+const offsetBottom = 4
+const borderXPadding = 8
+const borderYPadding = 3
+const borderRadius = 3
+
+// const onEditting = data => {
+//   console.log('onEditting', data)
+//   const foreignObject = store.getters.getSelections.foreignObject
+//   const foreignDiv = store.getters.getRefs.foreignDiv
+//   foreignObject
+//     .attr('x', data.x)
+//     .attr('y', data.y - data.height - 6)
+//     .attr('data-id', data._id)
+//     .attr('data-name', data.data.name)
+//     .style('display', '')
+//     .attr('width', data.width)
+//     .attr('height', data.height)
+//   console.log('y', data.y - data.height - 6)
+//   foreignDiv.textContent = data.data.name
+//   foreignDiv.focus()
+//   // 自动选中所有文字
+//   const currentSelection = getSelection()
+//   if (currentSelection) currentSelection.selectAllChildren(foreignDiv)
+// }
 
 /**
  * 检查当前节点的状态
@@ -46,62 +52,72 @@ const onEditting = data => {
 //   }
 // }
 
-const getCallback = () => {
-  const transformData = d => {
-    const cx = d.x
-    const cy = d.y - d.height - 6
-    return 'translate(' + cx + ',' + cy + ')'
-  }
-  const onMouseEnter = (event, d) => {
-    const selectedG = d3.select(`#g-id-${d._id}`)
-    const editting = selectedG.nodes()[0].classList[0] === 'g-editting'
-    const selected = selectedG.nodes()[0].classList[0] === 'g-selected'
-    !editting && !selected && selectedG.attr('class', 'g-hover')
-  }
-  const onMouseLeave = (event, d) => {
-    const selectedG = d3.select(`#g-id-${d._id}`)
-    const editting = selectedG.nodes()[0].classList[0] === 'g-editting'
-    !editting && d3.selectAll('.g-hover').attr('class', '')
-  }
-  const onMouseDown = (event, d) => {
-    const selectedG = d3.select(`#g-id-${d._id}`)
-    const selected = selectedG.nodes()[0].classList[0] === 'g-selected'
-    if (!selected) {
-      d3.selectAll('.g-selected').attr('class', '')
-      selectedG.attr('class', 'g-selected')
-      // currentData = d
-    } else {
-      const target = event.target.tagName
-      if (target !== 'image') {
-        event.preventDefault()
-        const gs = d3.select(`#g-id-${d._id}`)
-        gs.attr('class', 'g-editting')
-        onEditting(d)
-      }
-    }
-  }
-
-  const getTspanData = d => {
-    const multiline = getMultiline(d.data.name)
-    const height = d.height / multiline.length
-    return multiline.map((name) => ({ name, height }))
-  }
-  return { transformData, onMouseEnter, onMouseLeave, onMouseDown, getTspanData }
-}
+// const getCallback = () => {
+//   const onMouseEnter = (event, d) => {
+//     const selectedG = d3.select(`#g-id-${d._id}`)
+//     const editting = selectedG.nodes()[0].classList[0] === 'g-editting'
+//     const selected = selectedG.nodes()[0].classList[0] === 'g-selected'
+//     !editting && !selected && selectedG.attr('class', 'g-hover')
+//   }
+//   const onMouseLeave = (event, d) => {
+//     const selectedG = d3.select(`#g-id-${d._id}`)
+//     const editting = selectedG.nodes()[0].classList[0] === 'g-editting'
+//     !editting && d3.selectAll('.g-hover').attr('class', '')
+//   }
+//   const onMouseDown = (event, d) => {
+//     const selectedG = d3.select(`#g-id-${d._id}`)
+//     const selected = selectedG.nodes()[0].classList[0] === 'g-selected'
+//     if (!selected) {
+//       d3.selectAll('.g-selected').attr('class', '')
+//       selectedG.attr('class', 'g-selected')
+//       // currentData = d
+//     } else {
+//       const target = event.target.tagName
+//       if (target !== 'image') {
+//         event.preventDefault()
+//         const gs = d3.select(`#g-id-${d._id}`)
+//         gs.attr('class', 'g-editting')
+//         onEditting(d)
+//       }
+//     }
+//   }
+//   return { onMouseEnter, onMouseLeave, onMouseDown, getTspanData }
+// }
 
 const drawPath = (links, mainG) => {
   // 创建一个贝塞尔生成曲线生成器
   const bézierCurveGenerator = d3.linkHorizontal().x(d => d.x).y(d => d.y)
   const pathData = d => {
-    const { x, y, width } = d.source
-    const start = { x: x + width, y }
-    const end = { x: d.target.x, y: d.target.y }
-
-    const bottomLine = `M${x} ${y}L${start.x} ${y}`
+    let bottomLine = ''
+    let bezierLine = ''
     let bottomLineLeaf = ''
-    const bezierLine = bézierCurveGenerator({ source: start, target: end })
-    if (!d.target.children) {
-      bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.width} ${end.y}`
+
+    const { x, y, width, height, depth } = d.source
+    if (d.source.depth === 0) {
+      bezierLine = bézierCurveGenerator({
+        source: { x: x + width + borderXPadding - 2, y: y - height / 2 - offsetBottom },
+        target: { x: d.target.x - borderXPadding + 2, y: d.target.y - d.target.height / 2 - offsetBottom }
+      })
+    } else if (depth === 1) {
+      const end = { x: d.target.x, y: d.target.y }
+      bezierLine = bézierCurveGenerator({
+        source: { x: x + width + borderXPadding - 2, y: y - height / 2 - offsetBottom },
+        target: end
+      })
+      if (!d.target.children) {
+        bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.width} ${end.y}`
+      }
+    } else {
+      const start = { x: x + width, y }
+      const end = { x: d.target.x, y: d.target.y }
+      bottomLine = `M${x} ${y}L${start.x} ${y}`
+      bezierLine = bézierCurveGenerator({
+        source: start,
+        target: end
+      })
+      if (!d.target.children) {
+        bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.width} ${end.y}`
+      }
     }
     return `${bottomLine}${bezierLine}${bottomLineLeaf}`
   }
@@ -116,19 +132,18 @@ const drawPath = (links, mainG) => {
   path.enter()
     .append('path')
     .attr('d', pathData)
-    .attr('fill', 'none')
-    .attr('stroke', 'black')
-    .attr('stroke-width', 2)
     // .merge(gp)
   // exit
   // path.exit().remove()
 }
 
 const drawText = (nodes, mainG) => {
-  const { transformData, onMouseEnter, onMouseLeave, onMouseDown, getTspanData } = getCallback()
-  const padding = 3
-  const radius = 3
-
+  // const { transformData, onMouseEnter, onMouseLeave, onMouseDown, getTspanData } = getCallback()
+  const transformData = d => {
+    const cx = d.x
+    const cy = d.y - d.height - offsetBottom
+    return 'translate(' + cx + ',' + cy + ')'
+  }
   const infoG = mainG.append('g').attr('id', 'infoG')
   const gs = infoG
     .selectAll('g')
@@ -136,52 +151,58 @@ const drawText = (nodes, mainG) => {
     .enter()
     .append('g')
     .attr('id', d => `g-id-${d._id}`)
+    .attr('class', d => d.depth === 0 ? 'g-root' : d.depth === 1 ? 'g-subroot' : 'g-leaf')
     .attr('transform', transformData)
-    .on('mouseenter', onMouseEnter)
-    .on('mouseleave', onMouseLeave)
-    .on('mousedown', onMouseDown)
-  gs.append('text')
-    .attr('id', d => `text-id-${d._id}`)
-    .selectAll('tspan').data(getTspanData).enter().append('tspan')
-    .attr('alignment-baseline', 'text-before-edge')
-    .text(d => d.name || '')
-    .attr('x', 0)
-    .attr('dy', (d, i) => i ? d.height : 0)
+    // .on('mouseenter', onMouseEnter)
+    // .on('mouseleave', onMouseLeave)
+    // .on('mousedown', onMouseDown)
   gs.append('rect')
     .attr('id', d => `rect-id-${d._id}`)
-    .attr('x', -padding)
-    .attr('y', -padding)
-    .attr('rx', radius)
-    .attr('ry', radius)
-    .attr('width', d => d.width + padding * 2)
-    .attr('height', d => d.height + padding * 2)
-  gs.append('image')
-    .attr('id', d => `image-add-id-${d._id}`)
-    .attr('alt', '')
-    .attr('class', 'image-add')
-    .attr('x', d => d.width - 12)
-    .attr('y', d => d.height + 6 - 12)
-    .attr('width', '24')
-    .attr('height', '24')
-    .attr('xlink:href', PIC_ADD)
-    .on('mousedown', (event, d) => {
-      event.preventDefault()
-      appendNewChild(d._id)
+    .attr('x', -borderXPadding)
+    .attr('y', -borderYPadding)
+    .attr('rx', borderRadius)
+    .attr('ry', borderRadius)
+    .attr('width', d => d.width + borderXPadding * 2)
+    .attr('height', d => d.height + borderYPadding * 2)
+  gs.append('foreignObject')
+    .attr('id', d => `text-id-${d._id}`)
+    .attr('width', d => d.width)
+    .attr('height', d => d.height)
+    .attr('x', 0)
+    .attr('dy', (d, i) => i ? d.height : 0)
+    .append('xhtml:div')
+    // .attr('style', d => 'height:' + d.height + 'px;')
+    .text(d => {
+      console.log('in fo', d)
+      return d.data.name
     })
-  gs.append('image')
-    .attr('id', d => `image-collapse-id-${d._id}`)
-    .attr('alt', '')
-    .attr('class', 'image-collapse')
-    .attr('x', d => d.width)
-    .attr('y', d => 0)
-    .attr('width', '24')
-    .attr('height', '24')
-    .attr('xlink:href', PIC_COLLAPSE)
-    .on('mousedown', (event, d) => {
-      event.preventDefault()
-      console.log('mousedown', d)
-      toggleExpandOrCollapse(d._id)
-    })
+  // gs.append('image')
+  //   .attr('id', d => `image-add-id-${d._id}`)
+  //   .attr('alt', '')
+  //   .attr('class', 'image-add')
+  //   .attr('x', d => d.width - 12)
+  //   .attr('y', d => d.height + 6 - 12)
+  //   .attr('width', '24')
+  //   .attr('height', '24')
+  //   .attr('xlink:href', PIC_ADD)
+  //   .on('mousedown', (event, d) => {
+  //     event.preventDefault()
+  //     appendNewChild(d._id)
+  //   })
+  // gs.append('image')
+  //   .attr('id', d => `image-collapse-id-${d._id}`)
+  //   .attr('alt', '')
+  //   .attr('class', 'image-collapse')
+  //   .attr('x', d => d.width)
+  //   .attr('y', d => 0)
+  //   .attr('width', '24')
+  //   .attr('height', '24')
+  //   .attr('xlink:href', PIC_COLLAPSE)
+  //   .on('mousedown', (event, d) => {
+  //     event.preventDefault()
+  //     console.log('mousedown', d)
+  //     toggleExpandOrCollapse(d._id)
+  //   })
 }
 
 const useDrawMap = () => {
