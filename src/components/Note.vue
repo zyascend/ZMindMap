@@ -90,7 +90,7 @@ export default defineComponent({
         if (!list || !list.length) return
         for (const i in list) {
           if (list[i].id === node.id) {
-            newId = `${node.pId}-${list.length}`
+            newId = `${node.pId}-${list.length + 1}`
             // ! 大坑：【for in】得到的数组下标是字符串形式的 typeof i == string
             list.splice(Number(i) + 1, 0, {
               name: '',
@@ -111,7 +111,7 @@ export default defineComponent({
         if (!list || !list.length) return
         for (const n of list) {
           if (n.id === node.id) {
-            newId = `${n.id}-${n.children.length}`
+            newId = `${n.id}-${n.children.length + 1}`
             n.children.splice(0, 0, {
               name: '',
               collapsed: false,
@@ -135,6 +135,7 @@ export default defineComponent({
         addBrother(node, originData.value)
       }
       noteList.value = flatter(originData.value)
+      console.log('addNewNode: >', node, originData.value, newId)
       nextTick(() => {
         document.getElementById(`note-node-${newId}`).focus()
       })
@@ -175,6 +176,7 @@ export default defineComponent({
     const tabNode = (node, event) => {
       event.preventDefault()
       // 首先要找到此节点
+      let newId = ''
       const findAndTab = list => {
         if (!list || !list.length) return
         for (const i in list) {
@@ -190,7 +192,8 @@ export default defineComponent({
               // TODO 首先要更新当前节点的数据：[pId, id, level, children的[pId, id, level]]
               const _node = list[index]
               _node.pId = list[index - 1].id
-              _node.id = `${list[index - 1].id}-${list[index - 1].children.length + 1}`
+              newId = `${list[index - 1].id}-${list[index - 1].children.length + 1}`
+              _node.id = newId
               _node.level = _node.level + 1
               const updatedNode = updateTab(_node)
               // 原层级要删除当前节点
@@ -205,7 +208,12 @@ export default defineComponent({
         }
       }
       findAndTab(originData.value)
+      console.log('tabNode', originData.value)
       noteList.value = flatter(originData.value)
+      nextTick(() => {
+        // 将光标移动到最后的位置
+        moveToLastFocus(`note-node-${newId}`)
+      })
       emitUpdate()
     }
     const onKeyDown = (event, node) => {
