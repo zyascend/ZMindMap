@@ -1,0 +1,13 @@
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg t="1624796008009" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4940"
+     xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24">
+    <defs>
+        <style type="text/css"></style>
+    </defs>
+    <circle cx="512" cy="512" r="427" fill="#fff"/>
+    <line x1="512" y1="512" x2="262"  y2="512" stroke="rgb(88, 86, 213)" stroke-width="60"/>
+    <line x1="512" y1="512" x2="512"  y2="262" stroke="rgb(88, 86, 213)" stroke-width="60"/>
+    <line x1="512" y1="512" x2="512"  y2="762" stroke="rgb(88, 86, 213)" stroke-width="60"/>
+    <line x1="512" y1="512" x2="762"  y2="512" stroke="rgb(88, 86, 213)" stroke-width="60"/>
+</svg>

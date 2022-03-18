@@ -73,7 +73,6 @@ export default defineComponent({
 })
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang="scss">
 @import '../assets/css/mixin';
 .map-container {
@@ -116,6 +115,12 @@ export default defineComponent({
         fill: transparent;
         opacity: 1;
       }
+      &:hover {
+        rect {
+          stroke: #5856d57d;
+          stroke-width: 1.5px;
+        }
+      }
       foreignObject {
         div {
           color: #4B4B4B;
@@ -137,20 +142,16 @@ export default defineComponent({
           /* display: block; */
         }
       }
+      image {
+        display: none;
+      }
+      &:hover {
+        .image-collapse {
+          cursor: pointer;
+          display: block;
+        }
+      }
     }
-    /* text {
-      fill: #4B4B4B;
-      cursor: default;
-    }
-    path {
-      stroke:#5856d5;
-    }
-    rect {
-      stroke: blue;
-      stroke-width: 2px;
-      fill: transparent;
-      opacity: 0;
-    } */
     .rect-depth-root {
       rect {
         fill: #5856d5;

@@ -2,8 +2,8 @@ import store from '../store'
 import * as d3 from './d3'
 // import { TreeDataCreater, getMultiline, appendNewChild, toggleExpandOrCollapse } from './useTreeData'
 import { TreeDataCreater } from './useTreeData'
-// import PIC_ADD from '@/assets/pic/add.svg'
-// import PIC_COLLAPSE from '@/assets/pic/arrow-left.svg'
+// import PIC_ADD from '@/assets/map/add.svg'
+import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
 
 // import emitter from './mitt'
 
@@ -14,6 +14,8 @@ import { TreeDataCreater } from './useTreeData'
 const offsetBottom = 4
 const borderXPadding = 8
 const borderYPadding = 3
+const borderXPaddingLeaf = 4
+const borderYPaddingLeaf = 2
 const borderRadius = 3
 
 // const onEditting = data => {
@@ -156,14 +158,19 @@ const drawText = (nodes, mainG) => {
     // .on('mouseenter', onMouseEnter)
     // .on('mouseleave', onMouseLeave)
     // .on('mousedown', onMouseDown)
+
+  // TODO 需要优化 将这些绘制参数在计算时一并写入d中
+  // ! _id似乎not unique
   gs.append('rect')
     .attr('id', d => `rect-id-${d._id}`)
-    .attr('x', -borderXPadding)
-    .attr('y', -borderYPadding)
+    .attr('x', d => d.children ? -borderXPadding : -borderXPaddingLeaf)
+    .attr('y', d => d.children ? -borderYPadding : -borderYPaddingLeaf)
     .attr('rx', borderRadius)
     .attr('ry', borderRadius)
-    .attr('width', d => d.width + borderXPadding * 2)
-    .attr('height', d => d.height + borderYPadding * 2)
+    .attr('width', d => d.width + (d.children ? borderXPadding : borderXPaddingLeaf) * 2)
+    .attr('height', d => d.height + (d.children ? borderYPadding : borderYPaddingLeaf) * 2)
+
+  // ? 如此链式调用太不优雅 如何让attr支持obj添加 [https://blog.csdn.net/qq_26728227/article/details/102836592]
   gs.append('foreignObject')
     .attr('id', d => `text-id-${d._id}`)
     .attr('width', d => d.width)
@@ -171,38 +178,25 @@ const drawText = (nodes, mainG) => {
     .attr('x', 0)
     .attr('dy', (d, i) => i ? d.height : 0)
     .append('xhtml:div')
-    // .attr('style', d => 'height:' + d.height + 'px;')
     .text(d => {
       console.log('in fo', d)
       return d.data.name
     })
-  // gs.append('image')
-  //   .attr('id', d => `image-add-id-${d._id}`)
-  //   .attr('alt', '')
-  //   .attr('class', 'image-add')
-  //   .attr('x', d => d.width - 12)
-  //   .attr('y', d => d.height + 6 - 12)
-  //   .attr('width', '24')
-  //   .attr('height', '24')
-  //   .attr('xlink:href', PIC_ADD)
-  //   .on('mousedown', (event, d) => {
-  //     event.preventDefault()
-  //     appendNewChild(d._id)
-  //   })
-  // gs.append('image')
-  //   .attr('id', d => `image-collapse-id-${d._id}`)
-  //   .attr('alt', '')
-  //   .attr('class', 'image-collapse')
-  //   .attr('x', d => d.width)
-  //   .attr('y', d => 0)
-  //   .attr('width', '24')
-  //   .attr('height', '24')
-  //   .attr('xlink:href', PIC_COLLAPSE)
-  //   .on('mousedown', (event, d) => {
-  //     event.preventDefault()
-  //     console.log('mousedown', d)
-  //     toggleExpandOrCollapse(d._id)
-  //   })
+
+  gs.append('image')
+    .attr('id', d => `image-collapse-id-${d._id}`)
+    .attr('alt', '')
+    .attr('class', d => d.children ? 'image-collapse' : '')
+    .attr('x', d => d.width + borderXPadding)
+    .attr('y', d => (d.height - 12) / 2)
+    .attr('width', '12')
+    .attr('height', '12')
+    .attr('xlink:href', PIC_COLLAPSE)
+    .on('mousedown', (event, d) => {
+      event.preventDefault()
+      console.log('toggleExpandOrCollapse > ', d)
+      // toggleExpandOrCollapse(d._id)
+    })
 }
 
 const useDrawMap = () => {
@@ -210,12 +204,10 @@ const useDrawMap = () => {
   const selections = store.getters.getSelections
 
   const hierarchyData = d3.hierarchy(originTreeData)
-  console.log('hierarchyData', hierarchyData)
 
   const measureSvg = store.getters.getSelections.measureSvg
   const creator = new TreeDataCreater({ measureSvg })
   const treedData = creator.create(hierarchyData)
-  console.log('TreedData', treedData)
 
   // 使用d3.js的enter与exit结合进行节点更新
   drawPath(treedData.links(), selections.mainG)
@@ -225,7 +217,6 @@ const useDrawMap = () => {
   // if (g) {
   //   g.innerHTML = ''
   // }
-  console.log('before drawText')
   drawText(treedData.descendants(), selections.mainG)
   // emitter.all.delete('map-key-down')
   // emitter.on('map-key-down', e => {
