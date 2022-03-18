@@ -15,11 +15,12 @@
           ref="loginFormRef"
           :model="loginForm"
           :rules="rules"
+          size="large"
         >
-          <el-form-item prop="email">
+          <el-form-item prop="email" size="large">
             <el-input v-model="loginForm.email" type="text" placeholder="请输入邮箱地址" ></el-input>
           </el-form-item>
-          <el-form-item prop="pwd">
+          <el-form-item prop="pwd" size="large">
             <el-input v-model="loginForm.pwd" type="password" placeholder="请输入密码"></el-input>
           </el-form-item>
         </el-form>
@@ -33,6 +34,7 @@
 import { ref, defineComponent, reactive } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
+import md5 from 'js-md5'
 import useLogin from '../hooks/useLogin'
 
 export default defineComponent({
@@ -50,7 +52,13 @@ export default defineComponent({
     const submitForm = () => {
       loginFormRef.value.validate(valid => {
         if (valid) {
-          store.dispatch('login', { loginForm, isLogin: isLogin.value })
+          store.dispatch('login', {
+            loginForm: {
+              ...loginForm,
+              pwd: md5(loginForm.pwd)
+            },
+            isLogin: isLogin.value
+          })
             .then(() => {
               router.push({ path: '/', replace: true })
             })
@@ -85,9 +93,9 @@ export default defineComponent({
   transition: .2s;
   .main {
     position: relative;
-    width: 800px;
+    width: 1000px;
     min-width: 500px;
-    height: 500px;
+    height: 600px;
     margin: 20px;
     background-color: #2c3034;
     box-shadow: 0 5px 45px rgba(0, 0, 0, .15);
@@ -103,7 +111,7 @@ export default defineComponent({
       flex-direction: column;
       h2 {
         color: #fff;
-        font-size: 1.2em;
+        font-size: 1.5em;
         font-weight: 500;
         margin-bottom: 20px;
       }
@@ -121,7 +129,7 @@ export default defineComponent({
       box-shadow: 0 5px 45px rgba(0, 0, 0, .25);
       transition: .5s ease-in-out all;
       h3 {
-        font-size: 1.2em;
+        font-size: 1.5em;
         color: #333;
         margin-bottom: 20px;
         font-weight: 500;

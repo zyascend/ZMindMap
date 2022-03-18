@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
+import store from '@/store/index'
 import Home from '../views/Home.vue'
 import Edit from '@/views/Edit.vue'
 import Folder from '@/views/Folder.vue'
@@ -31,6 +32,9 @@ const routes = [
   {
     path: '/login',
     name: 'Login',
+    meta: {
+      isLogin: true
+    },
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -41,6 +45,19 @@ const routes = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+router.beforeEach((to, from, next) => {
+  if (to.meta.isLogin) {
+    // 如果去登陆页的话 不用验证token
+    next()
+  } else {
+    // 验证是否登录了
+    if (store?.state?.token || localStorage.getItem('token')) {
+      next()
+    } else {
+      next({ path: '/login' })
+    }
+  }
 })
 
 export default router

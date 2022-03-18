@@ -78,10 +78,11 @@ const store = createStore({
       const { token, user } = rawData
       state.token = token
       state.user = user
-      // localStorage.setItem('token', token)
+      localStorage.setItem('token', token)
     },
     logout (state) {
       state.token = ''
+      localStorage.removeItem('token')
       localStorage.removeItem('vuex')
     }
   },
@@ -137,7 +138,7 @@ const store = createStore({
     isDark: state => state.isDark,
     getSelections: state => state.selections,
     getRefs: state => state.refs,
-    getToken: state => state.token,
+    getToken: state => state.token || localStorage.getItem('token'),
     getUser: state => state.user,
     getTreeData: state => state.treeData,
     getAllDocuments: state => id => {
