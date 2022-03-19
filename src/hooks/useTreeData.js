@@ -110,7 +110,7 @@ const updateEdit = (newName, id) => {
   useDrawMap()
 }
 
-const afterEdit = () => {
+export const afterEdit = () => {
   const { foreignObject, foreignDiv } = store.getters.getRefs
   foreignObject.style.display = 'none'
   const id = foreignObject.getAttribute('data-id')
@@ -162,4 +162,4 @@ export const deleteNode = (parentId, childId) => {
   useDrawMap()
 }
 
-export default { init, afterEdit }
+export default { init }
