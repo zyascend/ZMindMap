@@ -9,19 +9,19 @@
     <template #reference>
       <div class="profile">
         <div class="avatar">
-          <img class="avatar" src="http://cdn.kimjisoo.cn/pic/20211201094227.jpg" alt="">
+          <img class="avatar" :src="user.avatar" alt="">
         </div>
         <div class="nickname">
-          <p>{{ user?.email || '' }}</p>
+          <p>{{ user?.name || user?.email || '' }}</p>
           <svg-icon icon="triangle"/>
         </div>
       </div>
     </template>
     <div class="info">
       <div class="img">
-        <img class="avatar" src="http://cdn.kimjisoo.cn/pic/20211201094227.jpg" alt="">
+        <img class="avatar" :src="user.avatar" alt="">
       </div>
-      <p>{{ user?.email || '' }}</p>
+      <p>{{ user?.name || user?.email || '' }}</p>
     </div>
     <div class="divider" />
     <div class="pop-item" @click="openSettings">

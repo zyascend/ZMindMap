@@ -135,7 +135,7 @@ const findAndDelete = (list, node) => {
       list.splice(i, 1)
       break
     } else {
-      findAndDelete(list[i].children)
+      findAndDelete(list[i].children, node)
     }
   }
 }
@@ -144,13 +144,14 @@ export const deleteNode = (node, event, originData, noteList) => {
   event.preventDefault()
   let lastNode = null
   // 找到上一个节点 方便聚焦
-  for (const i in noteList.value) {
-    if (noteList.value[i].id === node.id) {
+  for (const i in noteList) {
+    if (noteList[i].id === node.id) {
       // ! 有问题 => noteList.value[1]
-      lastNode = i === '0' ? noteList.value[1] : noteList.value[i - 1]
+      lastNode = i === '0' ? noteList[1] : noteList[i - 1]
     }
   }
-  findAndDelete(originData)
+  console.log('deleteNode', node, lastNode)
+  findAndDelete(originData, node)
   // ! 假如删光了 需要重新放置一个初始节点
   if (!originData.length) {
     originData.push({

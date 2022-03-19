@@ -68,7 +68,7 @@
 <script>
 import { defineComponent, onMounted, computed, ref } from 'vue'
 import { useStore } from 'vuex'
-import { useZoomMap } from '../hooks'
+import useZoomMap from '@/hooks/useZoomMap'
 import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'

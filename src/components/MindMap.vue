@@ -20,7 +20,7 @@ import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
 import { useStore } from 'vuex'
 import useTreeData from '@/hooks/useTreeData'
 import useRender from '@/hooks/useRender'
-import useKeydownEvent from '@/hooks/use'
+import useKeydownEvent from '@/hooks/useKeydownEvent'
 
 export default defineComponent({
   name: 'MindMap',

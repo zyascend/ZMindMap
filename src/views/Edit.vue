@@ -42,7 +42,7 @@
 <script>
 import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
-import { useZoomMap } from '@/hooks'
+import useZoomMap from '@/hooks/useZoomMap'
 import { useStore } from 'vuex'
 import MindMap from '@/components/MindMap.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
