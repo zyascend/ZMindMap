@@ -56,3 +56,4 @@ a, button {
    cursor: pointer;
    text-decoration: none;
 }
+div::-webkit-scrollbar { width: 0 !important }

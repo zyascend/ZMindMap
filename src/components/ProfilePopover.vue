@@ -24,7 +24,7 @@
       <p>{{ user?.name || user?.email || '' }}</p>
     </div>
     <div class="divider" />
-    <div class="pop-item" @click="openSettings">
+    <div class="pop-item" @click="toggleShowSettings">
       <SvgIcon icon="settings" />
       <span>账号设置</span>
     </div>
@@ -46,36 +46,45 @@
       <span>退出登录</span>
     </div>
   </el-popover>
-  <!-- <el-dialog
-    v-model="showDeleteDialog"
-    :append-to-body="true"
-    title="删除文档"
-    :width="400"
-    custom-class="my-dialog"
-  >
-    <h2>确认删除此文档吗？</h2>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="showDeleteDialog = false">取消</el-button>
-        <el-button type="danger" @click="submitRemove"  native-type="submit">确认</el-button>
-      </span>
-    </template>
-  </el-dialog>
   <el-dialog
-    v-model="showRenameDialog"
+    v-model="showSettings"
     :append-to-body="true"
-    :width="400"
-    title="重命名"
-    custom-class="my-dialog"
+    :width="800"
+    custom-class="profile-dialog"
   >
-    <el-input v-model="newName" placeholder="输入新的名字" @keyup.enter="submitRename"/>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="showRenameDialog = false">取消</el-button>
-        <el-button type="primary" @click="submitRename">确认</el-button>
-      </span>
-    </template>
-  </el-dialog> -->
+    <div class="settings">
+      <div class="left">
+        <a href="#" class="tab">
+          <span>个人信息</span>
+        </a>
+      </div>
+      <div class="right">
+        <div class="user-message">
+          <h1 class="title">个人信息</h1>
+          <div class="content">
+            <div class="avatar">
+              <div><img :src="user.avatar" alt="avatar"></div>
+              <button class="avatar-edit" @click="onEditAvatar">编辑</button>
+            </div>
+            <div class="info">
+              <p class="label">昵称</p>
+              <div class="editer">
+                <p class="name" v-if="!isEditName">{{ editedName || '' }}</p>
+                <el-input v-else v-model="editedName" autofocus/>
+                <button class="info-edit" @click="toggleEditName">
+                  {{ isEditName ? '保存' : '修改' }}
+                </button>
+              </div>
+              <p class="label">用户ID</p>
+              <div class="editer">
+                <p class="name">{{ user?._id }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </el-dialog>
 </template>
 
 <script>
@@ -104,11 +113,15 @@ export default defineComponent({
     const router = useRouter()
     const user = computed(() => store.getters.getUser)
     const isDarkMode = ref(store.getters.isDark)
+    const showSettings = ref(false)
+    const isEditName = ref(false)
+    const editedName = ref(store.getters.getUser?.name || '')
     watch(isDarkMode, () => {
       store.dispatch('toggleDarkMode')
     })
 
-    const openSettings = () => {
+    const toggleShowSettings = () => {
+      showSettings.value = !showSettings.value
     }
 
     const logout = () => {
@@ -123,15 +136,33 @@ export default defineComponent({
 
     const toggleSkin = () => {
     }
+    const onEditAvatar = () => {}
+    const toggleEditName = () => {
+      if (isEditName.value && editedName.value) {
+        // TODO 提交失败了怎么办
+        store.dispatch('updateUser', {
+          ...user.value,
+          name: editedName.value
+        }).then(() => {
+          isEditName.value = !isEditName.value
+        })
+      } else {
+        isEditName.value = !isEditName.value
+      }
+    }
     return {
       // newName,
       // showDeleteDialog,
-      // showRenameDialog,
+      showSettings,
       user,
       isDarkMode,
-      openSettings,
+      isEditName,
+      editedName,
+      toggleShowSettings,
       logout,
-      toggleSkin
+      toggleSkin,
+      onEditAvatar,
+      toggleEditName
     }
   }
 })
@@ -245,9 +276,164 @@ export default defineComponent({
     }
   }
 }
-.my-dialog {
+.profile-dialog {
   border-radius: 4px !important;
   box-shadow: rgb(0 0 0 / 16%) 0px 2px 30px 0px !important;
+  .el-dialog__body {
+    padding: 0 0 !important;
+    .settings {
+      display: flex;
+      width: 700px;
+      height: 534px;
+      border-radius: 4px;
+      overflow: hidden auto;
+      .left {
+        box-sizing: border-box;
+        position: absolute;
+        top: 0px;
+        height: 100%;
+        padding-top: 40px;
+        border-right: 1px solid #dedee1;
+        background: #f4f4f5;
+        border-bottom-left-radius: 4px;
+        border-top-left-radius: 4px;
+        font-size: 16px;
+        .tab {
+          position: relative;
+          display: flex;
+          width: 140px;
+          height: 38px;
+          align-items: center;
+          justify-content: center;
+          margin: 0px 0px 12px;
+          color: #5856d5;
+          cursor: pointer;
+          font-size: 16px;
+          user-select: none;
+          text-decoration: none;
+          &::before {
+            content: "";
+            position: absolute;
+            display: block;
+            top: 0px;
+            left: 0px;
+            width: 3px;
+            height: 100%;
+            color: #5856d5;
+            background: #5856d5;
+          }
+        }
+      }
+      .right {
+        width: 557px;
+        flex: 1 1 0%;
+        margin-left: 140px;
+        .user-message {
+          min-height: 534px;
+          padding: 10px 60px 0px 40px;
+          /* background: #ffffff; */
+          .title {
+            display: flex;
+            height: 38px;
+            -webkit-box-align: center;
+            align-items: center;
+            margin-bottom: 12px;
+            color: #1d1d1f;
+            font-size: 18px;
+            font-weight: normal;
+            line-height: 1.45;
+          }
+          .content {
+            @include horiFlex;
+            .avatar {
+              @include vertFlex;
+              margin-right: 40px;
+              div {
+                width: 80px;
+                height: 80px;
+                position: relative;
+                @include centerFlex;
+                border-radius: 50%;
+                img {
+                  @include wh100;
+                  border-radius: 50%;
+                }
+              }
+              button {
+                @include centerFlex;
+                position: relative;
+                height: 20px;
+                padding: 4px;
+                margin-top: 20px;
+                border: none;
+                background-color: transparent;
+                border-radius: 5px;
+                color: #5856d5;
+                cursor: pointer;
+                font-size: 14px;
+                outline: none;
+                text-align: center;
+                text-decoration: none;
+                transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
+                white-space: nowrap;
+                &:hover {
+                  background: #f8f8fd;
+                }
+              }
+            }
+            .info {
+              width: 338px;
+              .label {
+                font-size: 14px;
+                margin-bottom: 10px;
+                color: #92929c;
+              }
+              .editer {
+                @include horiFlex;
+                min-height: 22px;
+                justify-content: space-between;
+                align-items: center;
+                padding: 5px 8px;
+                background-color: #f4f4f5;
+                border-radius: 4px;
+                line-height: 20px;
+                margin-bottom: 28px;
+                .name {
+                  color: #1d1d1f;
+                  font-size: 16px;
+                }
+                .info-edit {
+                  position: relative;
+                  height: 20px;
+                  box-sizing: border-box;
+                  padding: 4px;
+                  @include centerFlex;
+                  border: none;
+                  background-color: transparent;
+                  border-radius: 4px;
+                  color: #5856d5;
+                  cursor: pointer;
+                  font-size: 14px;
+                  outline: none;
+                  text-align: center;
+                  text-decoration: none;
+                  transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
+                  white-space: nowrap;
+                  &:hover {
+                    background: #f8f8fd;
+                  }
+                }
+                .el-input__inner {
+                  height: 30px;
+                  font-size: 16px !important;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }
 .el-overlay {
   background-color: rgba(0,0,0,.2) !important;

@@ -63,8 +63,8 @@ const store = createStore({
     setTreeData (state, data) {
       state.treeData = data
     },
-    setNavigationLists (state, id) {
-      // 根据当前Id找到父文件夹
+    setUser (state, data) {
+      state.user = data
     },
     fetchUser (state, user) {
       console.log('[store] fetchUser ', user)
@@ -112,6 +112,20 @@ const store = createStore({
     },
     setUser ({ commit }, user) {
       return commit('setUser', user)
+    },
+    updateUser ({ commit, getters }, data) {
+      const url = `${API.editProfile}/${getters.getUser._id}`
+      const formData = new FormData()
+      formData.append('user', encodeURIComponent(JSON.stringify(data)))
+      // formData.append('age',18)
+      // formData.append('file',this.$refs.input.files[0])
+      return asyncAndCommit(url, 'setUser', commit, {
+        method: 'post',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data;'
+        }
+      })
     },
     postSetFolder ({ commit, getters }, data) {
       const url = `${API.setFolder}/${getters.getUser._id}`
