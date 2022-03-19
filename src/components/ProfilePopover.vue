@@ -48,7 +48,7 @@
   </el-popover>
   <el-dialog
     v-model="showSettings"
-    :append-to-body="true"
+    append-to-body
     :width="800"
     custom-class="profile-dialog"
   >
@@ -85,13 +85,36 @@
       </div>
     </div>
   </el-dialog>
+  <el-dialog
+    v-model="showEditAvatar"
+    append-to-body
+    :width="530"
+    title="编辑头像"
+    custom-class="profile-dialog avatar-dialog"
+  >
+    <div class="avatar-wrapper">
+      <img ref="mainImg" :src="user.avatar" alt="avatar" class="img-main">
+      <div class="right-imgs">
+        <img :src="user.avatar" alt="avatar-large" class="img-large">
+        <img :src="user.avatar" alt="avatar-medium" class="img-medium">
+        <img :src="user.avatar" alt="avatar-small" class="img-small">
+      </div>
+    </div>
+    <template #footer>
+      <el-button>选择图片</el-button>
+      <el-button>取消</el-button>
+      <el-button>保存头像</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
-import { computed, defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref, watch, onMounted, nextTick } from 'vue'
+import Cropper from 'cropperjs'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import SvgIcon from '@/components/SvgIcon.vue'
+import 'cropperjs/dist/cropper.css'
 import '@/assets/pic/settings.svg'
 import '@/assets/pic/logout.svg'
 import '@/assets/pic/skin.svg'
@@ -113,15 +136,26 @@ export default defineComponent({
     const router = useRouter()
     const user = computed(() => store.getters.getUser)
     const isDarkMode = ref(store.getters.isDark)
+    const mainImg = ref(false)
     const showSettings = ref(false)
+    const showEditAvatar = ref(false)
     const isEditName = ref(false)
     const editedName = ref(store.getters.getUser?.name || '')
+    let myCropper = null
+    onMounted(() => {
+    })
     watch(isDarkMode, () => {
       store.dispatch('toggleDarkMode')
     })
 
     const toggleShowSettings = () => {
       showSettings.value = !showSettings.value
+    }
+
+    const submit = () => {
+      myCropper.getCroppedCanvas({
+        imageSmoothingQuality: 'high'
+      }).toDataURL('image/jpeg')
     }
 
     const logout = () => {
@@ -136,7 +170,20 @@ export default defineComponent({
 
     const toggleSkin = () => {
     }
-    const onEditAvatar = () => {}
+    const onEditAvatar = () => {
+      showEditAvatar.value = !showEditAvatar.value
+      nextTick(() => {
+        myCropper = new Cropper(mainImg.value, {
+          viewMode: 1,
+          dragMode: 'none',
+          initialAspectRatio: 1,
+          aspectRatio: 1,
+          background: false,
+          autoCropArea: 1,
+          zoomOnWheel: false
+        })
+      })
+    }
     const toggleEditName = () => {
       if (isEditName.value && editedName.value) {
         // TODO 提交失败了怎么办
@@ -152,8 +199,9 @@ export default defineComponent({
     }
     return {
       // newName,
-      // showDeleteDialog,
+      mainImg,
       showSettings,
+      showEditAvatar,
       user,
       isDarkMode,
       isEditName,
@@ -162,7 +210,8 @@ export default defineComponent({
       logout,
       toggleSkin,
       onEditAvatar,
-      toggleEditName
+      toggleEditName,
+      submit
     }
   }
 })
@@ -280,7 +329,7 @@ export default defineComponent({
   border-radius: 4px !important;
   box-shadow: rgb(0 0 0 / 16%) 0px 2px 30px 0px !important;
   .el-dialog__body {
-    padding: 0 0 !important;
+    padding: 0 0;
     .settings {
       display: flex;
       width: 700px;
@@ -433,6 +482,49 @@ export default defineComponent({
         }
       }
     }
+    .avatar-wrapper {
+      @include horiFlex;
+      padding-top: 5px;
+      margin-bottom: 16px;
+      .img-main {
+        width: 318px;
+        height: 318px;
+        max-width: 100%;
+      }
+      .right-imgs {
+        @include vertFlex;
+        justify-content: flex-start;
+        display: flex;
+        width: 150px;
+        margin-left: 23px;
+        img {
+          margin-bottom: 14px;
+          overflow: hidden;
+        }
+        .img-large {
+          width: 150px;
+          height: 150px;
+        }
+        .img-medium {
+          width: 80px;
+          height: 80px;
+        }
+        .img-small {
+          width: 60px;
+          height: 60px;
+        }
+      }
+    }
+  }
+}
+.avatar-dialog {
+  padding: 20px 20px !important;
+  margin-top: 19vh !important;
+  .el-dialog__header {
+    padding-left: 0;
+  }
+  .el-dialog__footer {
+    padding: 0 0;
   }
 }
 .el-overlay {
