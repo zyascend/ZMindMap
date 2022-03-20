@@ -95,7 +95,7 @@
   >
     <div class="avatar-wrapper">
       <div class="main-img">
-        <img :src="user.avatar" alt="avatar" ref="mainImg">
+        <img :src="uploadedFile || user.avatar" alt="avatar" ref="mainImg">
       </div>
       <!-- <div class="right-imgs">
         <img :src="user.avatar" alt="avatar-large" class="img-large">
@@ -111,7 +111,7 @@
     <template #footer>
       <div class="footers">
         <div class="upload-btn">
-          <input type="file" accept=".png,.jpg,.gif">
+          <input type="file" accept=".png,.jpg,.gif" @change="fileChange($event)">
           <div class="upload-content">
             <svg-icon icon="upload" />
             <span>选择图片</span>
@@ -158,6 +158,8 @@ export default defineComponent({
     const showEditAvatar = ref(false)
     const isEditName = ref(false)
     const editedName = ref(store.getters.getUser?.name || '')
+    const uploadedFile = ref('')
+    let curFileName = ''
     let myCropper = null
     onMounted(() => {
     })
@@ -176,7 +178,7 @@ export default defineComponent({
       myCropper.getCroppedCanvas({
         imageSmoothingQuality: 'high'
       }).toBlob(blob => {
-        const file = new File([blob], `${user.value.name}_avatar.jpg`, { lastModified: Date.now() })
+        const file = new File([blob], curFileName, { lastModified: Date.now() })
         store.dispatch('updateUser', {
           user: {
             ...user.value,
@@ -184,7 +186,7 @@ export default defineComponent({
           },
           file
         }).then(() => {
-          isEditName.value = !isEditName.value
+          showEditAvatar.value = !showEditAvatar.value
         }).catch(e => {
           console.log(e)
         })
@@ -203,20 +205,23 @@ export default defineComponent({
 
     const toggleSkin = () => {
     }
+    const makeCropper = () => {
+      return new Cropper(mainImg.value, {
+        viewMode: 1,
+        dragMode: 'crop',
+        initialAspectRatio: 1,
+        aspectRatio: 1,
+        preview: document.querySelector('.right-imgs').children,
+        background: false,
+        autoCropArea: 1,
+        zoomOnWheel: true,
+        wheelZoomRatio: 0.2
+      })
+    }
     const onEditAvatar = () => {
       showEditAvatar.value = !showEditAvatar.value
       nextTick(() => {
-        myCropper = new Cropper(mainImg.value, {
-          viewMode: 1,
-          dragMode: 'crop',
-          initialAspectRatio: 1,
-          aspectRatio: 1,
-          preview: document.querySelector('.right-imgs').children,
-          background: false,
-          autoCropArea: 1,
-          zoomOnWheel: true,
-          wheelZoomRatio: 0.2
-        })
+        myCropper = makeCropper()
       })
     }
     const toggleEditName = () => {
@@ -235,11 +240,29 @@ export default defineComponent({
       }
     }
     const onAvatarDialogClose = () => {
+      // Dialog关闭后销毁Cropper实例
       myCropper.destroy()
       myCropper = null
     }
+    const fileChange = event => {
+      const file = event.target.files[0]
+      curFileName = file.name
+      const reader = new FileReader()
+      reader.onload = e => {
+        // 把获取到的图片展示
+        uploadedFile.value = e.target.result
+        // 新选择的图片展示完成后重新构造Cropper
+        nextTick(() => {
+          // 先销毁旧的Cropper
+          myCropper.destroy()
+          myCropper = null
+          myCropper = makeCropper()
+        })
+      }
+      reader.readAsDataURL(file)
+    }
     return {
-      // newName,
+      uploadedFile,
       mainImg,
       showSettings,
       showEditAvatar,
@@ -253,7 +276,8 @@ export default defineComponent({
       onEditAvatar,
       toggleEditName,
       submit,
-      onAvatarDialogClose
+      onAvatarDialogClose,
+      fileChange
     }
   }
 })
