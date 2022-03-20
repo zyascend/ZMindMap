@@ -116,9 +116,10 @@ const store = createStore({
     updateUser ({ commit, getters }, data) {
       const url = `${API.editProfile}/${getters.getUser._id}`
       const formData = new FormData()
-      formData.append('user', encodeURIComponent(JSON.stringify(data)))
-      // formData.append('age',18)
-      // formData.append('file',this.$refs.input.files[0])
+      formData.append('user', encodeURIComponent(JSON.stringify(data.user)))
+      if (data.file) {
+        formData.append('file', data.file)
+      }
       return asyncAndCommit(url, 'setUser', commit, {
         method: 'post',
         data: formData,

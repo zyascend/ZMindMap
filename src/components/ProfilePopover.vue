@@ -90,26 +90,42 @@
     append-to-body
     :width="530"
     title="编辑头像"
+    @close="onAvatarDialogClose"
     custom-class="profile-dialog avatar-dialog"
   >
     <div class="avatar-wrapper">
-      <img ref="mainImg" :src="user.avatar" alt="avatar" class="img-main">
-      <div class="right-imgs">
+      <div class="main-img">
+        <img :src="user.avatar" alt="avatar" ref="mainImg">
+      </div>
+      <!-- <div class="right-imgs">
         <img :src="user.avatar" alt="avatar-large" class="img-large">
         <img :src="user.avatar" alt="avatar-medium" class="img-medium">
         <img :src="user.avatar" alt="avatar-small" class="img-small">
+      </div> -->
+      <div class="right-imgs">
+        <div :src="user.avatar" alt="avatar-large" class="img-large"/>
+        <div :src="user.avatar" alt="avatar-large" class="img-medium"/>
+        <div :src="user.avatar" alt="avatar-large" class="img-small"/>
       </div>
     </div>
     <template #footer>
-      <el-button>选择图片</el-button>
-      <el-button>取消</el-button>
-      <el-button>保存头像</el-button>
+      <div class="footers">
+        <div class="upload-btn">
+          <input type="file" accept=".png,.jpg,.gif">
+          <div class="upload-content">
+            <svg-icon icon="upload" />
+            <span>选择图片</span>
+          </div>
+        </div>
+        <el-button>取消</el-button>
+        <el-button @click="submit" type="primary">保存头像</el-button>
+      </div>
     </template>
   </el-dialog>
 </template>
 
 <script>
-import { computed, defineComponent, ref, watch, onMounted, nextTick } from 'vue'
+import { computed, defineComponent, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
 import Cropper from 'cropperjs'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -119,6 +135,7 @@ import '@/assets/pic/settings.svg'
 import '@/assets/pic/logout.svg'
 import '@/assets/pic/skin.svg'
 import '@/assets/pic/triangle.svg'
+import '@/assets/pic/upload.svg'
 
 export default defineComponent({
   name: 'ProfilePopover',
@@ -144,6 +161,9 @@ export default defineComponent({
     let myCropper = null
     onMounted(() => {
     })
+    onUnmounted(() => {
+      console.log('onUnmounted')
+    })
     watch(isDarkMode, () => {
       store.dispatch('toggleDarkMode')
     })
@@ -155,7 +175,20 @@ export default defineComponent({
     const submit = () => {
       myCropper.getCroppedCanvas({
         imageSmoothingQuality: 'high'
-      }).toDataURL('image/jpeg')
+      }).toBlob(blob => {
+        const file = new File([blob], `${user.value.name}_avatar.jpg`, { lastModified: Date.now() })
+        store.dispatch('updateUser', {
+          user: {
+            ...user.value,
+            name: editedName.value
+          },
+          file
+        }).then(() => {
+          isEditName.value = !isEditName.value
+        }).catch(e => {
+          console.log(e)
+        })
+      })
     }
 
     const logout = () => {
@@ -175,12 +208,14 @@ export default defineComponent({
       nextTick(() => {
         myCropper = new Cropper(mainImg.value, {
           viewMode: 1,
-          dragMode: 'none',
+          dragMode: 'crop',
           initialAspectRatio: 1,
           aspectRatio: 1,
+          preview: document.querySelector('.right-imgs').children,
           background: false,
           autoCropArea: 1,
-          zoomOnWheel: false
+          zoomOnWheel: true,
+          wheelZoomRatio: 0.2
         })
       })
     }
@@ -188,14 +223,20 @@ export default defineComponent({
       if (isEditName.value && editedName.value) {
         // TODO 提交失败了怎么办
         store.dispatch('updateUser', {
-          ...user.value,
-          name: editedName.value
+          user: {
+            ...user.value,
+            name: editedName.value
+          }
         }).then(() => {
           isEditName.value = !isEditName.value
         })
       } else {
         isEditName.value = !isEditName.value
       }
+    }
+    const onAvatarDialogClose = () => {
+      myCropper.destroy()
+      myCropper = null
     }
     return {
       // newName,
@@ -211,7 +252,8 @@ export default defineComponent({
       toggleSkin,
       onEditAvatar,
       toggleEditName,
-      submit
+      submit,
+      onAvatarDialogClose
     }
   }
 })
@@ -486,10 +528,13 @@ export default defineComponent({
       @include horiFlex;
       padding-top: 5px;
       margin-bottom: 16px;
-      .img-main {
+      .main-img {
         width: 318px;
         height: 318px;
-        max-width: 100%;
+        img {
+          /* opacity: 0; */
+          max-width: 100%;
+        }
       }
       .right-imgs {
         @include vertFlex;
@@ -497,7 +542,7 @@ export default defineComponent({
         display: flex;
         width: 150px;
         margin-left: 23px;
-        img {
+        div {
           margin-bottom: 14px;
           overflow: hidden;
         }
@@ -525,6 +570,57 @@ export default defineComponent({
   }
   .el-dialog__footer {
     padding: 0 0;
+  }
+  .footers {
+    @include horiFlex;
+    align-items: center;
+    justify-content: flex-end;
+    .upload-btn {
+      width: 144px;
+      height: 40px;
+      display: inline-block;
+      line-height: 1;
+      cursor: pointer;
+      border: 1px solid #DCDFE6;
+      color: #606266;
+      text-align: center;
+      box-sizing: border-box;
+      font-weight: 500;
+      padding: 12px 20px;
+      font-size: 14px;
+      border-radius: 4px;
+      margin-right: 14px;
+      position: relative;
+      &:hover {
+        color: #409EFF;
+        border-color: #c6e2ff;
+        background-color: #ecf5ff;
+        .upload-content {
+          svg {
+            fill: #409EFF;
+          }
+        }
+      }
+      input {
+        position: absolute;
+        top: 0;
+        left: 0;
+        @include wh100;
+        opacity: 0;
+        z-index: 10;
+      }
+      .upload-content {
+        @include wh100;
+        @include horiFlex;
+        align-items: center;
+        justify-content: center;
+        svg {
+          width: 20px;
+          height: 20px;
+          margin-right: 5px;
+        }
+      }
+    }
   }
 }
 .el-overlay {
