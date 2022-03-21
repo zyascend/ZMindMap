@@ -69,7 +69,7 @@
             <div class="info">
               <p class="label">昵称</p>
               <div class="editer">
-                <p class="name" v-if="!isEditName">{{ editedName || '' }}</p>
+                <p class="name" v-if="!isEditName">{{ user?.name || user?.email || '' }}</p>
                 <el-input v-else v-model="editedName" autofocus/>
                 <button class="info-edit" @click="toggleEditName">
                   {{ isEditName ? '保存' : '修改' }}
@@ -90,22 +90,17 @@
     append-to-body
     :width="530"
     title="编辑头像"
-    @close="onAvatarDialogClose"
+    @closed="onAvatarDialogClose"
     custom-class="profile-dialog avatar-dialog"
   >
     <div class="avatar-wrapper">
       <div class="main-img">
-        <img :src="uploadedFile || user.avatar" alt="avatar" ref="mainImg">
+        <img :src="user.avatar" alt="avatar-edit" ref="mainImg">
       </div>
-      <!-- <div class="right-imgs">
-        <img :src="user.avatar" alt="avatar-large" class="img-large">
-        <img :src="user.avatar" alt="avatar-medium" class="img-medium">
-        <img :src="user.avatar" alt="avatar-small" class="img-small">
-      </div> -->
-      <div class="right-imgs">
-        <div :src="user.avatar" alt="avatar-large" class="img-large"/>
-        <div :src="user.avatar" alt="avatar-large" class="img-medium"/>
-        <div :src="user.avatar" alt="avatar-large" class="img-small"/>
+      <div class="right-imgs" ref="rightImg">
+        <div class="img-large"/>
+        <div class="img-medium"/>
+        <div class="img-small"/>
       </div>
     </div>
     <template #footer>
@@ -118,14 +113,14 @@
           </div>
         </div>
         <el-button>取消</el-button>
-        <el-button @click="submit" type="primary">保存头像</el-button>
+        <el-button @click="submit" type="primary" :loading="isSaving">{{ isSaving ? '正在保存':'保存头像' }}</el-button>
       </div>
     </template>
   </el-dialog>
 </template>
 
 <script>
-import { computed, defineComponent, ref, watch, onMounted, onUnmounted, nextTick } from 'vue'
+import { computed, defineComponent, ref, watch, nextTick, reactive, toRefs } from 'vue'
 import Cropper from 'cropperjs'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
@@ -153,41 +148,46 @@ export default defineComponent({
     const router = useRouter()
     const user = computed(() => store.getters.getUser)
     const isDarkMode = ref(store.getters.isDark)
-    const mainImg = ref(false)
-    const showSettings = ref(false)
-    const showEditAvatar = ref(false)
-    const isEditName = ref(false)
-    const editedName = ref(store.getters.getUser?.name || '')
-    const uploadedFile = ref('')
+    const mainImg = ref(null)
+    const rightImg = ref(null)
+    const editStatus = reactive({
+      showSettings: false,
+      showEditAvatar: false,
+      isEditName: false,
+      isSaving: false,
+      editedName: store.getters.getUser?.name || ''
+    })
+    // const showSettings = ref(false)
+    // const showEditAvatar = ref(false)
+    // const isEditName = ref(false)
+    // const editedName = ref()
     let curFileName = ''
     let myCropper = null
-    onMounted(() => {
-    })
-    onUnmounted(() => {
-      console.log('onUnmounted')
-    })
     watch(isDarkMode, () => {
       store.dispatch('toggleDarkMode')
     })
 
     const toggleShowSettings = () => {
-      showSettings.value = !showSettings.value
+      editStatus.showSettings = !editStatus.showSettings
     }
 
     const submit = () => {
+      editStatus.isSaving = true
       myCropper.getCroppedCanvas({
         imageSmoothingQuality: 'high'
       }).toBlob(blob => {
-        const file = new File([blob], curFileName, { lastModified: Date.now() })
+        const file = new File([blob], curFileName)
         store.dispatch('updateUser', {
           user: {
             ...user.value,
-            name: editedName.value
+            name: editStatus.editedName
           },
           file
         }).then(() => {
-          showEditAvatar.value = !showEditAvatar.value
+          editStatus.isSaving = false
+          editStatus.showEditAvatar = !editStatus.showEditAvatar
         }).catch(e => {
+          editStatus.isSaving = false
           console.log(e)
         })
       })
@@ -206,40 +206,46 @@ export default defineComponent({
     const toggleSkin = () => {
     }
     const makeCropper = () => {
-      return new Cropper(mainImg.value, {
+      myCropper = new Cropper(mainImg.value, {
         viewMode: 1,
         dragMode: 'crop',
         initialAspectRatio: 1,
         aspectRatio: 1,
-        preview: document.querySelector('.right-imgs').children,
+        preview: rightImg.value.children,
         background: false,
         autoCropArea: 1,
         zoomOnWheel: true,
         wheelZoomRatio: 0.2
       })
+      // ! 保证每次裁剪最新上传的图片
+      myCropper.replace(user.value.avatar)
     }
     const onEditAvatar = () => {
-      showEditAvatar.value = !showEditAvatar.value
+      editStatus.showEditAvatar = !editStatus.showEditAvatar
       nextTick(() => {
-        myCropper = makeCropper()
+        // ? mainImg 不能跟随user的改变自动刷新
+        // ? display: none导致丧失响应能力？
+        // mainImg.value.src = user.value.avatar
+        makeCropper()
       })
     }
     const toggleEditName = () => {
-      if (isEditName.value && editedName.value) {
+      if (editStatus.isEditName && editStatus.editedName) {
         // TODO 提交失败了怎么办
         store.dispatch('updateUser', {
           user: {
             ...user.value,
-            name: editedName.value
+            name: editStatus.editedName
           }
         }).then(() => {
-          isEditName.value = !isEditName.value
+          editStatus.isEditName = !editStatus.isEditName
         })
       } else {
-        isEditName.value = !isEditName.value
+        editStatus.isEditName = !editStatus.isEditName
       }
     }
     const onAvatarDialogClose = () => {
+      console.log('onAvatarDialogClose> ')
       // Dialog关闭后销毁Cropper实例
       myCropper.destroy()
       myCropper = null
@@ -250,34 +256,24 @@ export default defineComponent({
       const reader = new FileReader()
       reader.onload = e => {
         // 把获取到的图片展示
-        uploadedFile.value = e.target.result
-        // 新选择的图片展示完成后重新构造Cropper
-        nextTick(() => {
-          // 先销毁旧的Cropper
-          myCropper.destroy()
-          myCropper = null
-          myCropper = makeCropper()
-        })
+        myCropper.replace(e.target.result)
       }
       reader.readAsDataURL(file)
     }
     return {
-      uploadedFile,
       mainImg,
-      showSettings,
-      showEditAvatar,
+      rightImg,
       user,
       isDarkMode,
-      isEditName,
-      editedName,
-      toggleShowSettings,
+      ...toRefs(editStatus),
       logout,
+      submit,
+      fileChange,
       toggleSkin,
       onEditAvatar,
       toggleEditName,
-      submit,
-      onAvatarDialogClose,
-      fileChange
+      toggleShowSettings,
+      onAvatarDialogClose
     }
   }
 })
