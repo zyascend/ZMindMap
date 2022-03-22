@@ -24,7 +24,14 @@
             <el-input v-model="loginForm.pwd" type="password" placeholder="请输入密码"></el-input>
           </el-form-item>
         </el-form>
-        <el-button type="primary" @click="submitForm" class="btn">{{isLogin ? '登录' : '注册'}}</el-button>
+        <el-button
+          type="primary"
+          @click="submitForm"
+          native-type="submit"
+          :loading="isSubmitting"
+          class="btn">
+          {{isLogin ? '登录' : '注册'}}
+        </el-button>
       </div>
     </div>
   </div>
@@ -47,11 +54,13 @@ export default defineComponent({
     })
     const loginFormRef = ref()
     const isLogin = ref(true)
+    const isSubmitting = ref(false)
     // 定义校验规则
     const rules = reactive(useLogin.loginRules)
     const submitForm = () => {
       loginFormRef.value.validate(valid => {
         if (valid) {
+          isSubmitting.value = true
           store.dispatch('login', {
             loginForm: {
               ...loginForm,
@@ -60,10 +69,11 @@ export default defineComponent({
             isLogin: isLogin.value
           })
             .then(() => {
+              isSubmitting.value = false
               router.push({ path: '/', replace: true })
             })
             .catch(e => {
-              console.log(e)
+              isSubmitting.value = false
             })
         } else {
           return false
@@ -78,6 +88,7 @@ export default defineComponent({
       loginForm,
       rules,
       isLogin,
+      isSubmitting,
       toggleSign,
       submitForm
     }
