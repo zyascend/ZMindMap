@@ -55,5 +55,3 @@ jobs:
             tar -zxvf mindmap.tar.gz
             mv dist mindmap
             rm -rf mindmap.tar.gz
-            #rm -rf /var/html/webapp
-            #mv dist /var/html/webapp

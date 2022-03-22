@@ -3,7 +3,7 @@ import store from '../store'
 import useDrawMap from './useDrawMap'
 
 export class TreeDataCreater {
-  constructor ({ measureSvg, treeStyle, gapY = 14, gapX = 60, maxNodeWidth = 350 } = {}) {
+  constructor ({ measureSvg, treeStyle, gapY = 14, gapX = 60, maxNodeWidth = 250 } = {}) {
     this.measureSvg = measureSvg
     this.treeStyle = treeStyle
     this.gapY = gapY
