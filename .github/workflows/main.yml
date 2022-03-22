@@ -32,12 +32,12 @@ jobs:
 
       - name: Tar dist file
         run: |
-          tar -zcvf mindmap1.tar.gz dist # 打包dist文件夹
+          tar -zcvf mindmap.tar.gz dist # 打包dist文件夹
       - name: Scp_upload_tar_file # 上传至服务器
         uses: garygrossgarten/github-action-scp@release
         with:
-          local: 'mindmap1.tar.gz'
-          remote: '/www/wwwroot/mindmap1.tar.gz'
+          local: 'mindmap.tar.gz'
+          remote: '/www/wwwroot/mindmap.tar.gz'
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
@@ -51,7 +51,9 @@ jobs:
           port: ${{ secrets.PORT }}
           script: |
             cd /www/wwwroot/
-            rm -rf mindmap1
-            tar -zxvf mindmap1.tar.gz
+            rm -rf mindmap
+            tar -zxvf mindmap.tar.gz
+            mv dist mindmap
+            rm -rf mindmap.tar.gz
             #rm -rf /var/html/webapp
             #mv dist /var/html/webapp

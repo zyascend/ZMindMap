@@ -21,5 +21,11 @@ module.exports = {
       .end()
       .use('file-loader')
       .loader('file-loader')
+    config
+      .plugin('html')
+      .tap(args => {
+        args[0].title = 'ZMind思维导图'
+        return args
+      })
   }
 }
