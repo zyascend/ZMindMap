@@ -1,6 +1,7 @@
 const path = require('path')
 const IS_PROD = process.env.NODE_ENV === 'production'
 module.exports = {
+  publicPath: 'https://cdn.kimjisoo.cn/',
   chainWebpack: config => {
     if (IS_PROD) {
       config.optimization.splitChunks({
@@ -22,7 +23,7 @@ module.exports = {
             reuseExistingChunk: true,
             enforce: true
           },
-          antDesignVue: {
+          elementui: {
             name: 'chunk-ele',
             test: /[\\/]node_modules[\\/]element-plus[\\/]/,
             chunks: 'initial',
@@ -33,7 +34,6 @@ module.exports = {
         }
       })
     }
-    // svg
     const svgRule = config.module.rule('svg')
     svgRule.uses.clear()
     svgRule
