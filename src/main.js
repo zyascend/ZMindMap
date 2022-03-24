@@ -3,7 +3,7 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 import {
-  ElTooltip, ElForm, ElFormItem, ElRow, ElCol, ElButton, ElInput,
+  ElTooltip, ElForm, ElFormItem, ElButton, ElInput,
   ElMessage, ElTree, ElTable, ElTableColumn, ElPopover, ElDialog,
   ElSwitch
 } from 'element-plus'
@@ -16,8 +16,6 @@ app.component(ElTooltip.name, ElTooltip)
 app.component(ElDialog.name, ElDialog)
 app.component(ElForm.name, ElForm)
 app.component(ElFormItem.name, ElFormItem)
-app.component(ElRow.name, ElRow)
-app.component(ElCol.name, ElCol)
 app.component(ElButton.name, ElButton)
 app.component(ElInput.name, ElInput)
 app.component(ElMessage.name, ElMessage)
@@ -26,5 +24,6 @@ app.component(ElTable.name, ElTable)
 app.component(ElTableColumn.name, ElTableColumn)
 app.component(ElPopover.name, ElPopover)
 app.component(ElSwitch.name, ElSwitch)
+// app.component(ElSkeleton.name, ElSkeleton)
 
 app.use(store).use(router).mount('#app')

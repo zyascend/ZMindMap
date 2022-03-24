@@ -39,7 +39,7 @@
 
 <script>
 import { ref, defineComponent, reactive } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 import { useStore } from 'vuex'
 import md5 from 'js-md5'
 import useLogin from '../hooks/useLogin'
@@ -47,6 +47,7 @@ import useLogin from '../hooks/useLogin'
 export default defineComponent({
   setup () {
     const router = useRouter()
+    const route = useRoute()
     const store = useStore()
     const loginForm = reactive({
       email: '',
@@ -70,7 +71,7 @@ export default defineComponent({
           })
             .then(() => {
               isSubmitting.value = false
-              router.push({ path: '/', replace: true })
+              router.replace({ path: route?.query?.redirect || '/' })
             })
             .catch(e => {
               isSubmitting.value = false

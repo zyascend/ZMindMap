@@ -22,21 +22,7 @@
     </header>
     <note v-if="!showMap && content" v-model:content="content" />
     <mind-map v-if="showMap && content" v-model:content="content" />
-    <!-- <div class="toolbar">
-      <el-tooltip
-        class="tool-item"
-        effect="light"
-        content="适应当前大小"
-        popper-class="popper"
-        placement="left">
-        <div class="" @click="fitView">
-          <img :src="ICON_FITVIEW" alt="">
-        </div>
-      </el-tooltip>
-    </div>
-    <div class="tool-item">
-      <img :src="ICON_THEME" alt="">
-    </div> -->
+    <!-- <el-skeleton v-show="content" rows="5" animated/> -->
   </div>
 </template>
 <script>
