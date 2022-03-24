@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import store from '@/store/index'
 import Home from '../views/Home.vue'
-import Edit from '@/views/Edit.vue'
+// import Edit from '@/views/Edit.vue'
 import Folder from '@/views/Folder.vue'
 
 const routes = [
@@ -19,7 +19,7 @@ const routes = [
         // 当 /user/:id/profile 匹配成功
         // UserProfile 将被渲染到 User 的 <router-view> 内部
         path: 'edit/:id',
-        component: Edit
+        component: () => import(/* webpackChunkName: "3rd-patch" */ '@/views/Edit.vue')
       },
       {
         // 当 /user/:id/posts 匹配成功

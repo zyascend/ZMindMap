@@ -1,6 +1,38 @@
 const path = require('path')
+const IS_PROD = process.env.NODE_ENV === 'production'
 module.exports = {
   chainWebpack: config => {
+    if (IS_PROD) {
+      config.optimization.splitChunks({
+        cacheGroups: {
+          common: {
+            name: 'chunk-common',
+            chunks: 'initial',
+            minChunks: 2,
+            maxInitialRequests: 5,
+            minSize: 0,
+            priority: 1,
+            reuseExistingChunk: true
+          },
+          vendors: {
+            name: 'chunk-vendors',
+            test: /[\\/]node_modules[\\/]/,
+            chunks: 'initial',
+            priority: 2,
+            reuseExistingChunk: true,
+            enforce: true
+          },
+          antDesignVue: {
+            name: 'chunk-ele',
+            test: /[\\/]node_modules[\\/]element-plus[\\/]/,
+            chunks: 'initial',
+            priority: 3,
+            reuseExistingChunk: true,
+            enforce: true
+          }
+        }
+      })
+    }
     // svg
     const svgRule = config.module.rule('svg')
     svgRule.uses.clear()
