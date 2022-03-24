@@ -51,7 +51,8 @@ const errorHandle = (status, other) => {
 // 创建axios实例
 var instance = axios.create({
   timeout: 1000 * 12,
-  baseURL: process.env.NODE_ENV === 'production' ? 'http://mapapi.kimjisoo.cn' : 'http://localhost:3003'
+  // TODO 如何动态获取域名？
+  baseURL: process.env.NODE_ENV === 'production' ? 'https://mapapi.kimjisoo.cn' : 'http://localhost:3003'
 })
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/json'
