@@ -67,6 +67,7 @@ export default defineComponent({
         noteList: originData.value
       })
     }
+    // 折叠or打开节点
     const onCollapse = _id => {
       originData.value = toggleCollapse(_id, originData.value)
       noteList.value = flatter(originData.value)
@@ -86,7 +87,6 @@ export default defineComponent({
     }
     const onTabNode = (node, event) => {
       const { data, newId } = tabNode(node, event, originData.value)
-      console.log('onTabNode', data, newId)
       originData.value = data
       noteList.value = flatter(originData.value)
       nextTick(() => {
@@ -99,11 +99,25 @@ export default defineComponent({
       const { data, newId } = addNewNode(node, event, originData.value)
       originData.value = data
       noteList.value = flatter(originData.value)
-      console.log('addNewNode: >', node, originData.value, newId)
       nextTick(() => {
         moveToLastFocus(`note-node-${newId}`)
       })
       emitUpdate()
+    }
+    const onUpDownArrow = (event, node) => {
+      event.preventDefault()
+      let target = -1
+      const code = event.keyCode
+      for (const index in noteList.value) {
+        if (noteList.value[index].id === node.id) {
+          target = Number(index)
+          break
+        }
+      }
+      // 遇到头和尾的节点无法再移动
+      if ((code === 38 && target !== 0) || (code === 40 && target !== noteList.value.length - 1)) {
+        moveToLastFocus(`note-node-${noteList.value[code === 38 ? target - 1 : target + 1].id}`)
+      }
     }
     const onKeyDown = (event, node) => {
       switch (event.keyCode) {
@@ -118,6 +132,11 @@ export default defineComponent({
         case 9:
           // Tab键处理逻辑
           onTabNode(node, event)
+          break
+        case 38:
+        case 40:
+          // 上下键处理逻辑
+          onUpDownArrow(event, node)
           break
         default:
           break
@@ -137,12 +156,11 @@ export default defineComponent({
       }
       update(originData.value)
       emitUpdate()
-    }, 1000)
+    }, 500)
     const onNameInput = debounce((event) => {
-      console.log('onNameInput', event.target.innerText)
       contentName.value = event.target.innerText
       emitUpdate()
-    }, 1000)
+    }, 500)
     return {
       noteList,
       contentName,

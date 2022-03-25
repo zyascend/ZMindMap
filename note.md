@@ -41,4 +41,5 @@ https://www.cnblogs.com/eightFlying/p/cropper-demo.html
 
 ### chunk-vendors太大了怎么办?
   - splitChunks：elementUI单独打包900kb--->300kb
-  - publicPath: 'cdn' 
+  - publicPath: 'cdn' ----->干扰了路由：https://blog.csdn.net/weixin_29491885/article/details/119253898
+  解决：修改createWebHistory()
