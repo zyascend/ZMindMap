@@ -1,7 +1,7 @@
 const path = require('path')
 const IS_PROD = process.env.NODE_ENV === 'production'
 module.exports = {
-  publicPath: 'https://cdn.kimjisoo.cn/',
+  publicPath: IS_PROD ? 'https://cdn.kimjisoo.cn/' : '/',
   chainWebpack: config => {
     if (IS_PROD) {
       config.optimization.splitChunks({

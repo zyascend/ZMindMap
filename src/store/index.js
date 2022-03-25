@@ -82,8 +82,7 @@ const store = createStore({
     },
     logout (state) {
       state.token = ''
-      localStorage.removeItem('token')
-      localStorage.removeItem('vuex')
+      localStorage.clear()
     }
   },
   actions: {
