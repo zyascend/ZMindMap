@@ -38,3 +38,7 @@ https://www.cnblogs.com/gaofz/p/11995001.html
 
 > TODO 头像上传裁剪
 https://www.cnblogs.com/eightFlying/p/cropper-demo.html
+
+### chunk-vendors太大了怎么办?
+  - splitChunks：elementUI单独打包900kb--->300kb
+  - publicPath: 'cdn' 
