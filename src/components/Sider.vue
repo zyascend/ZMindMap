@@ -73,12 +73,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '@/assets/css/mixin';
+@import '@/assets/css/handler';
 .sidebar {
   @include wh100;
   @include vertFlex;
+  /* @include bg-color(bc_sidebar); */
+  @include background_color(bc_sidebar);
   position: fixed;
-  background-color: #f4f4f5;
   border-right: 1px #dedee1 solid;
   box-sizing: border-box;
   transition: 0.3s ease all;
@@ -114,7 +115,7 @@ export default defineComponent({
       z-index: 100;
       box-sizing: border-box;
       border: 1px solid #5856d5;
-      background-color: #ffffff;
+      @include background_color(bc_collapser);
       border-radius: 100%;
       cursor: pointer;
       transform: translateX(-50%) translateY(-50%) rotateY(0deg);

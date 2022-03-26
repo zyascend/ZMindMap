@@ -165,6 +165,9 @@ export default defineComponent({
     let myCropper = null
     watch(isDarkMode, () => {
       store.dispatch('toggleDarkMode')
+      const mode = isDarkMode.value ? 'dark' : 'light'
+      window.document.documentElement.setAttribute('data-theme', mode)
+      console.log('toggleSkin', isDarkMode.value)
     })
 
     const toggleShowSettings = () => {
@@ -203,8 +206,6 @@ export default defineComponent({
       })
     }
 
-    const toggleSkin = () => {
-    }
     const makeCropper = () => {
       myCropper = new Cropper(mainImg.value, {
         viewMode: 1,
@@ -269,7 +270,6 @@ export default defineComponent({
       logout,
       submit,
       fileChange,
-      toggleSkin,
       onEditAvatar,
       toggleEditName,
       toggleShowSettings,
