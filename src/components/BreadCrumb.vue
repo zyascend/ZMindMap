@@ -35,7 +35,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import '../assets/css/mixin';
+@import '../assets/css/handler';
 .bread-wrapper {
   width: 100%;
   @include horiFlex;
@@ -47,7 +47,7 @@ export default defineComponent({
     box-sizing: border-box;
     padding: 0px 4px;
     border-radius: 4px;
-    color: #92929c;
+    @include font_color(fc_bread);
     cursor: pointer;
     font-size: 16px;
     line-height: 22px;
@@ -55,7 +55,7 @@ export default defineComponent({
     white-space: nowrap;
   }
   .link-active {
-    color: #1d1d1f;
+    @include font_color(fc_bread_active);
   }
   .icon {
     width: 14px;

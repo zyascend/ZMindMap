@@ -3,9 +3,9 @@
     <div class="header">
       <bread-crumb :list="navigationList" />
       <div class="btn-wrapper">
-        <button class="btn-show" @click="onToggleStyle">
+        <div class="btn-show" @click="onToggleStyle">
           <SvgIcon class="icon" :icon="showTable ? 'table':'grid'" />
-        </button>
+        </div>
       </div>
     </div>
     <el-table
@@ -119,7 +119,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import '@/assets/css/mixin';
+@import '@/assets/css/handler';
 .container {
   @include wh100;
   transition: 0.3s ease all;
@@ -131,10 +131,11 @@ export default defineComponent({
     justify-content: space-between;
     padding: 31px 16px 9px 8px;
     .btn-wrapper {
-      position: relative;
       @include horiFlex;
+      position: relative;
       align-items: center;
-      border: 1px solid rgb(201, 201, 206);
+      border: 1px solid;
+      @include border_color(bdc_show_btn);
       margin-left: 10px;
       border-radius: 4px;
       cursor: pointer;
@@ -149,18 +150,16 @@ export default defineComponent({
         justify-content: center;
         padding: 0px 8px;
         border: none;
-        color: #1d1d1f;
         cursor: pointer;
         font-size: 14px;
         outline: none;
         text-align: center;
         text-decoration: none;
         border-radius: 4px;
-        background-color: #ffffff;
         .icon {
           width: 14px;
           height: 14px;
-          fill: #1d1d1f;
+          @include fill_color(fc_girdtable);
         }
       }
     }
@@ -186,8 +185,9 @@ export default defineComponent({
       transition: box-shadow 100ms linear 0s;
       box-sizing: border-box;
       &:hover {
-        border: 1px solid #dedee1;
-        background-color: #f4f4f5;
+        border: 1px solid;
+        @include background_color(bc_griditem_hover);
+        @include border_color(bdc_grid);
         box-shadow: rgb(17 34 51 / 15%) 0px 4px 8px;
         .popover {
           .more {
@@ -198,7 +198,7 @@ export default defineComponent({
       span {
         width: 123px;
         height: 40px;
-        color: #2c2c2f;
+        @include font_color(fc_grid);
         font-size: 14px;
         line-height: 20px;
         text-align: center;
@@ -245,11 +245,23 @@ export default defineComponent({
     }
   }
   .el-table {
+    background-color: transparent !important;
     &::before {
       height: 0;
     }
     td {
       border-bottom: none;
+    }
+    th.is-leaf {
+      @include border_color(bdc_table_divider);
+    }
+    tr,th {
+      background-color: transparent;
+      &:hover {
+        td {
+          @include background_color(bc_td_hover);
+        }
+      }
     }
   }
   .empty {

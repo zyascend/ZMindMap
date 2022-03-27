@@ -280,7 +280,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/assets/css/mixin";
+@import "@/assets/css/handler";
 .profile {
   width: 100%;
   @include horiFlex;
@@ -302,9 +302,10 @@ export default defineComponent({
     align-items: center;
     cursor: pointer;
     &:hover {
-      background-color: #e9e9eb;
+      @include background_color(bc_hover_nickname);
     }
     &>p {
+      @include font_color(fc_nickname);
       font-size: 14px;
       overflow: hidden;
       max-width: 140px;
@@ -314,6 +315,7 @@ export default defineComponent({
       line-height: 24px;
     }
     &>svg {
+      @include fill_color(fc_nickname);
       height: 10px;
       width: 10px;
       transform: rotate(-90deg);
@@ -324,10 +326,12 @@ export default defineComponent({
   height: 1px;
   margin: 4px 5px;
   box-sizing: border-box;
-  background-color: #e9e9eb;
+  @include background_color(bc_divider);
 }
 .profile-popover {
   padding: 0px 20px 10px 20px !important;
+  @include background_color(bc_popover);
+  border: none !important;
   .info {
     @include vertFlex;
     margin: 30px 0px 30px;
@@ -350,10 +354,12 @@ export default defineComponent({
       -webkit-line-clamp: 1;
       text-overflow: ellipsis;
       word-break: break-all;
+      @include font_color(fc_nickname);
     }
   }
   .pop-item {
     @include horiFlex;
+    @include font_color(fc_nickname);
     width: 100%;
     position: relative;
     align-items: center;
@@ -389,6 +395,7 @@ export default defineComponent({
 }
 .profile-dialog {
   border-radius: 4px !important;
+  @include background_color(bc_dialog_right);
   box-shadow: rgb(0 0 0 / 16%) 0px 2px 30px 0px !important;
   .el-dialog__body {
     padding: 0 0;
@@ -404,7 +411,9 @@ export default defineComponent({
         top: 0px;
         height: 100%;
         padding-top: 40px;
-        border-right: 1px solid #dedee1;
+        border-right: 1px solid;
+        @include border_color(bdc_dialog_left);
+        @include background_color(bc_dialog_left);
         background: #f4f4f5;
         border-bottom-left-radius: 4px;
         border-top-left-radius: 4px;
@@ -439,6 +448,7 @@ export default defineComponent({
         width: 557px;
         flex: 1 1 0%;
         margin-left: 140px;
+        box-sizing: border-box;
         .user-message {
           min-height: 534px;
           padding: 10px 60px 0px 40px;
@@ -449,7 +459,7 @@ export default defineComponent({
             -webkit-box-align: center;
             align-items: center;
             margin-bottom: 12px;
-            color: #1d1d1f;
+            @include font_color(fc_normal);
             font-size: 18px;
             font-weight: normal;
             line-height: 1.45;

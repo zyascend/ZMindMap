@@ -1,5 +1,5 @@
 ![logo](https://cdn.kimjisoo.cn/pic/logo.png)  
-**仿[幕布](mubu.com)思维导图。**
+**仿[幕布](https://mubu.com)思维导图。**
 
 预览地址：[ZMind思维导图](https://map.kimjisoo.cn)
 

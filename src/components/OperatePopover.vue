@@ -151,7 +151,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/assets/css/mixin";
+@import "@/assets/css/handler";
 .more {
   padding: 0px 4px;
   margin-right: 4px;
@@ -163,18 +163,21 @@ export default defineComponent({
     background: #0000000d;
   }
   &>svg {
+    @include fill_color(fc_nickname);
     width: 20px;
     height: 20px;
   }
 }
 .op-popper {
   padding: 7px 0 !important;
+  @include background_color(bc_popover);
+  border: none !important;
   .pop-item {
     @include horiFlex;
+    @include font_color(fc_nickname);
     width: 100%;
     position: relative;
     align-items: center;
-    color: #1d1d1f;
     cursor: pointer;
     font-size: 14px;
     height: 32px;
@@ -182,12 +185,12 @@ export default defineComponent({
     box-sizing: border-box;
     padding: 0px 10px;
     &:hover {
-      background-color: rgb(0 0 0 / 3%);
+      @include background_color(bc_pop_hover);
     }
     svg {
       width: 20px;
       height: 20px;
-      fill: #75757d;
+      @include fill_color(fc_nickname);
     }
     span {
       margin-left: 12px;

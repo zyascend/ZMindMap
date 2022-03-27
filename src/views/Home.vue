@@ -5,7 +5,7 @@
         <profile-popover />
         <div class="inputer">
           <div class="input-wrapper">
-            <SvgIcon class="icon" icon="search" />
+            <SvgIcon icon="search" />
             <input type="text" class="" placeholder="全局搜索" value="">
           </div>
           <div class="adder">
@@ -143,7 +143,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/assets/css/mixin";
+@import "@/assets/css/handler";
 .main {
   position: relative;
   @include wh100;
@@ -158,7 +158,7 @@ export default defineComponent({
       @include centerFlex;
       padding: 5px 6px;
       border: 1px solid transparent;
-      background-color: #e9e9eb;
+      @include background_color(bc_input);
       border-radius: 4px;
       &:hover{
         border: 1px solid #8a89e2;
@@ -169,11 +169,16 @@ export default defineComponent({
         padding: 1px;
         border: none;
         margin: 0px 0px 0px 4px;
-        background-color: rgb(233, 233, 235);
-        color: rgb(146, 146, 156);
+        background-color: transparent;
+        @include font_color(fc_input);
         font-size: 13px;
         line-height: 18px;
         outline: none;
+      }
+      svg {
+        width: 14px;
+        height: 14px;
+        @include fill_color(fc_input);
       }
     }
     .adder {
@@ -185,7 +190,7 @@ export default defineComponent({
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      background-color: #2c2c2f;
+      @include background_color(bc_adder);
       border-radius: 16px;
       cursor: pointer;
       &>svg {
@@ -212,7 +217,7 @@ export default defineComponent({
     padding: 2px 8px;
     margin: 5px 8px;
     border-radius: 6px;
-    color: #75757d;
+    @include font_color(fc_side_link);
     font-size: 14px;
     transition: background 0.1s ease-in-out 0s, color 0.1s ease-in-out 0s;
     user-select: none;
@@ -221,37 +226,38 @@ export default defineComponent({
       margin: 5px 8px;
     }
     &:hover {
-      background-color: #deddf7;
-      color: $color-base;
+      @include background_color(bc_side_link_hover);
+      @include font_color(fc_side_link_hover);
       .icon {
-        fill: $color-base;
+        @include fill_color(fc_side_link_hover);
       }
     }
     .icon {
       width: 20px;
       height: 20px;
       margin-right: 8px;
-      fill: #75757d;
+      @include fill_color(fc_side_link);
     }
   }
   .folder-active {
-    background-color: #deddf7;
-    color: $color-base;
+    @include background_color(bc_side_link_active);
+    @include font_color(fc_side_link_active);
     .icon {
-      fill: $color-base;
+      @include fill_color(fc_side_link_active);
     }
   }
   .el-tree {
-    background-color: #F5F7FA;
+    background-color: transparent;
+    .el-tree-node:focus>.el-tree-node__content {
+      background-color: transparent !important;
+    }
     .el-tree-node__content {
       height: auto;
-      background-color: #F5F7FA;
       .el-tree-node__expand-icon {
         margin-left: 10px;
-        /* margin-right: 4px; */
       }
       &:hover {
-        background-color: #e9e9eb;
+        @include background_color(bc_tree_node_hover);
         .more {
           visibility: visible;
         }
@@ -268,7 +274,7 @@ export default defineComponent({
     position: relative;
     .link {
       flex: 1;
-      color: #75757d;
+      @include font_color(fc_tree_node);
       height: 32px;
       @include horiFlex;
       align-items: center;
@@ -297,12 +303,14 @@ export default defineComponent({
 }
 .add-popper {
   padding: 7px 0 !important;
+  @include background_color(bc_popover);
+  border: none !important;
   .pop-item {
     @include horiFlex;
     width: 100%;
     position: relative;
     align-items: center;
-    color: #1d1d1f;
+    @include font_color(fc_nickname);
     cursor: pointer;
     font-size: 14px;
     height: 32px;
@@ -310,12 +318,12 @@ export default defineComponent({
     box-sizing: border-box;
     padding: 0px 10px;
     &:hover {
-      background-color: rgb(0 0 0 / 3%);
+      @include background_color(bc_pop_hover);
     }
     svg {
       width: 20px;
       height: 20px;
-      fill: #75757d;
+      @include fill_color(fc_nickname);
     }
     span {
       margin-left: 12px;

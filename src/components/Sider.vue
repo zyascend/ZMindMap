@@ -129,6 +129,7 @@ export default defineComponent({
 }
 .content {
   @include wh100;
+  @include background_color(bc_content);
   position: relative;
   transition: all .2s ease-in-out;
 }

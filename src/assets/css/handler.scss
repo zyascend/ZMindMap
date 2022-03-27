@@ -33,6 +33,13 @@
   }
 }
 
+//获取字体颜色
+@mixin fill_color($color) {
+  @include themeify {
+    fill: themed($color) !important;
+  }
+}
+
 //获取边框颜色
 @mixin border_color($color) {
   @include themeify {
