@@ -52,6 +52,8 @@ const store = createStore({
     },
     toggleDarkMode (state) {
       state.isDark = !state.isDark
+      const mode = state.isDark ? 'dark' : 'light'
+      window.document.documentElement.setAttribute('data-theme', mode)
     },
     setRefs (state, refs) {
       console.log('store setRefs', refs)

@@ -1,23 +1,18 @@
-//当HTML的data-theme为dark时，样式引用dark
-//data-theme为其他值时，就采用组件库的默认样式
-//这里我只定义了两套主题方案，想要再多只需在`$themes`里加就行了
-//注意一点是，每套配色方案里的key可以自定义但必须一致，不然就会混乱
-
 $themes: (
   light: (
     //字体
+    fc_pop: #1d1d1f,
+    fc_normal: #1d1d1f,
     fc_nickname: #1d1d1f,
-    fc_grid: #2c2c2f,
-    fc_bread: #92929c,
-    fc_bread_active: #1d1d1f,
     fc_girdtable: #1d1d1f,
+    fc_bread_active: #1d1d1f,
     fc_side_link: #75757d,
+    fc_tree_node: #75757d,
     fc_side_link_hover: #5856d5,
     fc_side_link_active: #5856d5,
-    fc_tree_node: #75757d,
-    fc_pop: #1d1d1f,
     fc_input: #92929c,
-    fc_normal: #1d1d1f,
+    fc_grid: #2c2c2f,
+    fc_bread: #92929c,
 
     //背景
     bc_sidebar: #f4f4f5,
@@ -37,27 +32,28 @@ $themes: (
     bc_adder: #2c2c2f,
     bc_dialog_left: #f4f4f5,
     bc_dialog_right: #fff,
+    bc_avatar_btn_hover:#f8f8fd,
 
-
+    // border 
     bdc_grid: #dedee1,
     bdc_show_btn: #c9c9ce,
     bdc_table_divider: #dedee1,
     bdc_dialog_left: #dedee1,
   ),
   dark: (
-    //字体 #e9e9eb;#66666d
+    //字体 
+    fc_normal: #f4f4f5,
+    fc_pop: #f4f4f5,
     fc_nickname: #f4f4f5,
-    fc_grid: #fff,
-    fc_bread: #9d9da6,
     fc_bread_active: #f4f4f5,
-    fc_girdtable: #c9c9ce,
-    fc_side_link: #c9c9ce,
     fc_side_link_hover: #f4f4f5,
     fc_side_link_active: #f4f4f5,
-    fc_tree_node: #dedee1,
-    fc_pop: #f4f4f5,
+    fc_bread: #9d9da6,
     fc_input: #9d9da6,
-    fc_normal: #f4f4f5,
+    fc_grid: #fff,
+    fc_girdtable: #c9c9ce,
+    fc_side_link: #c9c9ce,
+    fc_tree_node: #dedee1,
     //背景
     bc_sidebar: #2c2c2f,
     bc_content: #1d1d1f,
@@ -76,7 +72,7 @@ $themes: (
     bc_adder: #5856d5,
     bc_dialog_left: #2c2c2f,
     bc_dialog_right: #49494e,
-
+    bc_avatar_btn_hover: #25245b,
     // border
     bdc_grid: transparent,
     bdc_show_btn: #696a6b,

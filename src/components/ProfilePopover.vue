@@ -165,9 +165,6 @@ export default defineComponent({
     let myCropper = null
     watch(isDarkMode, () => {
       store.dispatch('toggleDarkMode')
-      const mode = isDarkMode.value ? 'dark' : 'light'
-      window.document.documentElement.setAttribute('data-theme', mode)
-      console.log('toggleSkin', isDarkMode.value)
     })
 
     const toggleShowSettings = () => {
@@ -498,7 +495,7 @@ export default defineComponent({
                 transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                 white-space: nowrap;
                 &:hover {
-                  background: #f8f8fd;
+                  @include background_color(bc_avatar_btn_hover)
                 }
               }
             }
@@ -515,12 +512,12 @@ export default defineComponent({
                 justify-content: space-between;
                 align-items: center;
                 padding: 5px 8px;
-                background-color: #f4f4f5;
+                @include background_color(bc_dialog_left);
                 border-radius: 4px;
                 line-height: 20px;
                 margin-bottom: 28px;
                 .name {
-                  color: #1d1d1f;
+                  @include font_color(fc_normal);
                   font-size: 16px;
                 }
                 .info-edit {
@@ -541,7 +538,7 @@ export default defineComponent({
                   transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                   white-space: nowrap;
                   &:hover {
-                    background: #f8f8fd;
+                    @include background_color(bc_avatar_btn_hover)
                   }
                 }
                 .el-input__inner {

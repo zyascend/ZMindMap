@@ -25,5 +25,6 @@ app.component(ElTableColumn.name, ElTableColumn)
 app.component(ElPopover.name, ElPopover)
 app.component(ElSwitch.name, ElSwitch)
 // app.component(ElSkeleton.name, ElSkeleton)
-
+const isDark = store.state.isDark
+window.document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
 app.use(store).use(router).mount('#app')

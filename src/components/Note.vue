@@ -174,7 +174,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/css/mixin';
+@import '../assets/css/handler';
 .note-container {
   @include wh100;
   overflow-y: auto;
@@ -183,9 +183,9 @@ export default defineComponent({
     min-height: calc(100vh - 252px);
     padding: 0 55px 140px;
     margin: 0 auto;
+     @include font_color(fc_normal);
     .name {
       min-height: 42px;
-      color: #16181a;
       font-size: 34px;
       font-weight: 600;
       line-height: 48px;
@@ -239,7 +239,7 @@ export default defineComponent({
             width: 30px;
             height: 30px;
             cursor: pointer;
-            background: #fff;
+            /* background: #fff; */
             .icon-collapsed {
               transform: rotate(-90deg);
             }
@@ -266,14 +266,12 @@ export default defineComponent({
             box-sizing: border-box;
             padding: 2px 0 2px 8px;
             line-height: 26px;
-            color: #1d1d1f;
             min-height: 24px;
             font-size: 16px;
             user-select: text;
             word-wrap: break-word;
             -webkit-nbsp-mode: space;
             box-sizing: content-box;
-            color: #1f2329;
             cursor: text;
             outline: 0;
             white-space: pre-wrap;
