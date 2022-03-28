@@ -12,8 +12,11 @@
               v-if="node.children.length || node._children.length ">
               <svg-icon icon="triangle" :class="`${node.collapsed ? 'icon-collapsed' : ''}`"/>
             </div>
+            <!-- <div class="bullet-wrapper" @mouseenter="toggleActionPop(node)" @mouseleave="toggleActionPop(node)"> -->
             <div class="bullet-wrapper">
-              <div class="bullet" />
+              <div :class="`bullet ${node._children.length ? 'bullet-circled' : ''}`">
+                <div></div>
+              </div>
             </div>
             <div
               :id="`note-node-${node.id}`"
@@ -161,13 +164,17 @@ export default defineComponent({
       contentName.value = event.target.innerText
       emitUpdate()
     }, 500)
+    const toggleActionPop = debounce(node => {
+      console.log('toggleActionPop', node)
+    }, 500)
     return {
       noteList,
       contentName,
       onCollapse,
       onKeyDown,
       onNodeInput,
-      onNameInput
+      onNameInput,
+      toggleActionPop
     }
   }
 })
@@ -214,13 +221,13 @@ export default defineComponent({
           height: 34px;
           padding-left: 1px;
           box-sizing: border-box;
-          border-left: 1px solid #dee0e3;
+          /* border-left: 1px solid #dee0e3; */
           transform: translateX(8px);
         }
         &:hover {
           .node-content {
             .action-wrapper {
-              display: flex;
+              opacity: 1;
             }
           }
         }
@@ -228,10 +235,10 @@ export default defineComponent({
           position: relative;
           flex: 1;
           @include horiFlex;
-          align-items: center;
+          align-items: flex-start;
           .action-wrapper {
             @include centerFlex;
-            /* display: none; */
+            opacity: 0;
             z-index: 2;
             position: absolute;
             top: 0;
@@ -252,29 +259,41 @@ export default defineComponent({
           .bullet-wrapper {
             width: 18px;
             height: 18px;
-            @include centerFlex;
+            margin-top: 6px;
             .bullet {
-              width: 6px;
-              height: 6px;
-              background-color: #646a73;
-              border-radius: 3px;
+              @include wh100;
+              @include centerFlex;
+              border-radius: 9px;
+              div {
+                z-index: 10;
+                width: 6px;
+                height: 6px;
+                background-color: #646a73;
+                border-radius: 3px;
+              }
+            }
+            .bullet-circled {
+              background-color: #ebecec;
             }
           }
           .text-wrapper {
             flex: 1;
-            height: 30px;
+            min-height: 30px;
             box-sizing: border-box;
             padding: 2px 0 2px 8px;
             line-height: 26px;
-            min-height: 24px;
             font-size: 16px;
             user-select: text;
-            word-wrap: break-word;
             -webkit-nbsp-mode: space;
             box-sizing: content-box;
             cursor: text;
             outline: 0;
+            word-break: normal;
+            width: fit-content;
+            text-justify: distribute-all-lines;
             white-space: pre-wrap;
+            word-wrap: break-word;
+            overflow: hidden;
           }
         }
       }

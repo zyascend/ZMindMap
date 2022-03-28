@@ -134,9 +134,9 @@ export default defineComponent({
     .g-root, .g-subroot, .g-leaf {
       foreignObject {
         div {
+          height: 100%;
           word-break: normal;
           width: fit-content;
-          height: 100%;
           text-justify: distribute-all-lines;
           white-space: pre-wrap;
           word-wrap: break-word;

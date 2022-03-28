@@ -8,8 +8,8 @@
         </a>
         <span>&nbsp;|&nbsp;&nbsp;{{ mapData?.name || '' }}</span>
       </div>
-      <p v-if="!isSaving" class="saved">已保存</p>
-      <div v-else class="loader" />
+      <p v-show="!isSaving" class="saved">已保存</p>
+      <div v-show="isSaving" class="loader" />
       <div class="show-map" @click="toggleShowMap">
         <template v-if="!showMap">
           <svg-icon icon="tree"/>
