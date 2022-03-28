@@ -8,7 +8,8 @@
         </a>
         <span>&nbsp;|&nbsp;&nbsp;{{ mapData?.name || '' }}</span>
       </div>
-      <p class="saved">已保存</p>
+      <p v-if="!isSaving" class="saved">已保存</p>
+      <div v-else class="loader" />
       <div class="show-map" @click="toggleShowMap">
         <template v-if="!showMap">
           <svg-icon icon="tree"/>
@@ -54,13 +55,13 @@ export default defineComponent({
     const mapData = ref(null)
     const content = ref(null)
     const showMap = ref(false)
+    const isSaving = ref(false)
     const fitView = () => {
       useZoomMap.fitView()
     }
     onMounted(async () => {
       const url = `${API.getDocContent}/${store.getters.getUser._id}/${docId}`
       const { data } = await axios(url, { method: 'get' })
-      console.log('EDIT > onMounted > ', data)
       mapData.value = data
       content.value = JSON.parse(data.definition)
     })
@@ -74,11 +75,19 @@ export default defineComponent({
         ...mapData.value,
         definition: JSON.stringify(newVal)
       }
-      const { data } = await axios(url, { method: 'post', data: body })
-      console.log(data)
+      console.log('watch(content')
+      isSaving.value = true
+      axios(url, { method: 'post', data: body })
+        .then(() => {
+          isSaving.value = false
+        })
+        .catch(() => {
+          isSaving.value = false
+        })
     })
     return {
       docId,
+      isSaving,
       showMap,
       mapData,
       content,
@@ -134,6 +143,25 @@ export default defineComponent({
       margin-right: 10px;
       color: #bbbfc4;
       font-size: 13px;
+    }
+    .loader {
+      margin-right: 10px;
+      border: 2px solid #f3f3f3;
+      border-radius: 50%;
+      border-top: 2px solid $color-base;
+      width: 15px;
+      height: 15px;
+      animation: spin 1s linear infinite;
+    }
+
+    @-webkit-keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
     .show-map {
       position: relative;
