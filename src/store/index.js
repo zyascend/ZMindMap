@@ -126,7 +126,8 @@ const store = createStore({
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data;'
-        }
+        },
+        timeout: 2000
       })
     },
     postSetFolder ({ commit, getters }, data) {

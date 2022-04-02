@@ -21,7 +21,8 @@
         </template>
       </div>
     </header>
-    <note v-if="!showMap && content" v-model:content="content" />
+    <!-- <note v-if="!showMap && content" v-model:content="content" /> -->
+    <mind-map-exper v-if="!showMap && content" v-model:content="content" />
     <mind-map v-if="showMap && content" v-model:content="content" />
     <!-- <el-skeleton v-show="content" rows="5" animated/> -->
   </div>
@@ -31,9 +32,11 @@ import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import useZoomMap from '@/hooks/useZoomMap'
 import { useStore } from 'vuex'
+// import MindMap from '@/components/MindMap.vue'
+import MindMapExper from '@/components/MindMapExper.vue'
 import MindMap from '@/components/MindMap.vue'
+// import Note from '@/components/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-import Note from '@/components/Note.vue'
 import axios from '@/hooks/useHttp'
 import API from '@/hooks/api'
 import '@/assets/pic/fit-view.svg'
@@ -44,8 +47,8 @@ import '@/assets/pic/note.svg'
 
 export default defineComponent({
   components: {
+    MindMapExper,
     MindMap,
-    Note,
     SvgIcon
   },
   setup () {
