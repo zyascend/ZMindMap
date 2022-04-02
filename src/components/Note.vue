@@ -13,11 +13,12 @@
               <svg-icon icon="triangle" :class="`${node.collapsed ? 'icon-collapsed' : ''}`"/>
             </div>
             <!-- <div class="bullet-wrapper" @mouseenter="toggleActionPop(node)" @mouseleave="toggleActionPop(node)"> -->
-            <div class="bullet-wrapper">
+            <!-- <div class="bullet-wrapper">
               <div :class="`bullet ${node._children.length ? 'bullet-circled' : ''}`">
                 <div></div>
               </div>
-            </div>
+            </div> -->
+            <note-popover :node="node"/>
             <div
               :id="`note-node-${node.id}`"
               class="text-wrapper"
@@ -36,6 +37,7 @@
 <script>
 import { defineComponent, onMounted, onUnmounted, nextTick, ref } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+import NotePopover from '@/components/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
 import {
   flatter, moveToLastFocus,
@@ -46,7 +48,8 @@ import '@/assets/pic/triangle.svg'
 export default defineComponent({
   name: 'Note',
   components: {
-    SvgIcon
+    SvgIcon,
+    NotePopover
   },
   props: {
     content: {
@@ -256,7 +259,7 @@ export default defineComponent({
               transition: .2s ease all;
             }
           }
-          .bullet-wrapper {
+          /* .bullet-wrapper {
             width: 18px;
             height: 18px;
             margin-top: 6px;
@@ -275,7 +278,7 @@ export default defineComponent({
             .bullet-circled {
               background-color: #ebecec;
             }
-          }
+          } */
           .text-wrapper {
             flex: 1;
             min-height: 30px;

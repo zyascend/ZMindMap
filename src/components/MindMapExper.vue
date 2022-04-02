@@ -2,7 +2,7 @@
   <div class="map-container">
     <svg class="main-svg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g">
-        <g v-for="d in treeData" :key="d">
+        <g v-for="d in treeData" :key="d" @click="gClick(d)">
           <text :x="10 * d" y="10">{{ d }}</text>
         </g>
       </g>
@@ -35,7 +35,11 @@ export default defineComponent({
     const onEditDivBlur = () => {
       useTreeData.afterEdit()
     }
+    const gClick = d => {
+      console.log('gClick > ', d)
+    }
     return {
+      gClick,
       treeData,
       onEditDivBlur
     }
