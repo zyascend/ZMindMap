@@ -4,6 +4,8 @@
     trigger="hover"
     :show-after="400"
     :show-arrow="false"
+    @after-leave="onLeave"
+    @after-enter="onEnter"
     popper-class="note-popper"
   >
     <template #reference>
@@ -22,6 +24,16 @@
       <span>新建文件</span>
     </div>
     <div class="divider" />
+    <div class="font-color">
+      <span
+        v-for="color in colorList"
+        :key="color"
+        @click="onColorSelect(color)"
+        :style="`color:${color}`">
+        A
+      </span>
+    </div>
+    <div class="divider" />
     <div class="pop-item">
       <SvgIcon icon="delete" />
       <span>删除</span>
@@ -30,7 +42,7 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, ref } from 'vue'
 // import { useStore } from 'vuex'
 import SvgIcon from '@/components/SvgIcon.vue'
 import '@/assets/pic/more.svg'
@@ -51,9 +63,22 @@ export default defineComponent({
       required: true
     }
   },
-  setup () {
-    // const store = useStore()
+  setup (props, context) {
+    const colorList = ref(['#66666d', '#eab363', '#bd4a37', '#79c466', '#6ba6e9', '#7a81bf'])
+    const onLeave = () => {
+      document.getElementById(`node-${props.node.id}`).classList.remove('node-hover')
+    }
+    const onEnter = () => {
+      document.getElementById(`node-${props.node.id}`).classList.add('node-hover')
+    }
+    const onColorSelect = color => {
+      context.emit('onColorSelect', { color, node: props.node })
+    }
     return {
+      colorList,
+      onLeave,
+      onEnter,
+      onColorSelect
     }
   }
 })
@@ -114,8 +139,27 @@ export default defineComponent({
 .divider {
   height: 1px;
   margin: 4px 5px;
+  padding: 0px 10px;
   box-sizing: border-box;
   @include background_color(bc_divider);
+}
+.font-color {
+  height: 32px;
+  line-height: 32px;
+  @include horiFlex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0px 10px;
+  span {
+    width: 32px;
+    text-align: center;
+    border-radius: 5px;
+    &:hover {
+      @include background_color(bc_pop_hover);
+    }
+  }
 }
 .el-overlay {
   background-color: rgba(0,0,0,.2) !important;

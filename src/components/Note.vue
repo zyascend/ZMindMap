@@ -5,20 +5,14 @@
       <div class="content">
         <div class="note-node" v-for="node in noteList" :key="node.id">
           <div class="indent" v-for="i in node.level" :key="`${index}-${i}`" />
-          <div class="node-content">
+          <div class="node-content" :id="`node-${node.id}`">
             <div
               class="action-wrapper"
               @click="onCollapse(node.id)"
               v-if="node.children.length || node._children.length ">
               <svg-icon icon="triangle" :class="`${node.collapsed ? 'icon-collapsed' : ''}`"/>
             </div>
-            <!-- <div class="bullet-wrapper" @mouseenter="toggleActionPop(node)" @mouseleave="toggleActionPop(node)"> -->
-            <!-- <div class="bullet-wrapper">
-              <div :class="`bullet ${node._children.length ? 'bullet-circled' : ''}`">
-                <div></div>
-              </div>
-            </div> -->
-            <note-popover :node="node"/>
+            <note-popover :node="node" @onColorSelect="onChangeFontColor"/>
             <div
               :id="`note-node-${node.id}`"
               class="text-wrapper"
@@ -41,7 +35,8 @@ import NotePopover from '@/components/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
 import {
   flatter, moveToLastFocus,
-  toggleCollapse, addNewNode, deleteNode, tabNode
+  toggleCollapse, addNewNode,
+  deleteNode, tabNode
 } from '@/hooks/useMindData'
 import '@/assets/pic/triangle.svg'
 
@@ -148,6 +143,23 @@ export default defineComponent({
           break
       }
     }
+    const onChangeFontColor = prams => {
+      const { color, node } = prams
+      const update = list => {
+        if (!list || !list.length) return
+        for (const n of list) {
+          if (n.id === node.id) {
+            // TODO 如何做到不覆盖原来的style
+            n.style = `color:${color}`
+            // TODO 如何兼容更多的类似md的样式
+          } else {
+            update(n.children)
+          }
+        }
+      }
+      update(originData.value)
+      emitUpdate()
+    }
     const onNodeInput = debounce((event, node) => {
       const newText = event.target.innerText
       const update = list => {
@@ -177,7 +189,8 @@ export default defineComponent({
       onKeyDown,
       onNodeInput,
       onNameInput,
-      toggleActionPop
+      toggleActionPop,
+      onChangeFontColor
     }
   }
 })
@@ -234,11 +247,18 @@ export default defineComponent({
             }
           }
         }
+        .node-hover {
+          background-color: #5856d547;
+          border-radius: 5px;
+        }
         .node-content {
           position: relative;
           flex: 1;
           @include horiFlex;
           align-items: flex-start;
+          ::selection{
+            background-color: #bacefd;
+          }
           .action-wrapper {
             @include centerFlex;
             opacity: 0;

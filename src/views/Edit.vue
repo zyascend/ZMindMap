@@ -21,12 +21,8 @@
         </template>
       </div>
     </header>
-    <keep-alive>
-      <note v-if="!showMap && content" v-model:content="content" />
-    </keep-alive>
-    <keep-alive>
-      <mind-map-pro v-if="showMap && content" v-model:content="content" />
-    </keep-alive>
+    <note v-if="!showMap && content" v-model:content="content" />
+    <mind-map-pro v-if="showMap && content" v-model:content="content" />
   </div>
 </template>
 <script>
