@@ -2,8 +2,39 @@
   <div class="map-container">
     <svg class="main-svg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g">
-        <g v-for="d in treeData" :key="d" @click="gClick(d)">
-          <text :x="10 * d" y="10">{{ d }}</text>
+        <g>
+          <path v-for="p in path" :key="p.id" :d="p.data"></path>
+        </g>
+        <g
+          v-for="d in treeData"
+          :key="d"
+          :transform="`translate(${d.tx},${d.ty})`"
+          :class="d.depth === 0 ? 'g-root' : d.depth === 1 ? 'g-subroot' : 'g-leaf'"
+          @click="gClick(d)">
+          <rect
+            :x="d.rectX"
+            :y="d.rectY"
+            :rx="d.rectRX"
+            :ry="d.rectRY"
+            :width="d.rectWidth"
+            :height="d.rectHeight"
+          />
+          <foreignObject
+            :width="d.foWidth"
+            :height="d.foHeight"
+            :x="0"
+            :dy="d.height"
+          >
+            <div>{{ d.data.name }}</div>
+          </foreignObject>
+          <image
+            :class="d.children ? 'image-collapse' : ''"
+            :x="d.collapseX"
+            :y="d.collapseY"
+            :width="d.collapseWidth"
+            :height="d.collapseHeight"
+            :xlink:href="PIC_COLLAPSE"
+          />
         </g>
       </g>
     </svg>
@@ -14,7 +45,8 @@
 <script>
 import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
 // import { useStore } from 'vuex'
-import useTreeData from '@/hooks/useTreeData'
+// import useTreeData from '@/hooks/useTreeData'
+import PIC_COLLAPSE from '@/assets/map/add.svg'
 
 export default defineComponent({
   name: 'MindMap',
@@ -32,16 +64,13 @@ export default defineComponent({
       document.onkeydown = undefined
     })
     const treeData = ref([1, 2, 3, 4, 5])
-    const onEditDivBlur = () => {
-      useTreeData.afterEdit()
-    }
     const gClick = d => {
       console.log('gClick > ', d)
     }
     return {
       gClick,
       treeData,
-      onEditDivBlur
+      PIC_COLLAPSE
     }
   }
 })
@@ -136,30 +165,6 @@ export default defineComponent({
         cursor: default;
       }
     }
-    /* .image-add, .image-collapse {
-      opacity: 0;
-    }
-    .g-hover {
-      rect {
-        opacity: 0.5;
-      }
-      .image-collapse {
-        opacity: 1;
-      }
-    }
-    .g-selected {
-      rect, .image-add {
-        opacity: 1;
-      }
-    }
-    .g-editting {
-      rect {
-        opacity: 1;
-      }
-      .image-add,text {
-        opacity: 0;
-      }
-    } */
     .foreignDiv {
       display: inline-block;
       outline: none;
