@@ -1,12 +1,12 @@
 <template>
   <div class="map-container">
-    <svg class="main-svg" xmlns:xlink=http://www.w3.org/1999/xlink>
-      <g class="main-g">
+    <svg class="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
+      <g class="main-g" ref="mainG">
         <g>
-          <path v-for="p in path" :key="p.id" :d="p.data"></path>
+          <path v-for="p in pathData" :key="p.id" :d="p.data"></path>
         </g>
         <g
-          v-for="d in treeData"
+          v-for="d in nodeData"
           :key="d"
           :transform="`translate(${d.tx},${d.ty})`"
           :class="d.depth === 0 ? 'g-root' : d.depth === 1 ? 'g-subroot' : 'g-leaf'"
@@ -23,7 +23,7 @@
             :width="d.foWidth"
             :height="d.foHeight"
             :x="0"
-            :dy="d.height"
+            :dy="d.contentHeight"
           >
             <div>{{ d.data.name }}</div>
           </foreignObject>
@@ -43,9 +43,10 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, onUnmounted } from 'vue'
-// import { useStore } from 'vuex'
-// import useTreeData from '@/hooks/useTreeData'
+import { defineComponent, onMounted, ref, onUnmounted, nextTick } from 'vue'
+import { useStore } from 'vuex'
+import useMap from '@/hooks/useMap'
+import useZoomMap from '@/hooks/useZoomMap'
 import PIC_COLLAPSE from '@/assets/map/add.svg'
 
 export default defineComponent({
@@ -58,19 +59,45 @@ export default defineComponent({
   },
   setup (props) {
     // const store = useStore()
+    const mainSvg = ref()
+    const mainG = ref()
+    const measureSvg = ref()
+
+    const store = useStore()
+    const pathData = ref([])
+    const nodeData = ref([])
+    onMounted(() => {
+      if (!mainSvg.value || !mainG.value || !measureSvg.value) return
+      store.dispatch('setRefs', {
+        mainSvg: mainSvg.value,
+        mainG: mainG.value,
+        measureSvg: measureSvg.value
+      })
+      console.log('useMap(props.content)')
+      const treeData = useMap(props.content)
+      pathData.value = treeData.path
+      nodeData.value = treeData.node
+      nextTick(() => {
+        useZoomMap.registerZoom()
+        useZoomMap.fitView()
+      })
+    })
     onMounted(() => {
     })
     onUnmounted(() => {
       document.onkeydown = undefined
     })
-    const treeData = ref([1, 2, 3, 4, 5])
     const gClick = d => {
       console.log('gClick > ', d)
     }
     return {
       gClick,
-      treeData,
-      PIC_COLLAPSE
+      pathData,
+      nodeData,
+      PIC_COLLAPSE,
+      mainSvg,
+      mainG,
+      measureSvg
     }
   }
 })
