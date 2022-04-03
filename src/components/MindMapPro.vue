@@ -10,7 +10,7 @@
           :key="d"
           :transform="`translate(${d.tx},${d.ty})`"
           :class="d.depth === 0 ? 'g-root' : d.depth === 1 ? 'g-subroot' : 'g-leaf'"
-          @click="gClick(d)">
+          @focus="onNodeSelected(d)">
           <rect
             :x="d.rectX"
             :y="d.rectY"
@@ -87,14 +87,14 @@ export default defineComponent({
     onUnmounted(() => {
       document.onkeydown = undefined
     })
-    const gClick = d => {
-      console.log('gClick > ', d)
+    const onNodeSelected = d => {
+      console.log('onNodeSelected > ', d.data.name)
     }
     return {
-      gClick,
       pathData,
       nodeData,
       PIC_COLLAPSE,
+      onNodeSelected,
       mainSvg,
       mainG,
       measureSvg
@@ -144,11 +144,16 @@ export default defineComponent({
       rect {
         fill: transparent;
         opacity: 1;
+        stroke-width: 1.5px;
       }
       &:hover {
         rect {
           stroke: #5856d57d;
-          stroke-width: 1.5px;
+        }
+      }
+      &:focus {
+        rect {
+          stroke: #5856d5;
         }
       }
       foreignObject {
@@ -160,6 +165,10 @@ export default defineComponent({
       }
     }
     .g-root, .g-subroot, .g-leaf {
+      /* &:focus {
+        outline: #56d57d;
+      } */
+      outline: none;
       foreignObject {
         div {
           height: 100%;

@@ -21,10 +21,12 @@
         </template>
       </div>
     </header>
-    <note v-if="showMap && content" v-model:content="content" />
-    <mind-map-pro v-if="!showMap && content" v-model:content="content" />
-    <!-- <mind-map v-if="!showMap && content" v-model:content="content" /> -->
-    <!-- <el-skeleton v-show="content" rows="5" animated/> -->
+    <keep-alive>
+      <note v-if="!showMap && content" v-model:content="content" />
+    </keep-alive>
+    <keep-alive>
+      <mind-map-pro v-if="showMap && content" v-model:content="content" />
+    </keep-alive>
   </div>
 </template>
 <script>
@@ -32,7 +34,6 @@ import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import useZoomMap from '@/hooks/useZoomMap'
 import { useStore } from 'vuex'
-// import MindMap from '@/components/MindMap.vue'
 import MindMapPro from '@/components/MindMapPro.vue'
 import Note from '@/components/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'

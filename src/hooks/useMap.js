@@ -36,25 +36,25 @@ export class TreeDataCreater {
     let bezierLine = ''
     let bottomLineLeaf = ''
 
-    const { x, y, rectWidth, rectHeight, depth } = d.source
+    const { x, y, contentWidth, rectHeight, depth } = d.source
     const bézierCurveGenerator = d3.linkHorizontal().x(d => d.x).y(d => d.y)
 
-    if (d.source.depth === 0) {
+    if (depth === 0) {
       bezierLine = bézierCurveGenerator({
-        source: { x: x + rectWidth + this.borderXPadding - 2, y: y - rectHeight / 2 - this.offsetBottom },
+        source: { x: x + contentWidth + this.borderXPadding - 2, y: y - rectHeight / 2 - this.offsetBottom },
         target: { x: d.target.x - this.borderXPadding + 2, y: d.target.y - d.target.rectHeight / 2 - this.offsetBottom }
       })
     } else if (depth === 1) {
       const end = { x: d.target.x, y: d.target.y }
       bezierLine = bézierCurveGenerator({
-        source: { x: x + rectWidth + this.borderXPadding - 2, y: y - rectHeight / 2 - this.offsetBottom },
+        source: { x: x + contentWidth + this.borderXPadding - 2, y: y - rectHeight / 2 - this.offsetBottom },
         target: end
       })
       if (!d.target.children) {
-        bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.rectWidth} ${end.y}`
+        bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.contentWidth} ${end.y}`
       }
     } else {
-      const start = { x: x + rectWidth, y }
+      const start = { x: x + contentWidth, y }
       const end = { x: d.target.x, y: d.target.y }
       bottomLine = `M${x} ${y}L${start.x} ${y}`
       bezierLine = bézierCurveGenerator({
@@ -62,7 +62,7 @@ export class TreeDataCreater {
         target: end
       })
       if (!d.target.children) {
-        bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.rectWidth} ${end.y}`
+        bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.contentWidth} ${end.y}`
       }
     }
     return {
@@ -89,7 +89,6 @@ export class TreeDataCreater {
     let preNode
     // 算Y值-后序遍历
     root.eachAfter(node => {
-      console.log('后序遍历> ', node.data.name)
       node._id = node.data.id
       const { children, rectHeight } = node
       if (children) {
