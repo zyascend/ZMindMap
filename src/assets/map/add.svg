@@ -1,13 +1,1 @@
-<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
-        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg t="1624796008009" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="4940"
-     xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24">
-    <defs>
-        <style type="text/css"></style>
-    </defs>
-    <circle cx="512" cy="512" r="427" fill="#fff"/>
-    <line x1="512" y1="512" x2="262"  y2="512" stroke="rgb(88, 86, 213)" stroke-width="60"/>
-    <line x1="512" y1="512" x2="512"  y2="262" stroke="rgb(88, 86, 213)" stroke-width="60"/>
-    <line x1="512" y1="512" x2="512"  y2="762" stroke="rgb(88, 86, 213)" stroke-width="60"/>
-    <line x1="512" y1="512" x2="762"  y2="512" stroke="rgb(88, 86, 213)" stroke-width="60"/>
-</svg>
+<svg t="1649131856973" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" fill="#fff" p-id="2765" width="24" height="24" data-spm-anchor-id="a313x.7781069.0.i12"><circle cx="512" cy="512" r="427" fill="#fff"/><path d="M512 936.915619c-234.672764 0-424.915619-190.243879-424.915619-424.915619S277.327236 87.083357 512 87.083357c234.676857 0 424.916643 190.243879 424.916643 424.915619S746.676857 936.915619 512 936.915619zM724.45781 469.50414 554.491767 469.50414 554.491767 299.546284l-84.983533 0 0 169.957857L299.54219 469.50414l0 84.99172 169.966043 0 0 169.966043 84.983533 0L554.491767 554.49586l169.966043 0L724.45781 469.50414z" p-id="2766" fill="#5856d5"></path></svg>

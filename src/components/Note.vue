@@ -17,9 +17,9 @@
               :id="`note-node-${node.id}`"
               class="text-wrapper"
               contenteditable="true"
+              v-html="node.name"
               @input="onNodeInput($event, node)"
               @keydown="onKeyDown($event, node)">
-              {{ node.name }}
             </div>
           </div>
         </div>
@@ -150,7 +150,7 @@ export default defineComponent({
         for (const n of list) {
           if (n.id === node.id) {
             // TODO 如何做到不覆盖原来的style
-            n.style = `color:${color}`
+            n.name = `<span style="color:${color};">${n.name}</span>`
             // TODO 如何兼容更多的类似md的样式
           } else {
             update(n.children)
@@ -162,6 +162,7 @@ export default defineComponent({
     }
     const onNodeInput = debounce((event, node) => {
       const newText = event.target.innerText
+      console.log('onNodeInput', newText)
       const update = list => {
         if (!list || !list.length) return
         for (const n of list) {

@@ -9,11 +9,11 @@ export class TreeDataCreater {
     this.gapX = gapX
     this.maxNodeWidth = maxNodeWidth
     this.offsetBottom = 4
-    this.borderXPadding = 8
+    this.borderXPadding = 4
     this.borderYPadding = 3
-    this.borderXPaddingLeaf = 4
-    this.borderYPaddingLeaf = 2
     this.borderRadius = 3
+    this.offsetPath = 8
+    this.btnSize = 12
   }
 
   create (root) {
@@ -40,30 +40,48 @@ export class TreeDataCreater {
     const bézierCurveGenerator = d3.linkHorizontal().x(d => d.x).y(d => d.y)
 
     if (depth === 0) {
+      const horiStart = {
+        x: x + contentWidth + this.borderXPadding,
+        y: y - rectHeight / 2 - this.borderYPadding - this.offsetBottom
+      }
+      const horiEnd = {
+        x: x + contentWidth + this.borderXPadding + this.offsetPath,
+        y: y - rectHeight / 2 - this.borderYPadding - this.offsetBottom
+      }
+      bottomLine = `M${horiStart.x} ${horiStart.y}L${horiEnd.x} ${horiEnd.y}`
       bezierLine = bézierCurveGenerator({
-        source: { x: x + contentWidth + this.borderXPadding - 2, y: y - rectHeight / 2 - this.offsetBottom },
-        target: { x: d.target.x - this.borderXPadding + 2, y: d.target.y - d.target.rectHeight / 2 - this.offsetBottom }
+        source: horiEnd,
+        target: {
+          x: d.target.x - this.borderXPadding,
+          y: d.target.y - d.target.rectHeight / 2 - this.offsetBottom - this.borderYPadding
+        }
       })
     } else if (depth === 1) {
       const end = { x: d.target.x, y: d.target.y }
+      const horiStart = {
+        x: x + contentWidth + this.borderXPadding,
+        y: y - rectHeight / 2 - this.borderYPadding - this.offsetBottom
+      }
+      const horiEnd = {
+        x: x + contentWidth + this.borderXPadding + this.offsetPath,
+        y: y - rectHeight / 2 - this.borderYPadding - this.offsetBottom
+      }
+      bottomLine = `M${horiStart.x} ${horiStart.y}L${horiEnd.x} ${horiEnd.y}`
       bezierLine = bézierCurveGenerator({
-        source: { x: x + contentWidth + this.borderXPadding - 2, y: y - rectHeight / 2 - this.offsetBottom },
+        source: horiEnd,
         target: end
       })
-      if (!d.target.children) {
-        bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.contentWidth} ${end.y}`
-      }
+      bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.contentWidth + this.borderXPadding} ${end.y}`
     } else {
-      const start = { x: x + contentWidth, y }
-      const end = { x: d.target.x, y: d.target.y }
-      bottomLine = `M${x} ${y}L${start.x} ${y}`
+      const horiStart = { x: x + contentWidth + this.borderXPadding, y }
+      const horiEnd = { x: x + contentWidth + this.borderXPadding + this.offsetPath, y }
+      const bezierEnd = { x: d.target.x, y: d.target.y }
+      bottomLine = `M${horiStart.x} ${horiStart.y}L${horiEnd.x} ${horiEnd.y}`
       bezierLine = bézierCurveGenerator({
-        source: start,
-        target: end
+        source: horiEnd,
+        target: bezierEnd
       })
-      if (!d.target.children) {
-        bottomLineLeaf = `M${end.x} ${end.y}L${end.x + d.target.contentWidth} ${end.y}`
-      }
+      bottomLineLeaf = `M${bezierEnd.x} ${bezierEnd.y}L${bezierEnd.x + d.target.contentWidth + this.borderXPadding} ${bezierEnd.y}`
     }
     return {
       data: `${bottomLine}${bezierLine}${bottomLineLeaf}`,
@@ -140,20 +158,24 @@ export class TreeDataCreater {
     root.contentHeight = clientHeight
     // 节点的内容相关属性提前计算好
     // 1.关于外边框
-    root.rectX = root.children ? -this.borderXPadding : -this.borderXPaddingLeaf
-    root.rectY = root.children ? -this.borderYPadding : -this.borderYPaddingLeaf
+    root.rectX = (-this.borderXPadding)
+    root.rectY = (-this.borderYPadding)
     root.rectRX = this.borderRadius
     root.rectRY = this.borderRadius
-    root.rectWidth = root.contentWidth + (root.children ? this.borderXPadding : this.borderXPaddingLeaf) * 2
-    root.rectHeight = root.contentHeight + (root.children ? this.borderYPadding : this.borderYPaddingLeaf) * 2
+    root.rectWidth = root.contentWidth + this.borderXPadding * 2
+    root.rectHeight = root.contentHeight + this.borderYPadding * 2
     // 2.关于foreignObject
     root.foWidth = root.contentWidth
     root.foHeight = root.contentHeight
-    // 3.关于collapse按钮
-    root.collapseX = root.contentWidth + this.borderXPadding
-    root.collapseY = (root.contentHeight - 12) / 2
-    root.collapseWidth = 12
-    root.collapseHeight = 12
+    // 3.关于image按钮
+    root.imageWidth = this.btnSize
+    root.imageHeight = this.btnSize
+    // 3.1 折叠按钮位置
+    root.collapseX = root.contentWidth + this.borderXPadding + this.offsetPath - this.btnSize / 2
+    root.collapseY = root.depth > 1 ? root.contentHeight + this.offsetBottom : (root.contentHeight - this.btnSize) / 2
+    // 3.2 添加按钮位置
+    root.addX = root.contentWidth + this.borderXPadding - this.btnSize / 2
+    root.addY = root.contentHeight - this.btnSize / 2
 
     if (root.children && root.children.length) {
       for (const child of root.children) {
