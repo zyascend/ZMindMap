@@ -50,7 +50,8 @@
 </template>
 <script>
 import { defineComponent, onMounted, computed } from 'vue'
-import { useStore } from 'vuex'
+import { useDocStore } from '@/store/doc'
+import { useWebsiteStore } from '@/store/website'
 import { useRouter, useRoute } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -72,21 +73,20 @@ export default defineComponent({
     OperatePopover
   },
   setup () {
-    const store = useStore()
+    const docStore = useDocStore()
+    const websiteStore = useWebsiteStore()
     const router = useRouter()
     const route = useRoute()
     const folderId = route.params?.id
-    const navigationList = computed(() => store.getters.getNavigationLists(folderId))
-    const docTableData = computed(() => store.getters.getAllDocuments(folderId))
+    const navigationList = computed(() => docStore.getNavigationLists(folderId))
+    const docTableData = computed(() => docStore.getAllDocuments(folderId))
     const hasData = computed(() => docTableData.value?.length)
-    const showTable = computed(() => store.getters.showTable)
+    const showTable = computed(() => websiteStore.showTable)
     onMounted(() => {
       // store.dispatch('changeNavigation', route.params.id)
     })
-    const isFolder = row => {
-      console.log(row)
-      return 'folderType' in row
-    }
+    const isFolder = row => 'folderType' in row
+
     const onRowClick = (row, column, event) => {
       if (isFolder(row)) {
         // 修改路由URL
@@ -101,7 +101,7 @@ export default defineComponent({
       console.log('')
     }
     const onToggleStyle = () => {
-      store.dispatch('toggleShowTable')
+      websiteStore.toggleShowTable()
     }
     return {
       hasData,

@@ -9,7 +9,7 @@
     <template #reference>
       <div class="profile">
         <div class="avatar">
-          <img class="avatar" :src="user.avatar" alt="">
+          <img class="avatar" :src="user?.avatar" alt="">
         </div>
         <div class="nickname">
           <p>{{ user?.name || user?.email || '' }}</p>
@@ -19,7 +19,7 @@
     </template>
     <div class="info">
       <div class="img">
-        <img class="avatar" :src="user.avatar" alt="">
+        <img class="avatar" :src="user?.avatar" alt="">
       </div>
       <p>{{ user?.name || user?.email || '' }}</p>
     </div>
@@ -63,7 +63,7 @@
           <h1 class="title">个人信息</h1>
           <div class="content">
             <div class="avatar">
-              <div><img :src="user.avatar" alt="avatar"></div>
+              <div><img :src="user?.avatar" alt="avatar"></div>
               <button class="avatar-edit" @click="onEditAvatar">编辑</button>
             </div>
             <div class="info">
@@ -122,7 +122,8 @@
 <script>
 import { computed, defineComponent, ref, watch, nextTick, reactive, toRefs } from 'vue'
 import Cropper from 'cropperjs'
-import { useStore } from 'vuex'
+import { useWebsiteStore } from '@/store/website'
+import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import SvgIcon from '@/components/SvgIcon.vue'
 import 'cropperjs/dist/cropper.css'
@@ -144,10 +145,11 @@ export default defineComponent({
     }
   },
   setup () {
-    const store = useStore()
+    const websiteStore = useWebsiteStore()
+    const userStore = useUserStore()
     const router = useRouter()
-    const user = computed(() => store.getters.getUser)
-    const isDarkMode = ref(store.getters.isDark)
+    const user = computed(() => userStore.getUser)
+    const isDarkMode = ref(websiteStore.isDark)
     const mainImg = ref(null)
     const rightImg = ref(null)
     const editStatus = reactive({
@@ -155,7 +157,7 @@ export default defineComponent({
       showEditAvatar: false,
       isEditName: false,
       isSaving: false,
-      editedName: store.getters.getUser?.name || ''
+      editedName: userStore.getUser?.name || ''
     })
     // const showSettings = ref(false)
     // const showEditAvatar = ref(false)
@@ -164,7 +166,7 @@ export default defineComponent({
     let curFileName = ''
     let myCropper = null
     watch(isDarkMode, () => {
-      store.dispatch('toggleDarkMode')
+      websiteStore.toggleDarkMode()
     })
 
     const toggleShowSettings = () => {
@@ -175,26 +177,22 @@ export default defineComponent({
       editStatus.isSaving = true
       myCropper.getCroppedCanvas({
         imageSmoothingQuality: 'high'
-      }).toBlob(blob => {
+      }).toBlob(async (blob) => {
         const file = new File([blob], curFileName)
-        store.dispatch('updateUser', {
+        await userStore.updateUser({
           user: {
             ...user.value,
             name: editStatus.editedName
           },
           file
-        }).then(() => {
-          editStatus.isSaving = false
-          editStatus.showEditAvatar = !editStatus.showEditAvatar
-        }).catch(e => {
-          editStatus.isSaving = false
-          console.log(e)
         })
+        editStatus.isSaving = false
+        editStatus.showEditAvatar = !editStatus.showEditAvatar
       })
     }
 
     const logout = () => {
-      store.dispatch('logout')
+      userStore.logout()
       router.replace({
         path: '/login',
         query: {
@@ -227,17 +225,16 @@ export default defineComponent({
         makeCropper()
       })
     }
-    const toggleEditName = () => {
+    const toggleEditName = async () => {
       if (editStatus.isEditName && editStatus.editedName) {
         // TODO 提交失败了怎么办
-        store.dispatch('updateUser', {
+        await userStore.updateUser({
           user: {
             ...user.value,
             name: editStatus.editedName
           }
-        }).then(() => {
-          editStatus.isEditName = !editStatus.isEditName
         })
+        editStatus.isEditName = !editStatus.isEditName
       } else {
         editStatus.isEditName = !editStatus.isEditName
       }

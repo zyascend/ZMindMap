@@ -1,4 +1,4 @@
-import store from '../store'
+import store from '../store/indexx'
 import * as d3 from './d3'
 // import { TreeDataCreater, getMultiline, appendNewChild, toggleExpandOrCollapse } from './useTreeData'
 import { TreeDataCreater } from './useTreeData'

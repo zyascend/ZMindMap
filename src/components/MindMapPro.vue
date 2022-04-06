@@ -56,7 +56,7 @@
 
 <script>
 import { defineComponent, onMounted, ref, onUnmounted, nextTick } from 'vue'
-import { useStore } from 'vuex'
+import { useMapStore } from '@/store/map'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
@@ -71,22 +71,20 @@ export default defineComponent({
     }
   },
   setup (props) {
-    // const store = useStore()
     const mainSvg = ref()
     const mainG = ref()
     const measureSvg = ref()
 
-    const store = useStore()
+    const store = useMapStore()
     const pathData = ref([])
     const nodeData = ref([])
     onMounted(() => {
       if (!mainSvg.value || !mainG.value || !measureSvg.value) return
-      store.dispatch('setRefs', {
+      store.setRefs({
         mainSvg: mainSvg.value,
         mainG: mainG.value,
         measureSvg: measureSvg.value
       })
-      console.log('useMap(props.content)')
       const treeData = useMap(props.content)
       pathData.value = treeData.path
       nodeData.value = treeData.node
@@ -108,6 +106,7 @@ export default defineComponent({
       document.activeElement.blur()
     }
     const onAdd = d => {
+      // TODO 操作的节流处理
       console.log('map onAdd > ', d)
     }
     const onGFocus = (event, d) => {

@@ -1,13 +1,11 @@
-/**
- * 对接口返回的数据进行预处理
- */
-
+import axios from '@/hooks/useHttp'
 /**
  * 侧边树形列表的预处理
  * @param {*}
  * @returns tree data for Eltree
  */
 import { dateFormatter } from '@/hooks/utils'
+
 export const handleSiderData = data => {
   console.log(data)
   const folderMap = new Map()
@@ -74,4 +72,9 @@ export const findNavigationPaths = (id, data) => {
   }
   paths.push(defaultPath)
   return paths.reverse()
+}
+
+export const asyncHttp = async (url, config = { method: 'get' }, extraData = undefined) => {
+  const { data } = await axios(url, config)
+  return data
 }

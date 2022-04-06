@@ -1,5 +1,5 @@
 import * as d3 from './d3'
-import store from '../store'
+import { useMapStore } from '@/store/map'
 
 export class TreeDataCreater {
   constructor ({ measureSvg, treeStyle, gapY = 14, gapX = 60, maxNodeWidth = 250 } = {}) {
@@ -189,14 +189,15 @@ const useMap = content => {
   const { name, noteList } = content
   const data = {
     name,
-    id: '-1',
+    id: 'node-root',
     children: noteList,
     _children: [],
     collapsed: false
   }
   // store.dispatch('setTreeData', data)
   const hierarchyData = d3.hierarchy(data)
-  const measureSvg = store.getters.getSelections.measureSvg
+  const store = useMapStore()
+  const measureSvg = store.selections.measureSvg
   const creator = new TreeDataCreater({ measureSvg })
   const treedData = creator.create(hierarchyData)
   return treedData

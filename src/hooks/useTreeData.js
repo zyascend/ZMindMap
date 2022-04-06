@@ -1,5 +1,5 @@
 import * as d3 from './d3'
-import store from '../store'
+import store from '../store/indexx'
 import useDrawMap from './useDrawMap'
 
 export class TreeDataCreater {

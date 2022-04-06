@@ -40,7 +40,7 @@
 <script>
 import { ref, defineComponent, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useStore } from 'vuex'
+import { useUserStore } from '@/store/user'
 import md5 from 'js-md5'
 import useLogin from '../hooks/useLogin'
 
@@ -48,7 +48,7 @@ export default defineComponent({
   setup () {
     const router = useRouter()
     const route = useRoute()
-    const store = useStore()
+    const store = useUserStore()
     const loginForm = reactive({
       email: '',
       pwd: ''
@@ -59,23 +59,21 @@ export default defineComponent({
     // 定义校验规则
     const rules = reactive(useLogin.loginRules)
     const submitForm = () => {
-      loginFormRef.value.validate(valid => {
+      loginFormRef.value.validate(async (valid) => {
         if (valid) {
           isSubmitting.value = true
-          store.dispatch('login', {
+          await store.login({
             loginForm: {
               ...loginForm,
               pwd: md5(loginForm.pwd)
             },
             isLogin: isLogin.value
           })
-            .then(() => {
-              isSubmitting.value = false
-              router.replace({ path: route?.query?.redirect || '/' })
-            })
-            .catch(e => {
-              isSubmitting.value = false
-            })
+          isSubmitting.value = false
+          if (store.getToken) {
+            // 登录/注册成功
+            router.replace({ path: route?.query?.redirect || '/' })
+          }
         } else {
           return false
         }

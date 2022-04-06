@@ -59,5 +59,17 @@ module.exports = {
         args[0].title = 'ZMind思维导图'
         return args
       })
+  },
+  configureWebpack: {
+    module: {
+      rules: [
+        {
+          test: /\.mjs$/,
+          include: /node_modules/,
+          type: 'javascript/auto'
+        }
+      ]
+    }
   }
+
 }

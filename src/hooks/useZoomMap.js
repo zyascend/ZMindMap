@@ -1,17 +1,17 @@
-import store from '../store'
+import { useMapStore } from '@/store/map'
 import * as d3 from './d3'
+const store = useMapStore()
 let zoom
 /**
  * 使图具有缩放能力
  */
 const registerZoom = () => {
-  const selections = store.getters.getSelections
+  const selections = store.selections
   const { mainG, mainSvg } = selections
   zoom = d3.zoom().on('zoom', event => {
     mainG.attr('transform', event.transform)
   }).scaleExtent([0.1, 4])
   // .translateExtent([[-1000, -1000], [1000, 800]])
-
   zoom(selections.mainSvg)
   mainSvg.on('dblclick.zoom', null)
 }
@@ -19,8 +19,8 @@ const registerZoom = () => {
  * 使导图适应当前屏幕大小
  */
 const fitView = () => {
-  const refs = store.getters.getRefs
-  const selections = store.getters.getSelections
+  const refs = store.refs
+  const selections = store.selections
   if (!zoom) return
   const gMetrics = refs.mainG.getBBox()
   const svgMetrics = refs.mainSvg.getBoundingClientRect()
@@ -36,9 +36,7 @@ const fitView = () => {
     -gMetrics.x * scale + svgCenter.x - gCenter.x,
     -gMetrics.y * scale + svgCenter.y - gCenter.y
   ).scale(scale)
-
-  // selections.mainSvg.call(zoom.transform, center)
-  selections.mainSvg.transition().duration(800).call(zoom.transform, center)
+  selections.mainSvg.transition().duration(500).call(zoom.transform, center)
 }
 
 export default { registerZoom, fitView }

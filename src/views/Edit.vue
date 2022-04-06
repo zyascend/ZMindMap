@@ -29,7 +29,7 @@
 import { defineComponent, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import useZoomMap from '@/hooks/useZoomMap'
-import { useStore } from 'vuex'
+import { useUserStore } from '@/store/user'
 import MindMapPro from '@/components/MindMapPro.vue'
 import Note from '@/components/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -48,7 +48,7 @@ export default defineComponent({
     Note
   },
   setup () {
-    const store = useStore()
+    const userStore = useUserStore()
     const route = useRoute()
     const docId = route.params?.id
     const mapData = ref(null)
@@ -59,7 +59,7 @@ export default defineComponent({
       useZoomMap.fitView()
     }
     onMounted(async () => {
-      const url = `${API.getDocContent}/${store.getters.getUser._id}/${docId}`
+      const url = `${API.getDocContent}/${userStore.getUser._id}/${docId}`
       const { data } = await axios(url, { method: 'get' })
       mapData.value = data
       content.value = JSON.parse(data.definition)
@@ -69,7 +69,7 @@ export default defineComponent({
     }
     watch(content, async (newVal, oldVal) => {
       if (!oldVal) return
-      const url = `${API.setDocContent}/${store.getters.getUser._id}`
+      const url = `${API.setDocContent}/${userStore.getUser._id}`
       const body = {
         ...mapData.value,
         definition: JSON.stringify(newVal)

@@ -67,8 +67,7 @@
 
 <script>
 import { defineComponent, onMounted, computed, ref } from 'vue'
-import { useStore } from 'vuex'
-import useZoomMap from '@/hooks/useZoomMap'
+import { useDocStore } from '@/store/doc'
 import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -91,19 +90,16 @@ export default defineComponent({
     ProfilePopover
   },
   setup () {
-    const store = useStore()
+    const store = useDocStore()
     const route = useRoute()
-    const asideData = computed(() => store.getters.getAllDocuments(null))
+    const asideData = computed(() => store.allTreeDocs || [])
     const isDrawerOpen = ref(true)
     const showDeleteDialog = ref(false)
     const showRenameDialog = ref(false)
     const searchText = ref('')
     onMounted(() => {
-      store.dispatch('fetchAllDocuments')
+      store.fetchAllDocuments()
     })
-    const fitView = () => {
-      useZoomMap.fitView()
-    }
     const getUrl = (row) => {
       const isFolder = 'folderType' in row
       if (isFolder) {
@@ -123,8 +119,10 @@ export default defineComponent({
       }
       if (addFolder) {
         Object.assign(newData, { ...newData, folderType: 0 })
+        store.postSetFolder(newData)
+      } else {
+        store.postSetDoc(newData)
       }
-      store.dispatch(`${addFolder ? 'postSetFolder' : 'postSetDoc'}`, newData)
     }
     return {
       asideData,
@@ -133,7 +131,6 @@ export default defineComponent({
       showDeleteDialog,
       showRenameDialog,
       searchText,
-      fitView,
       getUrl,
       isFolder,
       addNew

@@ -25,6 +25,8 @@ app.component(ElTableColumn.name, ElTableColumn)
 app.component(ElPopover.name, ElPopover)
 app.component(ElSwitch.name, ElSwitch)
 // app.component(ElSkeleton.name, ElSkeleton)
-const isDark = store.state.isDark
+
+const websiteCfg = JSON.parse(localStorage.getItem('zmindmap_website') || '{}')
+const isDark = websiteCfg?.isDark
 window.document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
 app.use(store).use(router).mount('#app')

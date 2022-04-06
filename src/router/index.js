@@ -1,5 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import store from '@/store/index'
+import { useUserStore } from '@/store/user'
 import Home from '../views/Home.vue'
 // import Edit from '@/views/Edit.vue'
 import Folder from '@/views/Folder.vue'
@@ -47,15 +47,15 @@ const router = createRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
+  const store = useUserStore()
   if (to.meta.isLogin) {
     // 如果去登陆页的话 不用验证token
     next()
   } else {
     // 验证是否登录了
-    if (store?.state?.token || localStorage.getItem('token')) {
+    if (store?.token || localStorage.getItem('token')) {
       next()
     } else {
-      console.log(to)
       next({ path: '/login', query: { redirect: to.path } })
     }
   }

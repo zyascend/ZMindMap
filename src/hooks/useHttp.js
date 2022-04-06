@@ -1,6 +1,6 @@
 import axios from 'axios'
 import { ErrorTip } from './utils'
-import store from '../store'
+import { useUserStore } from '@/store/user'
 import router from '@/router/index'
 
 /**
@@ -62,7 +62,7 @@ instance.defaults.headers.post['Content-Type'] = 'application/json'
  */
 instance.interceptors.request.use(
   config => {
-    const token = store.getters.getToken
+    const token = useUserStore().getToken
     token && (config.headers.Authorization = `Bearer ${token}`)
     return config
   },
