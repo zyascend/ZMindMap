@@ -2,6 +2,9 @@
  * 导图和大纲笔记页面相关状态
  */
 import { defineStore } from 'pinia'
+import API from '@/hooks/api'
+import { useUserStore } from './user'
+import * as handler from './handler'
 import * as d3 from 'd3-selection'
 export const useMapStore = defineStore('map', {
   state: () => {
@@ -15,15 +18,20 @@ export const useMapStore = defineStore('map', {
         mainSvg: undefined,
         mainG: undefined,
         measureSvg: undefined
-      }
+      },
+      mapData: undefined,
+      content: undefined,
+
+      // 设置Edit页面的数据的加载状态
+      isSaving: false
     }
   },
   getters: {
-    getUser: state => {
-      return state.user
+    getMap: state => {
+      return state.mapData
     },
-    getToken: state => {
-      return state.token || localStorage.getItem('token')
+    getContent: state => {
+      return state.content
     }
   },
   actions: {
@@ -32,6 +40,34 @@ export const useMapStore = defineStore('map', {
       for (const key in refs) {
         this.selections[key] = d3.select(refs[key])
       }
+    },
+    setData (data) {
+      if (data && data.definition) {
+        this.mapData = data
+        this.content = JSON.parse(data.definition)
+        console.log('mapStore setData > ', this.content)
+      } else {
+        console.log('网络请求出错')
+      }
+    },
+    async fetchMap (docId) {
+      const user = useUserStore().user
+      const url = `${API.getDocContent}/${user._id}/${docId}`
+      const res = await handler.asyncHttp(url)
+      this.setData(res)
+    },
+    async remoteUpdateMap (content) {
+      const user = useUserStore().user
+      const url = `${API.setDocContent}/${user._id}`
+      const data = {
+        ...this.mapData,
+        definition: JSON.stringify(content)
+      }
+      console.log('body > ', data)
+      this.isSaving = true
+      const res = await handler.asyncHttp(url, { method: 'post', data })
+      this.isSaving = false
+      this.setData(res)
     }
   },
   persist: {

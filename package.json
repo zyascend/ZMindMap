@@ -22,9 +22,7 @@
     "pinia": "^2.0.13",
     "pinia-plugin-persist": "^1.0.0",
     "vue": "^3.2.31",
-    "vue-router": "^4.0.0-0",
-    "vuex": "^4.0.0-0",
-    "vuex-persistedstate": "^4.1.0"
+    "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
     "@types/js-md5": "^0.4.3",

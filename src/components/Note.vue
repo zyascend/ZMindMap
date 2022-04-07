@@ -1,7 +1,7 @@
 <template>
   <div class="note-container">
-    <div class="doc-main">
-      <div class="name" @input="onNameInput($event)" contenteditable="true">{{ content.name }}</div>
+    <div class="doc-main" v-if="contentName">
+      <div class="name" @input="onNameInput($event)" contenteditable="true">{{ contentName }}</div>
       <div class="content">
         <div class="note-node" v-for="node in noteList" :key="node.id">
           <div class="indent" v-for="i in node.level" :key="`${index}-${i}`" />
@@ -29,7 +29,8 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, onUnmounted, nextTick, ref } from 'vue'
+import { defineComponent, onMounted, onUnmounted, nextTick, computed } from 'vue'
+import { useMapStore } from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
 import NotePopover from '@/components/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
@@ -46,24 +47,18 @@ export default defineComponent({
     SvgIcon,
     NotePopover
   },
-  props: {
-    content: {
-      type: Object,
-      required: true
-    }
-  },
-  setup (props, context) {
-    const noteList = ref(flatter(props.content.noteList))
-    const originData = ref(props.content.noteList)
-    const contentName = ref(props.content.name)
+  setup () {
+    const store = useMapStore()
+    const noteList = computed(() => flatter(store.content?.noteList))
+    const originData = computed(() => store.content?.noteList)
+    const contentName = computed(() => store.content?.name)
     onMounted(() => {
     })
     onUnmounted(() => {
       document.onkeydown = undefined
     })
-    const emitUpdate = () => {
-      // 实现v-model双向更新
-      context.emit('update:content', {
+    const emitUpdate = async () => {
+      await store.remoteUpdateMap({
         name: contentName.value,
         noteList: originData.value
       })

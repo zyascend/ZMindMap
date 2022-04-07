@@ -114,12 +114,10 @@ export default defineComponent({
     const addNew = addFolder => {
       const newData = {
         name: `${addFolder ? '新文件夹' : '无标题'}`,
-        folderId: '0',
-        userId: store.getters.getUser._id
+        folderId: '0'
       }
       if (addFolder) {
-        Object.assign(newData, { ...newData, folderType: 0 })
-        store.postSetFolder(newData)
+        store.postSetFolder({ ...newData, folderType: 0 })
       } else {
         store.postSetDoc(newData)
       }

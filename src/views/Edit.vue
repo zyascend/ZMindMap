@@ -21,20 +21,17 @@
         </template>
       </div>
     </header>
-    <note v-if="showMap && content" v-model:content="content" />
-    <mind-map-pro v-if="!showMap && content" v-model:content="content" />
+    <note v-if="!showMap" />
+    <mind-map-pro v-if="showMap" />
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import useZoomMap from '@/hooks/useZoomMap'
-import { useUserStore } from '@/store/user'
+import { useMapStore } from '@/store/map'
 import MindMapPro from '@/components/MindMapPro.vue'
 import Note from '@/components/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-import axios from '@/hooks/useHttp'
-import API from '@/hooks/api'
 import '@/assets/pic/fit-view.svg'
 import '@/assets/pic/folder.svg'
 import '@/assets/pic/theme.svg'
@@ -48,49 +45,23 @@ export default defineComponent({
     Note
   },
   setup () {
-    const userStore = useUserStore()
+    const store = useMapStore()
     const route = useRoute()
     const docId = route.params?.id
-    const mapData = ref(null)
-    const content = ref(null)
+    const mapData = computed(() => store.mapData)
     const showMap = ref(false)
-    const isSaving = ref(false)
-    const fitView = () => {
-      useZoomMap.fitView()
-    }
+    const isSaving = computed(() => store.isSaving)
     onMounted(async () => {
-      const url = `${API.getDocContent}/${userStore.getUser._id}/${docId}`
-      const { data } = await axios(url, { method: 'get' })
-      mapData.value = data
-      content.value = JSON.parse(data.definition)
+      await store.fetchMap(docId)
     })
     const toggleShowMap = () => {
       showMap.value = !showMap.value
     }
-    watch(content, async (newVal, oldVal) => {
-      if (!oldVal) return
-      const url = `${API.setDocContent}/${userStore.getUser._id}`
-      const body = {
-        ...mapData.value,
-        definition: JSON.stringify(newVal)
-      }
-      console.log('watch(content')
-      isSaving.value = true
-      axios(url, { method: 'post', data: body })
-        .then(() => {
-          isSaving.value = false
-        })
-        .catch(() => {
-          isSaving.value = false
-        })
-    })
     return {
       docId,
       isSaving,
       showMap,
       mapData,
-      content,
-      fitView,
       toggleShowMap
     }
   }

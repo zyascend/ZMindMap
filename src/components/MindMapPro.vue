@@ -64,13 +64,7 @@ import PIC_ADD from '@/assets/map/add.svg'
 
 export default defineComponent({
   name: 'MindMap',
-  props: {
-    content: {
-      type: Object,
-      required: true
-    }
-  },
-  setup (props) {
+  setup () {
     const mainSvg = ref()
     const mainG = ref()
     const measureSvg = ref()
@@ -85,7 +79,7 @@ export default defineComponent({
         mainG: mainG.value,
         measureSvg: measureSvg.value
       })
-      const treeData = useMap(props.content)
+      const treeData = useMap(store.content)
       pathData.value = treeData.path
       nodeData.value = treeData.node
       nextTick(() => {

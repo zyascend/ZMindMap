@@ -34,7 +34,7 @@ export const useDocStore = defineStore({
     // TODO 相同逻辑封装？
     async fetchAllDocuments () {
       const user = useUserStore().user
-      const url = `${API.getAllDocs}/${user._id}`
+      const url = `${API.getAllDocs}/${user?._id || 'null'}`
       const data = await handler.asyncHttp(url)
       this.setDoc(data)
     },

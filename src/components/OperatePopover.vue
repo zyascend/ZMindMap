@@ -65,7 +65,8 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-import { useStore } from 'vuex'
+import { useDocStore } from '@/store/doc'
+import { useUserStore } from '@/store/user'
 import SvgIcon from '@/components/SvgIcon.vue'
 import '@/assets/pic/more.svg'
 import '@/assets/pic/folder.svg'
@@ -86,7 +87,8 @@ export default defineComponent({
     }
   },
   setup () {
-    const store = useStore()
+    const store = useDocStore()
+    const userStore = useUserStore()
     const showDeleteDialog = ref(false)
     const showRenameDialog = ref(false)
     const searchText = ref('')
@@ -99,12 +101,12 @@ export default defineComponent({
       const newData = {
         name: `${addFolder ? '新文件夹' : '无标题'}`,
         folderId: data.id,
-        userId: store.getters.getUser._id
+        userId: userStore.user._id
       }
       if (addFolder) {
-        Object.assign(newData, { ...newData, folderType: 0 })
+        store.postSetFolder({ ...newData, folderType: 0 })
       }
-      store.dispatch(`${addFolder ? 'postSetFolder' : 'postSetDoc'}`, newData)
+      store.postSetDoc(newData)
     }
     const renameData = data => {
       newName.value = data.name
@@ -114,10 +116,11 @@ export default defineComponent({
     const submitRename = () => {
       showRenameDialog.value = false
       const renameFolder = isFolder(tempData.value)
-      store.dispatch(`${renameFolder ? 'postSetFolder' : 'postSetDoc'}`, {
-        ...tempData.value,
-        name: newName.value
-      })
+      const data = { ...tempData.value, name: newName.value }
+      if (renameFolder) {
+        store.postSetFolder(data)
+      }
+      store.postSetDoc(data)
     }
     const removeData = data => {
       tempData.value = data
@@ -125,7 +128,7 @@ export default defineComponent({
     }
     const submitRemove = () => {
       showDeleteDialog.value = false
-      store.dispatch('postRemove', {
+      store.postRemove({
         id: tempData.value.id,
         type: isFolder(tempData.value) ? 0 : 1
       })

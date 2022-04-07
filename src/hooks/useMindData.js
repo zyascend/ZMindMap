@@ -7,6 +7,7 @@ let newId = ''
 // const lastNode = ''
 
 export const flatter = data => {
+  console.log('[flatter]', data)
   const flatedList = []
   const iter = list => {
     if (!list || !list.length) return
