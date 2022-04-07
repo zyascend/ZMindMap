@@ -68,6 +68,7 @@
 <script>
 import { defineComponent, onMounted, computed, ref } from 'vue'
 import { useDocStore } from '@/store/doc'
+import { useUserStore } from '@/store/user'
 import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -91,6 +92,7 @@ export default defineComponent({
   },
   setup () {
     const store = useDocStore()
+    const userStore = useUserStore()
     const route = useRoute()
     const asideData = computed(() => store.allTreeDocs || [])
     const isDrawerOpen = ref(true)
@@ -114,7 +116,8 @@ export default defineComponent({
     const addNew = addFolder => {
       const newData = {
         name: `${addFolder ? '新文件夹' : '无标题'}`,
-        folderId: '0'
+        folderId: '0',
+        userId: userStore.user._id
       }
       if (addFolder) {
         store.postSetFolder({ ...newData, folderType: 0 })
