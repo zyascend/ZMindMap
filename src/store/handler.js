@@ -7,7 +7,6 @@ import axios from '@/hooks/useHttp'
 import { dateFormatter } from '@/hooks/utils'
 
 export const handleSiderData = data => {
-  console.log(data)
   const folderMap = new Map()
   const res = []
   for (const doc of [...data.folders, ...data.documents]) {

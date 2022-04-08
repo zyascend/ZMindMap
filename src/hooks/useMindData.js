@@ -7,7 +7,6 @@ let newId = ''
 // const lastNode = ''
 
 export const flatter = data => {
-  console.log('[flatter]', data)
   const flatedList = []
   const iter = list => {
     if (!list || !list.length) return
@@ -42,7 +41,6 @@ export const updateTab = _node => {
     }
   }
   iter(_node)
-  console.log('HOOKS-updateTab ', _node)
   return _node
 }
 
@@ -151,7 +149,6 @@ export const deleteNode = (node, event, originData, noteList) => {
       lastNode = i === '0' ? noteList[1] : noteList[i - 1]
     }
   }
-  console.log('deleteNode', node, lastNode)
   findAndDelete(originData, node)
   // ! 假如删光了 需要重新放置一个初始节点
   if (!originData.length) {

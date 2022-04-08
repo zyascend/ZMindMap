@@ -55,6 +55,7 @@ export const dateFormatter = timestamp => {
   return `${year ? `${year}年` : ''}${month}月${day}日 ${hour}:${minutes}`
 }
 
+// 防抖：动作绑定事件，动作发生后一定时间后触发事件，在这段时间内，如果该动作又发生，则重新等待一定时间再触发事件。
 export function debounce (fn, wait) {
   let timer
   return function () {
@@ -69,7 +70,8 @@ export function debounce (fn, wait) {
   }
 }
 
-export function thorttle (fn, wait) {
+// 节流： 动作绑定事件，动作发生后一段时间后触发事件，在这段时间内，如果动作又发生，则无视该动作，直到事件执行完后，才能重新触发。
+export function throttle (fn, wait) {
   let timer
   return function () {
     const _this = this

@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import { defineComponent, onMounted, computed } from 'vue'
+import { defineComponent, computed } from 'vue'
 import { useDocStore } from '@/store/doc'
 import { useWebsiteStore } from '@/store/website'
 import { useRouter, useRoute } from 'vue-router'
@@ -82,11 +82,7 @@ export default defineComponent({
     const docTableData = computed(() => docStore.getAllDocuments(folderId))
     const hasData = computed(() => docTableData.value?.length)
     const showTable = computed(() => websiteStore.showTable)
-    onMounted(() => {
-      // store.dispatch('changeNavigation', route.params.id)
-    })
     const isFolder = row => 'folderType' in row
-
     const onRowClick = (row, column, event) => {
       if (isFolder(row)) {
         // 修改路由URL

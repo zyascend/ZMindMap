@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, computed, ref } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useDocStore } from '@/store/doc'
 import { useUserStore } from '@/store/user'
 import { useRoute } from 'vue-router'
@@ -99,9 +99,7 @@ export default defineComponent({
     const showDeleteDialog = ref(false)
     const showRenameDialog = ref(false)
     const searchText = ref('')
-    onMounted(() => {
-      store.fetchAllDocuments()
-    })
+    store.fetchAllDocuments()
     const getUrl = (row) => {
       const isFolder = 'folderType' in row
       if (isFolder) {

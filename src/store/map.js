@@ -3,6 +3,7 @@
  */
 import { defineStore } from 'pinia'
 import API from '@/hooks/api'
+import { ErrorTip } from '@/hooks/utils'
 import { useUserStore } from './user'
 import * as handler from './handler'
 import * as d3 from 'd3-selection'
@@ -45,9 +46,8 @@ export const useMapStore = defineStore('map', {
       if (data && data.definition) {
         this.mapData = data
         this.content = JSON.parse(data.definition)
-        console.log('mapStore setData > ', this.content)
       } else {
-        console.log('网络请求出错')
+        ErrorTip('保存失败')
       }
     },
     async fetchMap (docId) {
@@ -63,7 +63,6 @@ export const useMapStore = defineStore('map', {
         ...this.mapData,
         definition: JSON.stringify(content)
       }
-      console.log('body > ', data)
       this.isSaving = true
       const res = await handler.asyncHttp(url, { method: 'post', data })
       this.isSaving = false

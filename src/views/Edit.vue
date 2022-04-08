@@ -26,7 +26,7 @@
   </div>
 </template>
 <script>
-import { computed, defineComponent, onMounted, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMapStore } from '@/store/map'
 import MindMapPro from '@/components/MindMapPro.vue'
@@ -51,9 +51,9 @@ export default defineComponent({
     const mapData = computed(() => store.mapData)
     const showMap = ref(false)
     const isSaving = computed(() => store.isSaving)
-    onMounted(async () => {
-      await store.fetchMap(docId)
-    })
+
+    store.fetchMap(docId)
+
     const toggleShowMap = () => {
       showMap.value = !showMap.value
     }

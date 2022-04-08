@@ -43,7 +43,6 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-// import { useStore } from 'vuex'
 import SvgIcon from '@/components/SvgIcon.vue'
 import '@/assets/pic/more.svg'
 import '@/assets/pic/folder.svg'

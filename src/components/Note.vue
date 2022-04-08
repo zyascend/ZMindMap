@@ -29,11 +29,12 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, onUnmounted, nextTick, computed } from 'vue'
+import { defineComponent, onUnmounted, nextTick, computed } from 'vue'
 import { useMapStore } from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
 import NotePopover from '@/components/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
+import Snapshot from '@/hooks/useSnapshot'
 import {
   flatter, moveToLastFocus,
   toggleCollapse, addNewNode,
@@ -52,11 +53,16 @@ export default defineComponent({
     const noteList = computed(() => flatter(store.content?.noteList))
     const originData = computed(() => store.content?.noteList)
     const contentName = computed(() => store.content?.name)
-    onMounted(() => {
-    })
+    const snapshot = new Snapshot()
     onUnmounted(() => {
       document.onkeydown = undefined
     })
+    const snap = () => {
+      snapshot.snap({
+        name: contentName.value,
+        data: originData.value
+      })
+    }
     const emitUpdate = async () => {
       await store.remoteUpdateMap({
         name: contentName.value,
@@ -68,6 +74,7 @@ export default defineComponent({
       originData.value = toggleCollapse(_id, originData.value)
       noteList.value = flatter(originData.value)
       emitUpdate()
+      snap()
     }
     const onDeleteNode = (node, event) => {
       // 节点文字删除完毕才删除此节点
@@ -80,6 +87,7 @@ export default defineComponent({
         moveToLastFocus(`note-node-${lastNode.id}`)
       })
       emitUpdate()
+      snap()
     }
     const onTabNode = (node, event) => {
       const { data, newId } = tabNode(node, event, originData.value)
@@ -90,6 +98,7 @@ export default defineComponent({
         moveToLastFocus(`note-node-${newId}`)
       })
       emitUpdate()
+      snap()
     }
     const onAddNewNode = (event, node) => {
       const { data, newId } = addNewNode(node, event, originData.value)
@@ -99,6 +108,7 @@ export default defineComponent({
         moveToLastFocus(`note-node-${newId}`)
       })
       emitUpdate()
+      snap()
     }
     const onUpDownArrow = (event, node) => {
       event.preventDefault()
@@ -113,6 +123,19 @@ export default defineComponent({
       // 遇到头和尾的节点无法再移动
       if ((code === 38 && target !== 0) || (code === 40 && target !== noteList.value.length - 1)) {
         moveToLastFocus(`note-node-${noteList.value[code === 38 ? target - 1 : target + 1].id}`)
+      }
+    }
+    /**
+     * ctrl+z 撤回操作
+     */
+    const onSnapBack = (event) => {
+      event.preventDefault()
+      if (snapshot.hasPrev) {
+        const { name, data } = snapshot.prev()
+        contentName.value = name
+        originData.value = data
+        noteList.value = flatter(originData.value)
+        emitUpdate()
       }
     }
     const onKeyDown = (event, node) => {
@@ -134,6 +157,11 @@ export default defineComponent({
           // 上下键处理逻辑
           onUpDownArrow(event, node)
           break
+        case 90:
+          if (event.ctrlKey) {
+            onSnapBack(event)
+          }
+          break
         default:
           break
       }
@@ -154,10 +182,10 @@ export default defineComponent({
       }
       update(originData.value)
       emitUpdate()
+      snap()
     }
     const onNodeInput = debounce((event, node) => {
       const newText = event.target.innerText
-      console.log('onNodeInput', newText)
       const update = list => {
         if (!list || !list.length) return
         for (const n of list) {
@@ -170,13 +198,14 @@ export default defineComponent({
       }
       update(originData.value)
       emitUpdate()
+      snap()
     }, 500)
     const onNameInput = debounce((event) => {
       contentName.value = event.target.innerText
       emitUpdate()
+      snap()
     }, 500)
     const toggleActionPop = debounce(node => {
-      console.log('toggleActionPop', node)
     }, 500)
     return {
       noteList,

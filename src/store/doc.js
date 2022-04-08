@@ -27,7 +27,6 @@ export const useDocStore = defineStore({
   },
   actions: {
     setDoc (data) {
-      console.log('PINIA > doc > setDoc > ', data)
       this.originAllDocs = data
       this.allTreeDocs = handler.handleSiderData(data)
     },
