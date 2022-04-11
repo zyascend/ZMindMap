@@ -1,6 +1,7 @@
 {
-  "name": "mindmap-vue3",
+  "name": "ZMindMap",
   "version": "0.1.0",
+  "author": "zyascend@qq.com",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

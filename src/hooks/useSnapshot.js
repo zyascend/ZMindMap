@@ -28,7 +28,8 @@ export default class Snapshot {
 
   prev () {
     if (this.hasPrev) {
-      this.cursor -= 1
+      this.cursor = this.cursor - 1
+      console.log(this.cursor, this.snapshots, this.snapshots[this.cursor])
       return deepClone(this.snapshots[this.cursor])
     }
     return null

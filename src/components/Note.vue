@@ -132,8 +132,9 @@ export default defineComponent({
       event.preventDefault()
       if (snapshot.hasPrev) {
         const { name, data } = snapshot.prev()
+        console.log('onSnapBack', { name, data })
         contentName.value = name
-        originData.value = data
+        console.log(originData.value === data)
         noteList.value = flatter(originData.value)
         emitUpdate()
       }
