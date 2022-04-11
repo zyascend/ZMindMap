@@ -29,7 +29,7 @@
 </template>
 
 <script>
-import { defineComponent, onUnmounted, nextTick, computed } from 'vue'
+import { defineComponent, onUnmounted, nextTick, computed, watch } from 'vue'
 import { useMapStore } from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
 import NotePopover from '@/components/NotePopover.vue'
@@ -60,9 +60,15 @@ export default defineComponent({
     const snap = () => {
       snapshot.snap({
         name: contentName.value,
-        data: originData.value
+        noteList: originData.value
       })
     }
+    watch(contentName, (newVal, oldVal) => {
+      if (!oldVal) {
+        // 首次进入页面 需要将初始值存入快照
+        snap()
+      }
+    })
     const emitUpdate = async () => {
       await store.remoteUpdateMap({
         name: contentName.value,
@@ -131,11 +137,7 @@ export default defineComponent({
     const onSnapBack = (event) => {
       event.preventDefault()
       if (snapshot.hasPrev) {
-        const { name, data } = snapshot.prev()
-        console.log('onSnapBack', { name, data })
-        contentName.value = name
-        console.log(originData.value === data)
-        noteList.value = flatter(originData.value)
+        store.setContent(snapshot.prev())
         emitUpdate()
       }
     }
@@ -204,7 +206,6 @@ export default defineComponent({
     const onNameInput = debounce((event) => {
       contentName.value = event.target.innerText
       emitUpdate()
-      snap()
     }, 500)
     const toggleActionPop = debounce(node => {
     }, 500)

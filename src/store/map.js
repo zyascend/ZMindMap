@@ -42,6 +42,9 @@ export const useMapStore = defineStore('map', {
         this.selections[key] = d3.select(refs[key])
       }
     },
+    setContent (content) {
+      this.content = content
+    },
     setData (data) {
       if (data && data.definition) {
         this.mapData = data
