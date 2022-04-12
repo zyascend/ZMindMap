@@ -76,40 +76,30 @@ export default defineComponent({
       })
     }
     // 折叠or打开节点
-    const onCollapse = _id => {
-      originData.value = toggleCollapse(_id, originData.value)
-      noteList.value = flatter(originData.value)
-      emitUpdate()
+    const onCollapse = async (_id) => {
+      await toggleCollapse(_id, originData.value)
       snap()
     }
-    const onDeleteNode = (node, event) => {
+    const onDeleteNode = async (node, event) => {
       // 节点文字删除完毕才删除此节点
       if (event.target.innerText !== '') return false
-      const { data, lastNode } = deleteNode(node, event, originData.value, noteList.value)
-      originData.value = data
-      noteList.value = flatter(originData.value)
+      const lastNode = await deleteNode(node, event, originData.value, noteList.value)
       nextTick(() => {
         // 上一个节点自动获得光标 并将光标移动到最后的位置
         moveToLastFocus(`note-node-${lastNode.id}`)
       })
-      emitUpdate()
       snap()
     }
-    const onTabNode = (node, event) => {
-      const { data, newId } = tabNode(node, event, originData.value)
-      originData.value = data
-      noteList.value = flatter(originData.value)
+    const onTabNode = async (node, event) => {
+      const newId = await tabNode(node, event, originData.value)
       nextTick(() => {
         // 将光标移动到最后的位置
         moveToLastFocus(`note-node-${newId}`)
       })
-      emitUpdate()
       snap()
     }
-    const onAddNewNode = (event, node) => {
-      const { data, newId } = addNewNode(node, event, originData.value)
-      originData.value = data
-      noteList.value = flatter(originData.value)
+    const onAddNewNode = async (event, node) => {
+      const newId = await addNewNode(node, event, originData.value)
       nextTick(() => {
         moveToLastFocus(`note-node-${newId}`)
       })
@@ -189,6 +179,7 @@ export default defineComponent({
     }
     const onNodeInput = debounce((event, node) => {
       const newText = event.target.innerText
+      // TODO 低效！！！如何优化？？？
       const update = list => {
         if (!list || !list.length) return
         for (const n of list) {
@@ -203,9 +194,8 @@ export default defineComponent({
       emitUpdate()
       snap()
     }, 500)
-    const onNameInput = debounce((event) => {
-      contentName.value = event.target.innerText
-      emitUpdate()
+    const onNameInput = debounce(async (event) => {
+      await store.setContent({ name: event.target.innerText })
     }, 500)
     const toggleActionPop = debounce(node => {
     }, 500)

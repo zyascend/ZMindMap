@@ -42,8 +42,19 @@ export const useMapStore = defineStore('map', {
         this.selections[key] = d3.select(refs[key])
       }
     },
-    setContent (content) {
-      this.content = content
+    async setContent (content) {
+      let name = this.content.name
+      let noteList = this.content.noteList
+      if (content?.name) {
+        name = content.name
+      }
+      if (content?.noteList) {
+        noteList = content.noteList
+      }
+      // ! 等待远程更新完成之后再更新焦点？
+      // TODO 网速慢会发生什么
+      // TODO 更新失败怎么处理
+      await this.remoteUpdateMap({ name, noteList })
     },
     setData (data) {
       if (data && data.definition) {

@@ -3,8 +3,10 @@
  * ? 包括：折叠/删除/Tab/文字更改/...
  * TODO 切换遍历算法为栈式遍历
  */
+import { useMapStore } from '@/store/map'
 let newId = ''
 // const lastNode = ''
+const store = useMapStore()
 
 export const flatter = data => {
   const flatedList = []
@@ -68,8 +70,9 @@ const collapse = (list, _id) => {
     collapse(v.children, _id)
   }
 }
-export const toggleCollapse = (_id, originData) => {
+export const toggleCollapse = async (_id, originData) => {
   collapse(originData, _id)
+  await store.setContent({ noteList: originData })
   return originData
 }
 
@@ -115,7 +118,7 @@ const addChild = (node, list) => {
     }
   }
 }
-export const addNewNode = (node, event, originData) => {
+export const addNewNode = async (node, event, originData) => {
   event.preventDefault()
   if (node.children.length) {
     // 代表该节点现在有子节点且处于展开状态
@@ -124,7 +127,8 @@ export const addNewNode = (node, event, originData) => {
     // 代表该节点没有子节点或者处于折叠状态
     addBrother(node, originData)
   }
-  return { data: originData, newId }
+  await store.setContent({ noteList: originData })
+  return newId
 }
 
 const findAndDelete = (list, node) => {
@@ -139,7 +143,7 @@ const findAndDelete = (list, node) => {
   }
 }
 // 删除节点
-export const deleteNode = (node, event, originData, noteList) => {
+export const deleteNode = async (node, event, originData, noteList) => {
   event.preventDefault()
   let lastNode = null
   // 找到上一个节点 方便聚焦
@@ -162,7 +166,8 @@ export const deleteNode = (node, event, originData, noteList) => {
       children: []
     })
   }
-  return { data: originData, lastNode }
+  await store.setContent({ noteList: originData })
+  return lastNode
 }
 
 const findAndTab = (list, node) => {
@@ -197,9 +202,10 @@ const findAndTab = (list, node) => {
   }
 }
 // tab节点(切换层级)
-export const tabNode = (node, event, originData) => {
+export const tabNode = async (node, event, originData) => {
   event.preventDefault()
   // 首先要找到此节点
   findAndTab(originData, node)
-  return { data: originData, newId }
+  await store.setContent({ noteList: originData })
+  return newId
 }
