@@ -118,8 +118,7 @@ const addChild = (node, list) => {
     }
   }
 }
-export const addNewNode = async (node, event, originData) => {
-  event.preventDefault()
+export const addNewNode = async (node, originData) => {
   if (node.children.length) {
     // 代表该节点现在有子节点且处于展开状态
     addChild(node, originData)
@@ -143,8 +142,7 @@ const findAndDelete = (list, node) => {
   }
 }
 // 删除节点
-export const deleteNode = async (node, event, originData, noteList) => {
-  event.preventDefault()
+export const deleteNode = async (node, originData, noteList) => {
   let lastNode = null
   // 找到上一个节点 方便聚焦
   for (const i in noteList) {
@@ -202,8 +200,7 @@ const findAndTab = (list, node) => {
   }
 }
 // tab节点(切换层级)
-export const tabNode = async (node, event, originData) => {
-  event.preventDefault()
+export const tabNode = async (node, originData) => {
   // 首先要找到此节点
   findAndTab(originData, node)
   await store.setContent({ noteList: originData })

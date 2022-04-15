@@ -82,8 +82,9 @@ export default defineComponent({
     }
     const onDeleteNode = async (node, event) => {
       // 节点文字删除完毕才删除此节点
+      event.preventDefault()
       if (event.target.innerText !== '') return false
-      const lastNode = await deleteNode(node, event, originData.value, noteList.value)
+      const lastNode = await deleteNode(node, originData.value, noteList.value)
       nextTick(() => {
         // 上一个节点自动获得光标 并将光标移动到最后的位置
         moveToLastFocus(`note-node-${lastNode.id}`)
@@ -91,7 +92,8 @@ export default defineComponent({
       snap()
     }
     const onTabNode = async (node, event) => {
-      const newId = await tabNode(node, event, originData.value)
+      event.preventDefault()
+      const newId = await tabNode(node, originData.value)
       nextTick(() => {
         // 将光标移动到最后的位置
         moveToLastFocus(`note-node-${newId}`)
@@ -99,11 +101,11 @@ export default defineComponent({
       snap()
     }
     const onAddNewNode = async (event, node) => {
-      const newId = await addNewNode(node, event, originData.value)
+      event.preventDefault()
+      const newId = await addNewNode(node, originData.value)
       nextTick(() => {
         moveToLastFocus(`note-node-${newId}`)
       })
-      emitUpdate()
       snap()
     }
     const onUpDownArrow = (event, node) => {
@@ -151,6 +153,7 @@ export default defineComponent({
           onUpDownArrow(event, node)
           break
         case 90:
+          // ctrl + z 撤回逻辑
           if (event.ctrlKey) {
             onSnapBack(event)
           }

@@ -36,7 +36,7 @@
             :width="d.imageWidth"
             :height="d.imageHeight"
             :xlink:href="PIC_ADD"
-            @click="onAdd(d)"
+            @click="onAdd(d.data)"
           />
           <image
             :class="d.children ? 'image-collapse' : 'image-collapse-none'"
@@ -45,7 +45,7 @@
             :width="d.imageWidth"
             :height="d.imageHeight"
             :xlink:href="PIC_COLLAPSE"
-            @click="onCollapse($event, d)"
+            @click="onCollapse($event, d.data)"
           />
         </g>
       </g>
@@ -59,6 +59,10 @@ import { defineComponent, onMounted, ref, onUnmounted, nextTick } from 'vue'
 import { useMapStore } from '@/store/map'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
+import { debounce } from '@/hooks/utils'
+import {
+  toggleCollapse, addNewNode,
+} from '@/hooks/useMindData'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
 import PIC_ADD from '@/assets/map/add.svg'
 
@@ -92,17 +96,21 @@ export default defineComponent({
     onUnmounted(() => {
       document.onkeydown = undefined
     })
-    const onCollapse = (event, d) => {
+    const onCollapse = debounce(async (event, d) => {
       // TODO
       // ! 折叠按钮的点击事件会使g获得焦点，导致添加按钮显示
       // ? 可能需要从事件传递下手
-      console.log('map onCollapse > ', d)
       document.activeElement.blur()
-    }
-    const onAdd = d => {
-      // TODO 操作的节流处理
-      console.log('map onAdd > ', d)
-    }
+      await toggleCollapse(d._id, store.content.noteList)
+    })
+    const onAdd = debounce(async d => {
+      const newId = await addNewNode(d, store.content.noteList)
+      console.log('map add', newId)
+      // nextTick(() => {
+      //   moveToLastFocus(`note-node-${newId}`)
+      // })
+      // snap()
+    }, 500)
     const onGFocus = (event, d) => {
       console.log('map onGFocus > ', d)
     }
