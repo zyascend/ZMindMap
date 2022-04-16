@@ -55,13 +55,13 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, onUnmounted, nextTick } from 'vue'
+import { defineComponent, onMounted, ref, onUnmounted, nextTick, watch } from 'vue'
 import { useMapStore } from '@/store/map'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
 import { debounce } from '@/hooks/utils'
 import {
-  toggleCollapse, addNewNode,
+  toggleCollapse, addNewNode
 } from '@/hooks/useMindData'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
 import PIC_ADD from '@/assets/map/add.svg'
@@ -91,6 +91,9 @@ export default defineComponent({
         useZoomMap.fitView()
       })
     })
+    watch(store.content, () => {
+      console.log('watched')
+    })
     onMounted(() => {
     })
     onUnmounted(() => {
@@ -112,7 +115,7 @@ export default defineComponent({
       // snap()
     }, 500)
     const onGFocus = (event, d) => {
-      console.log('map onGFocus > ', d)
+      // console.log('map onGFocus > ', d)
     }
 
     return {

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <script>
+    const dictData = {
+      '0': {
+        id: '0',
+        name: 'aa',
+        level: 0,
+        children: [],
+        parent: '-1'
+      }
+    }
+    function appendTree (id) {
+      const d = dictData[id]
+      if (d.children.length) {
+        const newChildren = []
+        for (const c of d.children) {
+          newChildren.push(appendTree(c))
+        }
+        d.children = newChildren
+      }
+      return d
+    }
+    function addChild (pid, name) {
+      const p = dictData[pid]
+      const id = `${pid}-${p.children.length}`
+      const c = {
+        name,
+        id,
+        level: p.level + 1,
+        children: [],
+        parent: pid
+      }
+      dictData[id] = c
+      dictData[pid].children.push(id)
+      console.log('dicData', dictData)
+    }
+    function deleteDic (id) {
+      const children = dictData[id].children
+      if (children.length) {
+        for (const c of children) {
+          deleteDic(c)
+        }
+      }
+      delete dictData[id]
+    }
+    function deleteNode (id) {
+      const p = dictData[dictData[id].parent]
+      const pc = p.children
+      const pcn = pc.filter(v => v !== id)
+      dictData[dictData[id].parent].children = pcn
+      deleteDic(id)
+    }
+
+    function tabNode (id, tid) {
+      const pid = dictData[tid].parent
+      dictData[pid].children.push(id)
+    }
+
+    addChild('0', '11111')
+    addChild('0', '2222')
+    addChild('0', '3333')
+    // console.log('appendTree', appendTree('0'))
+    addChild('0-0', '11111')
+    addChild('0-2', '2222')
+    addChild('0-1', '3333')
+    deleteNode('0-0')
+    // deleteChild(id)
+
+    console.log('appendTree', appendTree('0'))
+    console.log(JSON.parse(JSON.stringify(dictData)))
+    console.log(Object.keys(dictData))
+  </script>
+</body>
+</html>

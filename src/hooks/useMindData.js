@@ -120,12 +120,15 @@ const addChild = (node, list) => {
 }
 export const addNewNode = async (node, originData) => {
   if (node.children.length) {
+    console.log('add child', originData)
     // 代表该节点现在有子节点且处于展开状态
     addChild(node, originData)
+    console.log('add child', originData)
   } else {
     // 代表该节点没有子节点或者处于折叠状态
     addBrother(node, originData)
   }
+  console.log(newId)
   await store.setContent({ noteList: originData })
   return newId
 }
