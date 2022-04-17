@@ -42,6 +42,33 @@ export const useMapStore = defineStore('map', {
         this.selections[key] = d3.select(refs[key])
       }
     },
+    transform (id = '0', level = 0, list = []) {
+      const d = this.content[id]
+      d.level = level
+      list.push(d)
+      if (d.children.length) {
+        const newChildren = []
+        for (const c of d.children) {
+          newChildren.push(this.transform(c, level + 1, list)[0])
+        }
+        d.children = newChildren
+      } else if (d._children.length) {
+        const newChildren = []
+        for (const c of d._children) {
+          newChildren.push(this.transform(c, level + 1))
+        }
+        d._children = newChildren
+      }
+      return [d, list]
+    },
+    async setContent1 (content) {
+      this.content = content
+      ;[this.noteList, this.treedData] = this.transform()
+      // ! 等待远程更新完成之后再更新焦点？
+      // TODO 网速慢会发生什么
+      // TODO 更新失败怎么处理
+      await this.remoteUpdateMap(content)
+    },
     async setContent (content) {
       let name = this.content.name
       let noteList = this.content.noteList
