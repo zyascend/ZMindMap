@@ -1,4 +1,5 @@
 const path = require('path')
+const webpack = require('webpack')
 const IS_PROD = process.env.NODE_ENV === 'production'
 module.exports = {
   publicPath: IS_PROD ? 'https://cdn.kimjisoo.cn/' : '/',
@@ -69,7 +70,13 @@ module.exports = {
           type: 'javascript/auto'
         }
       ]
-    }
+    },
+    plugins: [
+      new webpack.DefinePlugin({
+        BASE_URL: IS_PROD ? JSON.stringify('https://mapapi.kimjisoo.cn')
+          : JSON.stringify('http://localhost:3003')
+      })
+    ]
   }
 
 }
