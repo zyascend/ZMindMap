@@ -22,6 +22,8 @@ export const useMapStore = defineStore('map', {
       },
       mapData: undefined,
       content: undefined,
+      noteList: [],
+      treedData: undefined,
 
       // 设置Edit页面的数据的加载状态
       isSaving: false
@@ -61,27 +63,13 @@ export const useMapStore = defineStore('map', {
       }
       return [d, list]
     },
-    async setContent1 (content) {
+    async setContent (content) {
       this.content = content
       ;[this.noteList, this.treedData] = this.transform()
       // ! 等待远程更新完成之后再更新焦点？
       // TODO 网速慢会发生什么
       // TODO 更新失败怎么处理
       await this.remoteUpdateMap(content)
-    },
-    async setContent (content) {
-      let name = this.content.name
-      let noteList = this.content.noteList
-      if (content?.name) {
-        name = content.name
-      }
-      if (content?.noteList) {
-        noteList = content.noteList
-      }
-      // ! 等待远程更新完成之后再更新焦点？
-      // TODO 网速慢会发生什么
-      // TODO 更新失败怎么处理
-      await this.remoteUpdateMap({ name, noteList })
     },
     setData (data) {
       if (data && data.definition) {
@@ -96,6 +84,7 @@ export const useMapStore = defineStore('map', {
       const url = `${API.getDocContent}/${user._id}/${docId}`
       const res = await handler.asyncHttp(url)
       this.setData(res)
+      ;[this.noteList, this.treedData] = this.transform()
     },
     async remoteUpdateMap (content) {
       const user = useUserStore().user
