@@ -64,6 +64,10 @@ export const useMapStore = defineStore('map', {
       return [d, list]
     },
     async setContent (content) {
+      if (this.isSaving) {
+        ErrorTip('操作过于频繁！')
+      }
+      this.isSaving = true
       this.content = content
       // ! 必须使用deepClone 否则会改变this.content
       ;[this.treedData, this.noteList] = this.transform(deepClone(content))
@@ -92,7 +96,6 @@ export const useMapStore = defineStore('map', {
         ...this.mapData,
         definition: JSON.stringify(content)
       }
-      this.isSaving = true
       const res = await handler.asyncHttp(url, { method: 'post', data })
       this.isSaving = false
       this.setData(res)

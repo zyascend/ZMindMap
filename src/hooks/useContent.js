@@ -26,16 +26,24 @@ export async function addNode (pid, cid = null) {
   return id
 }
 
-function deleteDic (id, content) {
-  const children = content[id].children
-  if (children.length) {
-    for (const c of children) {
-      deleteDic(c)
-    }
+export async function deleteNode (id, list = undefined) {
+  // 更新其父节点的信息
+  const content = store.content
+  const p = content[content[id].parent]
+  // 没有父节点 => 是根节点 => 根节点不能被删除
+  if (!p) return
+  p.children = p.children.filter(v => v !== id)
+  // 删除此节点和其所有后代
+  const queue = [id]
+  while (queue.length) {
+    const front = queue.shift()
+    queue.push(...content[front].children)
+    delete content[front]
   }
-  delete content[id]
-}
-export async function deleteNode (id, list) {
+  await store.setContent(content)
+  // list==undefined => 是在map中删除 不需要定位焦点
+  if (!list) return
+  // 返回上一个ID
   let prevId
   // 删除的是第一个节点 焦点将给到第二个节点
   if (list[0].id === id) {
@@ -48,24 +56,17 @@ export async function deleteNode (id, list) {
       }
     }
   }
-  const content = store.content
-  const p = content[content[id].parent]
-  p.children = p.children.filter(v => v !== id)
-  deleteDic(id, content)
-  await store.setContent(content)
-  // TODO 返回上一个ID
   return prevId
 }
 export async function collapse (id) {
   const content = store.content
   const node = content[id]
-  console.log(node)
   ;[node.children, node._children] = [node._children, node.children]
-  console.log(node)
   await store.setContent(content)
 }
 
 export function moveToLastFocus (id) {
+  // 把光标移到文字最后面
   const $el = document.getElementById(id)
   const range = document.createRange()
   range.selectNodeContents($el)

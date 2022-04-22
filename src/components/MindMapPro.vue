@@ -60,8 +60,8 @@ import { defineComponent, onMounted, ref, onUnmounted, nextTick, watch, computed
 import { useMapStore } from '@/store/map'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
-import { debounce } from '@/hooks/utils'
-import { collapse, addNode } from '@/hooks/useContent'
+// import { debounce } from '@/hooks/utils'
+import { collapse, addNode, deleteNode } from '@/hooks/useContent'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
 import PIC_ADD from '@/assets/map/add.svg'
 
@@ -102,32 +102,36 @@ export default defineComponent({
     onUnmounted(() => {
       document.onkeydown = undefined
     })
-    const onCollapse = debounce(async (event, d) => {
+    const onCollapse = async (event, d) => {
       // TODO
       // ! 折叠按钮的点击事件会使g获得焦点，导致添加按钮显示
       // ? 可能需要从事件传递下手
       document.activeElement.blur()
       console.log('onCollapse', d)
       await collapse(d.id)
-    })
-    const onAdd = debounce(async d => {
+    }
+    const onAdd = async d => {
       await addNode(d.id)
-    }, 500)
+    }
     const onGFocus = (event, d) => {
       console.log('onGFocus')
     }
     const showCollapse = d => {
       return d.children.length || d._children.length
     }
-    const onTabNode = debounce(async (event, node) => {
+    const onTabNode = async (event, node) => {
       event.preventDefault()
       console.log('onTabNode')
       await addNode(node.id)
-    }, 500)
-    const onAddNewNode = debounce(async (event, node) => {
+    }
+    const onAddNewNode = async (event, node) => {
       event.preventDefault()
       await addNode(node.parent, node.id)
-    }, 500)
+    }
+    const onDeleteNode = async (event, node) => {
+      event.preventDefault()
+      await deleteNode(node.id)
+    }
     const onKeyDown = (event, node) => {
       switch (event.keyCode) {
         case 13:
@@ -137,6 +141,10 @@ export default defineComponent({
         case 9:
           // Tab键处理逻辑
           onTabNode(event, node)
+          break
+        case 46:
+          // Tab键处理逻辑
+          onDeleteNode(event, node)
           break
         default:
           break
