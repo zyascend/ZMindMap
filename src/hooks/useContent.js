@@ -8,7 +8,7 @@ export async function addNode (pid) {
   const id = `${pid}-${node.children.length}`
   node.children.push(id)
   const child = {
-    html: '',
+    html: '新节点',
     id,
     children: [],
     _children: [],
@@ -29,19 +29,33 @@ function deleteDic (id, content) {
   }
   delete content[id]
 }
-export async function deleteNode (id) {
+export async function deleteNode (id, list) {
+  let prevNode
+  // 删除的是第一个节点 焦点将给到第二个节点
+  if (list[0].id === id) {
+    prevNode = list[1]
+  } else {
+    for (const index in list) {
+      if (list[index].id === id) {
+        prevNode = list[index - 1]
+        break
+      }
+    }
+  }
   const content = store.content
   const p = content[content[id].parent]
   p.children = p.children.filter(v => v !== id)
   deleteDic(id, content)
   await store.setContent(content)
   // TODO 返回上一个ID
-  return id
+  return prevNode
 }
 export async function collapse (id) {
   const content = store.content
   const node = content[id]
+  console.log(node)
   ;[node.children, node._children] = [node._children, node.children]
+  console.log(node)
   await store.setContent(content)
 }
 

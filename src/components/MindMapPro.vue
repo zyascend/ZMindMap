@@ -27,7 +27,7 @@
             :x="0"
             :dy="d.contentHeight"
           >
-            <div>{{ d.data.name }}</div>
+            <div>{{ d.data.html }}</div>
           </foreignObject>
           <image
             class="image-add"
@@ -39,7 +39,7 @@
             @click="onAdd(d.data)"
           />
           <image
-            :class="d.children ? 'image-collapse' : 'image-collapse-none'"
+            :class="showCollapse(d.data) ? 'image-collapse' : 'image-collapse-none'"
             :x="d.collapseX"
             :y="d.collapseY"
             :width="d.imageWidth"
@@ -55,14 +55,12 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, onUnmounted, nextTick, watch } from 'vue'
+import { defineComponent, onMounted, ref, onUnmounted, nextTick, watch, computed } from 'vue'
 import { useMapStore } from '@/store/map'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
 import { debounce } from '@/hooks/utils'
-import {
-  toggleCollapse, addNewNode
-} from '@/hooks/useMindData'
+import { collapse, addNode } from '@/hooks/useContent'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
 import PIC_ADD from '@/assets/map/add.svg'
 
@@ -76,6 +74,16 @@ export default defineComponent({
     const store = useMapStore()
     const pathData = ref([])
     const nodeData = ref([])
+    const storeData = computed(() => store.treedData)
+    const render = () => {
+      const treeData = useMap(store.treedData)
+      pathData.value = treeData.path
+      nodeData.value = treeData.node
+      nextTick(() => {
+        useZoomMap.registerZoom()
+        useZoomMap.fitView()
+      })
+    }
     onMounted(() => {
       if (!mainSvg.value || !mainG.value || !measureSvg.value) return
       store.setRefs({
@@ -83,18 +91,12 @@ export default defineComponent({
         mainG: mainG.value,
         measureSvg: measureSvg.value
       })
-      const treeData = useMap(store.content)
-      pathData.value = treeData.path
-      nodeData.value = treeData.node
-      nextTick(() => {
-        useZoomMap.registerZoom()
-        useZoomMap.fitView()
-      })
+      render()
     })
-    watch(store.content, () => {
-      console.log('watched')
-    })
-    onMounted(() => {
+    watch(storeData, (newVal, oldVal) => {
+      if (oldVal) {
+        render()
+      }
     })
     onUnmounted(() => {
       document.onkeydown = undefined
@@ -104,20 +106,18 @@ export default defineComponent({
       // ! 折叠按钮的点击事件会使g获得焦点，导致添加按钮显示
       // ? 可能需要从事件传递下手
       document.activeElement.blur()
-      await toggleCollapse(d._id, store.content.noteList)
+      console.log('onCollapse', d)
+      await collapse(d.id)
     })
     const onAdd = debounce(async d => {
-      const newId = await addNewNode(d, store.content.noteList)
-      console.log('map add', newId)
-      // nextTick(() => {
-      //   moveToLastFocus(`note-node-${newId}`)
-      // })
-      // snap()
+      await addNode(d.id)
     }, 500)
     const onGFocus = (event, d) => {
-      // console.log('map onGFocus > ', d)
+      console.log('onGFocus')
     }
-
+    const showCollapse = d => {
+      return d.children.length || d._children.length
+    }
     return {
       pathData,
       nodeData,
@@ -126,6 +126,7 @@ export default defineComponent({
       onCollapse,
       onAdd,
       onGFocus,
+      showCollapse,
       mainSvg,
       mainG,
       measureSvg

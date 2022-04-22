@@ -145,7 +145,7 @@ export class TreeDataCreater {
     const fontSize = root.depth === 0 ? 16 : 14
     f.append('xhtml:div')
       .attr('style', `word-break:normal; width:auto;width:fit-content;display:block;white-space:pre-wrap;word-wrap:break-word;overflow:hidden;font-size:${fontSize}px;`)
-      .text(root.data.name)
+      .text(root.data.html)
     // ! 【大坑】：取这两值一定要在 f.remove() 之前
     const { clientWidth, clientHeight } = f.node().firstElementChild
     f.remove()
@@ -186,16 +186,7 @@ export class TreeDataCreater {
 }
 
 const useMap = content => {
-  const { name, noteList } = content
-  const data = {
-    name,
-    id: 'node-root',
-    children: noteList,
-    _children: [],
-    collapsed: false
-  }
-  // store.dispatch('setTreeData', data)
-  const hierarchyData = d3.hierarchy(data)
+  const hierarchyData = d3.hierarchy(content)
   const store = useMapStore()
   const measureSvg = store.selections.measureSvg
   const creator = new TreeDataCreater({ measureSvg })

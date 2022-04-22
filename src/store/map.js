@@ -3,7 +3,7 @@
  */
 import { defineStore } from 'pinia'
 import API from '@/hooks/api'
-import { ErrorTip } from '@/hooks/utils'
+import { deepClone, ErrorTip } from '@/hooks/utils'
 import { useUserStore } from './user'
 import * as handler from './handler'
 import * as d3 from 'd3-selection'
@@ -22,7 +22,7 @@ export const useMapStore = defineStore('map', {
       },
       mapData: undefined,
       content: undefined,
-      noteList: [],
+      noteList: undefined,
       treedData: undefined,
 
       // 设置Edit页面的数据的加载状态
@@ -30,11 +30,11 @@ export const useMapStore = defineStore('map', {
     }
   },
   getters: {
-    getMap: state => {
-      return state.mapData
+    getRootNode: state => {
+      return state.noteList ? state.noteList[0] : undefined
     },
-    getContent: state => {
-      return state.content
+    getChildNode: state => {
+      return state.noteList ? state.noteList.splice(1) : undefined
     }
   },
   actions: {
@@ -44,20 +44,20 @@ export const useMapStore = defineStore('map', {
         this.selections[key] = d3.select(refs[key])
       }
     },
-    transform (id = '0', level = 0, list = []) {
-      const d = this.content[id]
+    transform (content, id = 'map-root', level = 0, list = []) {
+      const d = content[id]
       d.level = level
       list.push(d)
       if (d.children.length) {
         const newChildren = []
         for (const c of d.children) {
-          newChildren.push(this.transform(c, level + 1, list)[0])
+          newChildren.push(this.transform(content, c, level + 1, list)[0])
         }
         d.children = newChildren
       } else if (d._children.length) {
         const newChildren = []
         for (const c of d._children) {
-          newChildren.push(this.transform(c, level + 1))
+          newChildren.push(this.transform(content, c, level + 1))
         }
         d._children = newChildren
       }
@@ -65,10 +65,9 @@ export const useMapStore = defineStore('map', {
     },
     async setContent (content) {
       this.content = content
-      ;[this.noteList, this.treedData] = this.transform()
+      // ! 必须使用deepClone 否则会改变this.content
+      ;[this.treedData, this.noteList] = this.transform(deepClone(content))
       // ! 等待远程更新完成之后再更新焦点？
-      // TODO 网速慢会发生什么
-      // TODO 更新失败怎么处理
       await this.remoteUpdateMap(content)
     },
     setData (data) {
@@ -84,7 +83,7 @@ export const useMapStore = defineStore('map', {
       const url = `${API.getDocContent}/${user._id}/${docId}`
       const res = await handler.asyncHttp(url)
       this.setData(res)
-      ;[this.noteList, this.treedData] = this.transform()
+      ;[this.treedData, this.noteList] = this.transform(deepClone(this.content))
     },
     async remoteUpdateMap (content) {
       const user = useUserStore().user

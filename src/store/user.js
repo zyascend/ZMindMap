@@ -23,15 +23,13 @@ export const useUserStore = defineStore('user', {
     async login (payload) {
       const { isLogin, loginForm } = payload
       const data = await asyncHttp(isLogin ? API.login : API.register, { method: 'post', data: loginForm })
-      this.token = data.token
-      this.user = data.user
-      console.log('PINIA > user > login > ', data)
+      this.token = data?.token
+      this.user = data?.user
     },
     logout () {
       this.token = undefined
       this.user = undefined
       localStorage.clear()
-      console.log('PINIA > user > logout')
     },
     async updateUser (data) {
       const url = `${API.editProfile}/${this.user._id}`
@@ -49,7 +47,6 @@ export const useUserStore = defineStore('user', {
         timeout: 20000
       })
       this.user = res
-      console.log('PINIA > user > updateUser', res)
     }
   },
   persist: {

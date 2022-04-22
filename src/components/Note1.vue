@@ -1,6 +1,6 @@
 <template>
   <div class="note-container">
-    <div class="doc-main" v-if="contentName">
+    <div class="doc-main">
       <div class="name"
         @input="onNameInput($event, rootNode)"
         contenteditable="true">
@@ -50,20 +50,8 @@ export default defineComponent({
   },
   setup () {
     const store = useMapStore()
-    const rootNode = computed(() => {
-      const list = store.noteList
-      if (list.length >= 1) {
-        return list[0]
-      }
-      return null
-    })
-    const childNodes = computed(() => {
-      const list = store.noteList
-      if (list.length > 1) {
-        return list.slice(1)
-      }
-      return []
-    })
+    const rootNode = computed(() => store.getRootNode)
+    const childNodes = computed(() => store.getChildNode)
     const snapshot = new Snapshot()
     onUnmounted(() => {
       document.onkeydown = undefined
@@ -84,12 +72,16 @@ export default defineComponent({
     }
     const onDeleteNode = async (node, event) => {
       // 节点文字删除完毕才删除此节点
-      event.preventDefault()
-      if (event.target.innerText !== '') return false
-      const lastNode = await deleteNode(node.id)
+      // event.preventDefault()
+      if (event.target.innerText !== '') return
+      // 当前只有一个节点 删除完文字之后停止
+      if (childNodes.value.length === 1) {
+        return
+      }
+      const prevNode = await deleteNode(node.id, childNodes)
       nextTick(() => {
         // 上一个节点自动获得光标 并将光标移动到最后的位置
-        moveToLastFocus(`note-node-${lastNode.id}`)
+        moveToLastFocus(`note-node-${prevNode.id}`)
       })
       snap()
     }

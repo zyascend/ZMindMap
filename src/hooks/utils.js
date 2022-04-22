@@ -76,7 +76,6 @@ export function throttle (fn, wait) {
   return function () {
     const _this = this
     const args = arguments
-
     if (!timer) {
       timer = setTimeout(function () {
         timer = null

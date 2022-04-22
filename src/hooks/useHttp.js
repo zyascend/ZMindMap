@@ -44,7 +44,7 @@ const errorHandle = (status, other) => {
       ErrorTip(other.error || '资源不存在')
       break
     default:
-      console.log(other)
+      ErrorTip('系统繁忙！操作失败')
   }
 }
 

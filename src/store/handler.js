@@ -74,6 +74,9 @@ export const findNavigationPaths = (id, data) => {
 }
 
 export const asyncHttp = async (url, config = { method: 'get' }, extraData = undefined) => {
-  const { data } = await axios(url, config)
-  return data
+  const [err, res] = await axios(url, config).then(res => [null, res]).catch(err => [err, null])
+  if (err || !res) {
+    return null
+  }
+  return res.data
 }
