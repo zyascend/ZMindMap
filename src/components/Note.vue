@@ -1,9 +1,13 @@
 <template>
   <div class="note-container">
-    <div class="doc-main" v-if="contentName">
-      <div class="name" @input="onNameInput($event)" contenteditable="true">{{ contentName }}</div>
+    <div class="doc-main">
+      <div class="name"
+        @input="onNameInput($event, rootNode)"
+        contenteditable="true">
+        {{ rootNode?.html }}
+      </div>
       <div class="content">
-        <div class="note-node" v-for="node in noteList" :key="node.id">
+        <div class="note-node" v-for="node in childNodes" :key="node.id">
           <div class="indent" v-for="i in node.level" :key="`${index}-${i}`" />
           <div class="node-content" :id="`node-${node.id}`">
             <div
@@ -17,7 +21,7 @@
               :id="`note-node-${node.id}`"
               class="text-wrapper"
               contenteditable="true"
-              v-html="node.name"
+              v-html="node.html"
               @input="onNodeInput($event, node)"
               @keydown="onKeyDown($event, node)">
             </div>
@@ -35,11 +39,7 @@ import SvgIcon from '@/components/SvgIcon.vue'
 import NotePopover from '@/components/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
 import Snapshot from '@/hooks/useSnapshot'
-import {
-  flatter, moveToLastFocus,
-  toggleCollapse, addNewNode,
-  deleteNode, tabNode
-} from '@/hooks/useMindData'
+import { moveToLastFocus, collapse, addNode, tabNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
 import '@/assets/pic/triangle.svg'
 
 export default defineComponent({
@@ -50,50 +50,46 @@ export default defineComponent({
   },
   setup () {
     const store = useMapStore()
-    const noteList = computed(() => flatter(store.content?.noteList))
-    const originData = computed(() => store.content?.noteList)
-    const contentName = computed(() => store.content?.name)
+    const rootNode = computed(() => store.getRootNode)
+    const childNodes = computed(() => store.getChildNode)
     const snapshot = new Snapshot()
     onUnmounted(() => {
       document.onkeydown = undefined
     })
     const snap = () => {
-      snapshot.snap({
-        name: contentName.value,
-        noteList: originData.value
-      })
+      snapshot.snap({ content: store.content })
     }
-    watch(contentName, (newVal, oldVal) => {
+    watch(rootNode, (newVal, oldVal) => {
       if (!oldVal) {
         // 首次进入页面 需要将初始值存入快照
         snap()
       }
     })
-    const emitUpdate = async () => {
-      await store.remoteUpdateMap({
-        name: contentName.value,
-        noteList: originData.value
-      })
-    }
     // 折叠or打开节点
     const onCollapse = async (_id) => {
-      await toggleCollapse(_id, originData.value)
+      await collapse(_id)
       snap()
     }
     const onDeleteNode = async (node, event) => {
       // 节点文字删除完毕才删除此节点
+      // event.preventDefault()
+      console.log('onDeleteNode', event.target.innerText)
+      if (event.target.innerText !== '') return
+      // 当前只有一个节点 删除完文字之后停止
+      if (childNodes.value.length === 1) {
+        return
+      }
       event.preventDefault()
-      if (event.target.innerText !== '') return false
-      const lastNode = await deleteNode(node, originData.value, noteList.value)
+      const prevId = await deleteNode(node.id, childNodes.value)
       nextTick(() => {
         // 上一个节点自动获得光标 并将光标移动到最后的位置
-        moveToLastFocus(`note-node-${lastNode.id}`)
+        moveToLastFocus(`note-node-${prevId}`)
       })
       snap()
     }
     const onTabNode = async (node, event) => {
       event.preventDefault()
-      const newId = await tabNode(node, originData.value)
+      const newId = await tabNode(node.id, childNodes.value)
       nextTick(() => {
         // 将光标移动到最后的位置
         moveToLastFocus(`note-node-${newId}`)
@@ -102,7 +98,14 @@ export default defineComponent({
     }
     const onAddNewNode = async (event, node) => {
       event.preventDefault()
-      const newId = await addNewNode(node, originData.value)
+      let newId
+      if (node.children.length) {
+        // 有孩子且孩子处于展开状态 => 添加孩子
+        newId = await addNode(node.id)
+      } else {
+        // 添加兄弟节点
+        newId = await addNode(node.parent, node.id)
+      }
       nextTick(() => {
         moveToLastFocus(`note-node-${newId}`)
       })
@@ -110,27 +113,26 @@ export default defineComponent({
     }
     const onUpDownArrow = (event, node) => {
       event.preventDefault()
-      let target = -1
-      const code = event.keyCode
-      for (const index in noteList.value) {
-        if (noteList.value[index].id === node.id) {
-          target = Number(index)
-          break
-        }
-      }
-      // 遇到头和尾的节点无法再移动
-      if ((code === 38 && target !== 0) || (code === 40 && target !== noteList.value.length - 1)) {
-        moveToLastFocus(`note-node-${noteList.value[code === 38 ? target - 1 : target + 1].id}`)
-      }
+      // let target = -1
+      // const code = event.keyCode
+      // for (const index in noteList.value) {
+      //   if (noteList.value[index].id === node.id) {
+      //     target = Number(index)
+      //     break
+      //   }
+      // }
+      // // 遇到头和尾的节点无法再移动
+      // if ((code === 38 && target !== 0) || (code === 40 && target !== noteList.value.length - 1)) {
+      //   moveToLastFocus(`note-node-${noteList.value[code === 38 ? target - 1 : target + 1].id}`)
+      // }
     }
     /**
      * ctrl+z 撤回操作
      */
-    const onSnapBack = (event) => {
+    const onSnapBack = async (event) => {
       event.preventDefault()
       if (snapshot.hasPrev) {
-        store.setContent(snapshot.prev())
-        emitUpdate()
+        await store.setContent(snapshot.prev().content)
       }
     }
     const onKeyDown = (event, node) => {
@@ -162,54 +164,32 @@ export default defineComponent({
           break
       }
     }
-    const onChangeFontColor = prams => {
-      const { color, node } = prams
-      const update = list => {
-        if (!list || !list.length) return
-        for (const n of list) {
-          if (n.id === node.id) {
-            // TODO 如何做到不覆盖原来的style
-            n.name = `<span style="color:${color};">${n.name}</span>`
-            // TODO 如何兼容更多的类似md的样式
-          } else {
-            update(n.children)
-          }
-        }
-      }
-      update(originData.value)
-      emitUpdate()
+    const onChangeFontColor = async (prams) => {
+      // const { color, node } = prams
+      // TODO
+      await changeNodeHtml('new html')
       snap()
     }
-    const onNodeInput = debounce((event, node) => {
+    const onNodeInput = debounce(async (event, node) => {
       const newText = event.target.innerText
-      // TODO 低效！！！如何优化？？？
-      const update = list => {
-        if (!list || !list.length) return
-        for (const n of list) {
-          if (n.id === node.id) {
-            n.name = newText
-          } else {
-            update(n.children)
-          }
-        }
-      }
-      update(originData.value)
-      emitUpdate()
+      console.log('onNodeInput', newText)
+      await changeNodeHtml(node.id, newText)
+      nextTick(() => {
+        moveToLastFocus(`note-node-${node.id}`)
+      })
       snap()
     }, 500)
-    const onNameInput = debounce(async (event) => {
-      await store.setContent({ name: event.target.innerText })
-    }, 500)
-    const toggleActionPop = debounce(node => {
+    const onNameInput = debounce(async (event, node) => {
+      const newText = event.target.innerText
+      await changeNodeHtml(node.id, newText)
     }, 500)
     return {
-      noteList,
-      contentName,
+      rootNode,
+      childNodes,
       onCollapse,
       onKeyDown,
       onNodeInput,
       onNameInput,
-      toggleActionPop,
       onChangeFontColor
     }
   }

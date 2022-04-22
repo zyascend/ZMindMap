@@ -1,12 +1,17 @@
 import { useMapStore } from '@/store/map'
-// let newId = ''
-// const lastNode = ''
 const store = useMapStore()
-export async function addNode (pid) {
+export async function addNode (pid, cid = null) {
   const content = store.content
   const node = content[pid]
   const id = `${pid}-${node.children.length}`
-  node.children.push(id)
+  if (!cid) {
+    // 添加孩子 => 添加到第一个
+    node.children.splice(0, 0, id)
+  } else {
+    // 添加兄弟 => 添加到当前位置的下一个
+    const index = node.children.indexOf(cid)
+    node.children.splice(index + 1, 0, id)
+  }
   const child = {
     html: '新节点',
     id,
@@ -30,14 +35,14 @@ function deleteDic (id, content) {
   delete content[id]
 }
 export async function deleteNode (id, list) {
-  let prevNode
+  let prevId
   // 删除的是第一个节点 焦点将给到第二个节点
   if (list[0].id === id) {
-    prevNode = list[1]
+    prevId = list[1].id
   } else {
     for (const index in list) {
       if (list[index].id === id) {
-        prevNode = list[index - 1]
+        prevId = list[index - 1].id
         break
       }
     }
@@ -48,7 +53,7 @@ export async function deleteNode (id, list) {
   deleteDic(id, content)
   await store.setContent(content)
   // TODO 返回上一个ID
-  return prevNode
+  return prevId
 }
 export async function collapse (id) {
   const content = store.content
@@ -76,6 +81,8 @@ export async function tabNode (id, noteList) {
 
 export async function changeNodeHtml (id, html) {
   const content = store.content
+  // ! 由于debounce 此事件可能发生在deleteNode之后 此id节点可能被删除 需要判空
+  if (!content[id]) return
   content[id].html = html
   await store.setContent(content)
 }
