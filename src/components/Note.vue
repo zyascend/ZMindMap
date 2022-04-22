@@ -172,7 +172,6 @@ export default defineComponent({
     }
     const onNodeInput = debounce(async (event, node) => {
       const newText = event.target.innerText
-      console.log('onNodeInput', newText)
       await changeNodeHtml(node.id, newText)
       nextTick(() => {
         moveToLastFocus(`note-node-${node.id}`)

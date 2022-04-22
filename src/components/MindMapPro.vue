@@ -12,6 +12,7 @@
           :transform="`translate(${d.tx},${d.ty})`"
           :class="d.depth === 0 ? 'g-root' : d.depth === 1 ? 'g-subroot' : 'g-leaf'"
           @focus="onGFocus($event, d)"
+          @keydown="onKeyDown($event, d.data)">
         >
           <rect
             :x="d.rectX"
@@ -118,6 +119,29 @@ export default defineComponent({
     const showCollapse = d => {
       return d.children.length || d._children.length
     }
+    const onTabNode = debounce(async (event, node) => {
+      event.preventDefault()
+      console.log('onTabNode')
+      await addNode(node.id)
+    }, 500)
+    const onAddNewNode = debounce(async (event, node) => {
+      event.preventDefault()
+      await addNode(node.parent, node.id)
+    }, 500)
+    const onKeyDown = (event, node) => {
+      switch (event.keyCode) {
+        case 13:
+          // 回车键处理逻辑
+          onAddNewNode(event, node)
+          break
+        case 9:
+          // Tab键处理逻辑
+          onTabNode(event, node)
+          break
+        default:
+          break
+      }
+    }
     return {
       pathData,
       nodeData,
@@ -127,6 +151,7 @@ export default defineComponent({
       onAdd,
       onGFocus,
       showCollapse,
+      onKeyDown,
       mainSvg,
       mainG,
       measureSvg

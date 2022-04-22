@@ -3,6 +3,7 @@ const store = useMapStore()
 export async function addNode (pid, cid = null) {
   const content = store.content
   const node = content[pid]
+  if (!node) return
   const id = `${pid}-${node.children.length}`
   if (!cid) {
     // 添加孩子 => 添加到第一个
