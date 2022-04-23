@@ -22,14 +22,14 @@
       </div>
     </header>
     <note v-if="!showMap" />
-    <mind-map-pro v-if="showMap" />
+    <mind-map v-if="showMap" />
   </div>
 </template>
 <script>
 import { computed, defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMapStore } from '@/store/map'
-import MindMapPro from '@/components/MindMapPro.vue'
+import MindMap from '@/components/MindMap.vue'
 import Note from '@/components/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import '@/assets/pic/fit-view.svg'
@@ -40,7 +40,7 @@ import '@/assets/pic/note.svg'
 
 export default defineComponent({
   components: {
-    MindMapPro,
+    MindMap,
     SvgIcon,
     Note
   },

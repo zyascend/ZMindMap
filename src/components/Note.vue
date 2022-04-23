@@ -104,7 +104,7 @@ export default defineComponent({
         newId = await addNode(node.id)
       } else {
         // 添加兄弟节点
-        newId = await addNode(node.parent, node.id)
+        newId = await addNode(node.parent, { cid: node.id })
       }
       nextTick(() => {
         moveToLastFocus(`note-node-${newId}`)

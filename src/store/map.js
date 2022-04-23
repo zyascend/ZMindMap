@@ -45,7 +45,11 @@ export const useMapStore = defineStore('map', {
       }
     },
     transform (content, id = 'map-root', level = 0, list = []) {
+      if (typeof id === 'object') {
+        id = id.id
+      }
       const d = content[id]
+      console.log(d, id)
       d.level = level
       list.push(d)
       if (d.children.length) {
@@ -66,6 +70,7 @@ export const useMapStore = defineStore('map', {
     async setContent (content) {
       if (this.isSaving) {
         ErrorTip('操作过于频繁！')
+        return
       }
       this.isSaving = true
       this.content = content

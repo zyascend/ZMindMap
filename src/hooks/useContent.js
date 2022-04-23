@@ -1,20 +1,32 @@
 import { useMapStore } from '@/store/map'
+import { customAlphabet } from 'nanoid'
+const nanoid = customAlphabet('1234567890abcdef', 5)
+
 const store = useMapStore()
-export async function addNode (pid, cid = null) {
+export async function addNode (pid, options = { isMap: false, cid: undefined }) {
   const content = store.content
   const node = content[pid]
+  // 如果当前节点折叠 先打开
+  if (node._children.length) {
+    ;[node.children, node._children] = [node._children, node.children]
+  }
   if (!node) return
-  const id = `${pid}-${node.children.length}`
+  const id = nanoid()
+  const { isMap, cid } = options
   if (!cid) {
     // 添加孩子 => 添加到第一个
-    node.children.splice(0, 0, id)
+    if (isMap) {
+      node.children.push(id)
+    } else {
+      node.children.splice(0, 0, id)
+    }
   } else {
     // 添加兄弟 => 添加到当前位置的下一个
-    const index = node.children.indexOf(cid)
+    const index = node.children.indexOf(options.cid)
     node.children.splice(index + 1, 0, id)
   }
   const child = {
-    html: '新节点',
+    html: id,
     id,
     children: [],
     _children: [],
@@ -29,6 +41,7 @@ export async function addNode (pid, cid = null) {
 export async function deleteNode (id, list = undefined) {
   // 更新其父节点的信息
   const content = store.content
+  console.log(content[id], id)
   const p = content[content[id].parent]
   // 没有父节点 => 是根节点 => 根节点不能被删除
   if (!p) return

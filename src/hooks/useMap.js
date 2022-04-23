@@ -13,7 +13,7 @@ export class TreeDataCreater {
     this.borderYPadding = 3
     this.borderRadius = 3
     this.offsetPath = 8
-    this.btnSize = 12
+    this.btnSize = 10
   }
 
   create (root) {
@@ -93,6 +93,14 @@ export class TreeDataCreater {
     root.each(node => {
       node.tx = node.x
       node.ty = node.y - node.rectHeight - this.offsetBottom
+
+      const extraX = node.contentWidth + this.borderXPadding + this.offsetPath - this.btnSize / 2
+      const extraY = node.depth > 1
+        ? node.contentHeight + this.offsetBottom
+        : (node.contentHeight - this.btnSize) / 2
+
+      node.colx = node.tx + extraX
+      node.coly = node.ty + extraY
     })
   }
 

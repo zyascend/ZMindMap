@@ -5,6 +5,18 @@
         <g>
           <path v-for="p in pathData" :key="p.id" :d="p.data"></path>
         </g>
+        <image
+          v-for="d in nodeData"
+          v-show="showCollapse(d.data)"
+          :key="`image-add-${d.id}`"
+          class="image-collapse"
+          :x="d.colx"
+          :y="d.coly"
+          :width="d.imageWidth"
+          :height="d.imageHeight"
+          :xlink:href="PIC_COLLAPSE"
+          @click="onCollapse($event, d.data)"
+          />
         <g
           v-for="d in nodeData"
           :key="d"
@@ -12,6 +24,7 @@
           :transform="`translate(${d.tx},${d.ty})`"
           :class="d.depth === 0 ? 'g-root' : d.depth === 1 ? 'g-subroot' : 'g-leaf'"
           @focus="onGFocus($event, d)"
+          @dblclick="onEditHtml($event, d.data)"
           @keydown="onKeyDown($event, d.data)">
         >
           <rect
@@ -37,22 +50,39 @@
             :width="d.imageWidth"
             :height="d.imageHeight"
             :xlink:href="PIC_ADD"
-            @click="onAdd(d.data)"
-          />
-          <image
-            :class="showCollapse(d.data) ? 'image-collapse' : 'image-collapse-none'"
-            :x="d.collapseX"
-            :y="d.collapseY"
-            :width="d.imageWidth"
-            :height="d.imageHeight"
-            :xlink:href="PIC_COLLAPSE"
-            @click="onCollapse($event, d.data)"
+            @click="onAddClick(d.data)"
           />
         </g>
       </g>
     </svg>
     <svg ref="measureSvg"></svg>
+    <div class="operation">
+      <el-tooltip
+        effect="light"
+        content="适应屏幕"
+        :offset="20"
+        placement="left">
+        <div class="fit-btn" @click="fitView">
+          <SvgIcon class="icon" icon="fit-view" />
+        </div>
+      </el-tooltip>
+    </div>
   </div>
+  <el-dialog
+    v-model="showEditDialog"
+    :append-to-body="true"
+    title="编辑节点"
+    :width="400"
+    custom-class="node-edit-dialog"
+  >
+    <el-input v-model="nodeHtml" autosize type="textarea"/>
+    <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="showEditDialog = false">取消</el-button>
+        <el-button type="primary" @click="submitEdit"  native-type="submit">确认</el-button>
+      </span>
+    </template>
+  </el-dialog>
 </template>
 
 <script>
@@ -60,22 +90,27 @@ import { defineComponent, onMounted, ref, onUnmounted, nextTick, watch, computed
 import { useMapStore } from '@/store/map'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
-// import { debounce } from '@/hooks/utils'
-import { collapse, addNode, deleteNode } from '@/hooks/useContent'
+import { collapse, addNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
+import SvgIcon from './SvgIcon.vue'
+import '@/assets/pic/fit-view.svg'
+import '@/assets/pic/theme.svg'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
 import PIC_ADD from '@/assets/map/add.svg'
 
 export default defineComponent({
+  components: { SvgIcon },
   name: 'MindMap',
   setup () {
     const mainSvg = ref()
     const mainG = ref()
     const measureSvg = ref()
-
     const store = useMapStore()
     const pathData = ref([])
     const nodeData = ref([])
     const storeData = computed(() => store.treedData)
+    const showEditDialog = ref(false)
+    const nodeHtml = ref()
+    let idOnEditing = ''
     const render = () => {
       const treeData = useMap(store.treedData)
       pathData.value = treeData.path
@@ -103,15 +138,14 @@ export default defineComponent({
       document.onkeydown = undefined
     })
     const onCollapse = async (event, d) => {
-      // TODO
-      // ! 折叠按钮的点击事件会使g获得焦点，导致添加按钮显示
-      // ? 可能需要从事件传递下手
-      document.activeElement.blur()
-      console.log('onCollapse', d)
       await collapse(d.id)
     }
-    const onAdd = async d => {
-      await addNode(d.id)
+    const onAddClick = async d => {
+      await addNode(d.id, { isMap: true })
+    }
+    const fitView = () => {
+      useZoomMap.registerZoom()
+      useZoomMap.fitView()
     }
     const onGFocus = (event, d) => {
       console.log('onGFocus')
@@ -119,14 +153,23 @@ export default defineComponent({
     const showCollapse = d => {
       return d.children.length || d._children.length
     }
+    const onEditHtml = async (event, node) => {
+      event.preventDefault()
+      idOnEditing = node.id
+      nodeHtml.value = node.html
+      showEditDialog.value = true
+    }
+    const submitEdit = async () => {
+      showEditDialog.value = false
+      await changeNodeHtml(idOnEditing, nodeHtml.value)
+    }
     const onTabNode = async (event, node) => {
       event.preventDefault()
-      console.log('onTabNode')
-      await addNode(node.id)
+      await addNode(node.id, { isMap: true })
     }
     const onAddNewNode = async (event, node) => {
       event.preventDefault()
-      await addNode(node.parent, node.id)
+      await addNode(node.parent, { isMap: true, cid: node.id })
     }
     const onDeleteNode = async (event, node) => {
       event.preventDefault()
@@ -153,13 +196,18 @@ export default defineComponent({
     return {
       pathData,
       nodeData,
+      showEditDialog,
+      nodeHtml,
       PIC_COLLAPSE,
       PIC_ADD,
       onCollapse,
-      onAdd,
+      onAddClick,
       onGFocus,
-      showCollapse,
       onKeyDown,
+      onEditHtml,
+      submitEdit,
+      showCollapse,
+      fitView,
       mainSvg,
       mainG,
       measureSvg
@@ -171,7 +219,29 @@ export default defineComponent({
 <style lang="scss">
 @import '../assets/css/mixin';
 .map-container {
-  @include wh100;
+  width: 100%;
+  height: calc(100% - 46px);
+  .operation {
+    position: absolute;
+    z-index: 2;
+    top: 80px;
+    right: 50px;
+    padding: 8px;
+    @include centerFlex;
+    flex-direction: column;
+    border: 1px solid #dee0e3;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 0 8px 4px rgb(31 35 41 / 6%);
+    user-select: none;
+    .fit-btn {
+      cursor: pointer;
+      .icon {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
   .main-svg{
     @include wh100;
     background-color: #eeeef3;
@@ -179,6 +249,12 @@ export default defineComponent({
       stroke:#5856d5;
       fill: none;
       stroke-width: 1.5px
+    }
+    .image-collapse {
+      cursor: pointer;
+    }
+    .collapsed {
+      opacity: 1;
     }
     .g-root {
       rect {
@@ -231,6 +307,7 @@ export default defineComponent({
     }
     .g-root, .g-subroot, .g-leaf {
       outline: none;
+      transition: .2s ease-in-out all;
       foreignObject {
         div {
           height: 100%;
@@ -247,22 +324,12 @@ export default defineComponent({
         cursor: pointer;
         visibility: hidden;
       }
-      .image-collapse, .image-collapse-none {
-        cursor: pointer;
-        opacity: 0;
-      }
       &:hover {
-        .image-collapse {
-          opacity: 1;
-        }
         .image-add {
           visibility: hidden;
         }
       }
       &:focus {
-        .image-collapse {
-          opacity: 0;
-        }
         .image-add {
           visibility: visible;
         }
@@ -287,5 +354,9 @@ export default defineComponent({
       white-space: pre;
     }
   }
+}
+.node-edit-dialog {
+  border-radius: 4px !important;
+  box-shadow: rgb(0 0 0 / 16%) 0px 2px 30px 0px !important;
 }
 </style>

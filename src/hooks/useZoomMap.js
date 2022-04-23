@@ -27,7 +27,7 @@ const fitView = () => {
 
   // 计算缩放尺度
   // [+20]的目的是留出一部分边界空隙
-  const scale = Math.min(svgMetrics.width / (gMetrics.width + 20), svgMetrics.height / (gMetrics.height + 20))
+  const scale = Math.min(svgMetrics.width / (gMetrics.width + 40), svgMetrics.height / (gMetrics.height + 20))
 
   // 计算移动的中心
   const svgCenter = { x: svgMetrics.width / 2, y: svgMetrics.height / 2 }

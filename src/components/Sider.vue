@@ -14,9 +14,9 @@
     effect="light"
     content="打开侧边栏"
     placement="right">
-      <div class="open" @click="open" v-show="isSiderCollapse">
-        <SvgIcon class="icon" icon="hamberger" />
-      </div>
+    <div class="open" @click="open" v-show="isSiderCollapse">
+      <SvgIcon class="icon" icon="hamberger" />
+    </div>
   </el-tooltip>
 </template>
 
@@ -40,7 +40,7 @@ export default defineComponent({
     const siderStyle = reactive({
       width: `${props.width}px`,
       transform: 'translateX(0)',
-      zIndex: 0
+      zIndex: 102
     })
     const contentStyle = reactive({
       marginLeft: `${props.width}px`,
@@ -50,13 +50,11 @@ export default defineComponent({
     const collapse = () => {
       isSiderCollapse.value = true
       siderStyle.transform = `translateX(-${props.width}px)`
-      siderStyle.zIndex = '-1'
       contentStyle.marginLeft = '0'
       contentStyle.width = '100%'
     }
     const open = () => {
       isSiderCollapse.value = false
-      siderStyle.zIndex = '0'
       siderStyle.transform = 'translateX(0)'
       contentStyle.marginLeft = `${props.width}px`
       contentStyle.width = `calc(100% - ${props.width}px)`
@@ -91,7 +89,6 @@ export default defineComponent({
     cursor: col-resize;
     right: -3px;
     top: 0;
-    z-index: 50;
     transition: .2s ease-in-out all;
     opacity: 0;
     &::before {
@@ -137,7 +134,7 @@ export default defineComponent({
   position: fixed;
   @include centerFlex;
   box-sizing: border-box;
-  top: 20px;
+  top: 15px;
   left: 20px;
   width: 25px;
   height: 25px;
