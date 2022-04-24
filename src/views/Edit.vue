@@ -20,6 +20,7 @@
           <span>大纲笔记</span>
         </template>
       </div>
+      <map-op-popover :isMap="showMap"/>
     </header>
     <note v-if="!showMap" />
     <mind-map v-if="showMap" />
@@ -32,24 +33,27 @@ import { useMapStore } from '@/store/map'
 import MindMap from '@/components/MindMap.vue'
 import Note from '@/components/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+import MapOpPopover from '@/components/MapOpPopover.vue'
 import '@/assets/pic/fit-view.svg'
 import '@/assets/pic/folder.svg'
 import '@/assets/pic/theme.svg'
 import '@/assets/pic/tree.svg'
 import '@/assets/pic/note.svg'
+import '@/assets/pic/more.svg'
 
 export default defineComponent({
   components: {
     MindMap,
     SvgIcon,
-    Note
+    Note,
+    MapOpPopover
   },
   setup () {
     const store = useMapStore()
     const route = useRoute()
     const docId = route.params?.id
     const mapData = computed(() => store.mapData)
-    const showMap = ref(false)
+    const showMap = ref(true)
     const isSaving = computed(() => store.isSaving)
 
     store.fetchMap(docId)
@@ -135,21 +139,18 @@ export default defineComponent({
     }
     .show-map {
       position: relative;
-      display: inline-flex;
+      @include centerFlex;
       width: auto;
       min-width: 0px;
       height: 26px;
       margin-right: 10px;
-      box-sizing: border-box;
-      align-items: center;
-      justify-content: center;
       padding: 0px 6px;
       background-color: #f4f4f5;
       border-radius: 6px;
       transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
       &:hover {
-        color: #75757d;;
-        background-color: rgba(0, 0, 0, 0.04);
+        color: #75757d;
+        background-color: #0000000a;
       }
       svg {
         width: 20px;
@@ -157,23 +158,22 @@ export default defineComponent({
         margin-right: 2px;
       }
     }
-  }
-  .toolbar {
-    @include vertFlex;
-    position: absolute;
-    z-index: 2;
-    top: 50px;
-    right: 50px;
-    border: 1px solid #dee0e3;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 8px 4px rgba(31, 35, 41, .06);
-    user-select: none;
-    padding: 8px;
-    cursor: pointer;
-    .tool-item + .tool-item {
-      @include wh(16px, 16px);
-      margin-top: 8px;
+    .more-op {
+      @include centerFlex;
+      height: 26px;
+      padding: 0px 6px;
+      margin-right: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #f4f4f5;
+      &:hover {
+        background-color: #0000000a;
+      }
+      svg {
+        width: 20px;
+        height: 20px;
+        fill: #75757d;
+      }
     }
   }
 }

@@ -1,4 +1,5 @@
 import { ElMessage } from 'element-plus'
+import html2canvas from 'html2canvas'
 
 /**
  * 深拷贝：新对象的改变不影响旧对象
@@ -83,4 +84,16 @@ export function throttle (fn, wait) {
       }, wait)
     }
   }
+}
+
+export async function convertToImg (element, name) {
+  await html2canvas(element).then(canvas => {
+    const dataUrl = canvas.toDataURL()
+    const window = open()
+    if (window) {
+      window.document.write(`<img src='${dataUrl}'>`)
+      window.document.title = name
+      window.document.close()
+    }
+  })
 }

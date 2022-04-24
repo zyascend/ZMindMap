@@ -9,12 +9,17 @@ export const useWebsiteStore = defineStore({
       // 文件列表展示方式
       showTable: false,
       // 主题模式
-      isDark: false
+      isDark: false,
+      // 侧边栏是否折叠
+      siderCollapse: true
     }
   },
   actions: {
     toggleShowTable () {
       this.showTable = !this.showTable
+    },
+    toggleSiderCollapse () {
+      this.siderCollapse = !this.siderCollapse
     },
     toggleDarkMode () {
       this.isDark = !this.isDark

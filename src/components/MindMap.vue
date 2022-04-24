@@ -1,5 +1,5 @@
 <template>
-  <div class="map-container">
+  <div class="map-container" id="mapContainer">
     <svg class="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g" ref="mainG">
         <g>
@@ -57,17 +57,17 @@
       </g>
     </svg>
     <svg ref="measureSvg"></svg>
-    <div class="operation">
-      <el-tooltip
-        effect="light"
-        content="适应屏幕"
-        :offset="20"
-        placement="left">
-        <div class="fit-btn" @click="fitView">
-          <SvgIcon class="icon" icon="fit-view" />
-        </div>
-      </el-tooltip>
-    </div>
+  </div>
+  <div class="operation">
+    <el-tooltip
+      effect="light"
+      content="适应屏幕"
+      :offset="20"
+      placement="left">
+      <div class="fit-btn" @click="fitView">
+        <SvgIcon class="icon" icon="fit-view" />
+      </div>
+    </el-tooltip>
   </div>
   <el-dialog
     v-model="showEditDialog"
@@ -87,7 +87,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, onUnmounted, nextTick, watch, computed } from 'vue'
+import { defineComponent, onMounted, ref, onUnmounted, nextTick, watchEffect } from 'vue'
 import { useMapStore } from '@/store/map'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
@@ -105,14 +105,41 @@ export default defineComponent({
     const mainSvg = ref()
     const mainG = ref()
     const measureSvg = ref()
+    const mapContainer = ref()
+
     const store = useMapStore()
     const pathData = ref([])
     const nodeData = ref([])
-    const storeData = computed(() => store.treedData)
+    // const contentData = computed(() => store.treedData)
+
     const showEditDialog = ref(false)
     const nodeHtml = ref()
     let idOnEditing = ''
+
+    const MutationObserver = window.MutationObserver || window.WebKitMutationObserver || window.MozMutationObserver
+    let sizeObserver
+    let zoomTimer
+
+    onMounted(() => {
+      store.setRefs({
+        mainSvg: mainSvg.value,
+        mainG: mainG.value,
+        measureSvg: measureSvg.value
+      })
+      // render()
+      setObserver()
+    })
+    onUnmounted(() => {
+      document.onkeydown = undefined
+      if (sizeObserver) {
+        sizeObserver.disconnect()
+        sizeObserver.takeRecords()
+        sizeObserver = null
+      }
+      clearTimeout(zoomTimer)
+    })
     const render = () => {
+      if (!store.treedData) return
       const treeData = useMap(store.treedData)
       pathData.value = treeData.path
       nodeData.value = treeData.node
@@ -121,23 +148,24 @@ export default defineComponent({
         useZoomMap.fitView()
       })
     }
-    onMounted(() => {
-      if (!mainSvg.value || !mainG.value || !measureSvg.value) return
-      store.setRefs({
-        mainSvg: mainSvg.value,
-        mainG: mainG.value,
-        measureSvg: measureSvg.value
-      })
+    watchEffect(() => {
+      // 立即执行传入的一个函数，并响应式追踪其依赖，并在其依赖变更时重新运行该函数
       render()
     })
-    watch(storeData, (newVal, oldVal) => {
-      if (oldVal) {
-        render()
-      }
-    })
-    onUnmounted(() => {
-      document.onkeydown = undefined
-    })
+    const setObserver = () => {
+      sizeObserver = new MutationObserver(mutations => {
+        zoomTimer = setTimeout(() => {
+          useZoomMap.registerZoom()
+          useZoomMap.fitView()
+        }, 500)
+      })
+      const sideContent = document.getElementById('siderContent')
+      sizeObserver.observe(sideContent, {
+        attributes: true,
+        attributeFilter: ['style'],
+        attributeOldValue: true
+      })
+    }
     const onCollapse = async (event, d) => {
       await collapse(d.id)
     }
@@ -207,7 +235,8 @@ export default defineComponent({
       fitView,
       mainSvg,
       mainG,
-      measureSvg
+      measureSvg,
+      mapContainer
     }
   }
 })
@@ -215,30 +244,30 @@ export default defineComponent({
 
 <style lang="scss">
 @import '../assets/css/mixin';
+.operation {
+  position: absolute;
+  z-index: 2;
+  top: 80px;
+  right: 50px;
+  padding: 8px;
+  @include centerFlex;
+  flex-direction: column;
+  border: 1px solid #dee0e3;
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 0 8px 4px rgb(31 35 41 / 6%);
+  user-select: none;
+  .fit-btn {
+    cursor: pointer;
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+  }
+}
 .map-container {
   width: 100%;
   height: calc(100% - 46px);
-  .operation {
-    position: absolute;
-    z-index: 2;
-    top: 80px;
-    right: 50px;
-    padding: 8px;
-    @include centerFlex;
-    flex-direction: column;
-    border: 1px solid #dee0e3;
-    background-color: #fff;
-    border-radius: 5px;
-    box-shadow: 0 0 8px 4px rgb(31 35 41 / 6%);
-    user-select: none;
-    .fit-btn {
-      cursor: pointer;
-      .icon {
-        width: 20px;
-        height: 20px;
-      }
-    }
-  }
   .main-svg{
     @include wh100;
     background-color: #eeeef3;

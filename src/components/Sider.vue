@@ -7,7 +7,7 @@
       </div>
     </div>
   </div>
-  <div class="content" :style="contentStyle">
+  <div class="content" :style="contentStyle" id="siderContent">
     <slot name="sideContent" />
   </div>
   <el-tooltip

@@ -6,11 +6,11 @@ const store = useMapStore()
 export async function addNode (pid, options = { isMap: false, cid: undefined }) {
   const content = store.content
   const node = content[pid]
+  if (!node) return
   // 如果当前节点折叠 先打开
   if (node._children.length) {
     ;[node.children, node._children] = [node._children, node.children]
   }
-  if (!node) return
   const id = nanoid()
   const { isMap, cid } = options
   if (!cid) {

@@ -103,7 +103,6 @@ export class TreeDataCreater {
       node.coly = node.ty + extraY
 
       const lineStart = {
-        // x: node.colx - this.btnSize / 2,
         x: node.colx + this.btnSize / 2,
         y: node.coly + this.btnSize / 2
       }
@@ -111,7 +110,6 @@ export class TreeDataCreater {
         x: lineStart.x - this.offsetPath,
         y: lineStart.y
       }
-      console.log(lineStart, lineEnd)
       node.colLine = `M${lineStart.x} ${lineStart.y}L${lineEnd.x} ${lineEnd.y}`
     })
   }
