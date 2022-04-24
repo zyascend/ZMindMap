@@ -7,10 +7,9 @@
 
 *努力完善中...*
 
-## 相关内容
-- vue3 CompositionApi
-- Vuex状态管理
-  - vuex-persistedstate 状态持久化
+## Features
+- Vue3 CompositionApi
+- Pinia状态管理
 - VueRouter路由控制
 - SVG画图
   - 类幕布思维导图的文档构建方式实现
@@ -21,11 +20,15 @@
 - 基于七牛云的CDN加速
 - more...
 
-## 待优化
+## TODO
 - [x] 基于vue响应式，通过数据驱动svg子元素更新
-- [ ] 对于大纲编辑，如何不通过递归查找的方式在源数据中定位到待更新的节点
-  - key-value形式构建map?
+- [x] 对于大纲编辑，如何不通过递归查找的方式在源数据中定位到待更新的节点
+  - [x] key-value形式构建map
 - [x] Vuex切换为pinia
   - [x] store分模块维护
 - [x] 支持撤回操作
-  - [ ] 待优化bug
+  - [x] 待优化bug
+- [ ] 支持导出
+  - [ ] 导出为图片
+  - [ ] 导出为其他格式
+- [ ] 导图风格切换 

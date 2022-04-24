@@ -4,6 +4,7 @@
       <g class="main-g" ref="mainG">
         <g>
           <path v-for="p in pathData" :key="p.id" :d="p.data"></path>
+          <path v-for="n in nodeData" :key="n.data.id" :d="n.colLine" v-show="showCollapse(n.data)"></path>
         </g>
         <image
           v-for="d in nodeData"
@@ -18,12 +19,12 @@
           @click="onCollapse($event, d.data)"
           />
         <g
-          v-for="d in nodeData"
+          v-for="(d, index) in nodeData"
           :key="d"
           :id="d._id"
           :transform="`translate(${d.tx},${d.ty})`"
           :class="d.depth === 0 ? 'g-root' : d.depth === 1 ? 'g-subroot' : 'g-leaf'"
-          @focus="onGFocus($event, d)"
+          :tabindex="index"
           @dblclick="onEditHtml($event, d.data)"
           @keydown="onKeyDown($event, d.data)">
         >
@@ -147,9 +148,6 @@ export default defineComponent({
       useZoomMap.registerZoom()
       useZoomMap.fitView()
     }
-    const onGFocus = (event, d) => {
-      console.log('onGFocus')
-    }
     const showCollapse = d => {
       return d.children.length || d._children.length
     }
@@ -202,7 +200,6 @@ export default defineComponent({
       PIC_ADD,
       onCollapse,
       onAddClick,
-      onGFocus,
       onKeyDown,
       onEditHtml,
       submitEdit,

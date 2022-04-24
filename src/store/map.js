@@ -49,7 +49,6 @@ export const useMapStore = defineStore('map', {
         id = id.id
       }
       const d = content[id]
-      console.log(d, id)
       d.level = level
       list.push(d)
       if (d.children.length) {

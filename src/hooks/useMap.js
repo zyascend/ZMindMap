@@ -2,12 +2,12 @@ import * as d3 from './d3'
 import { useMapStore } from '@/store/map'
 
 export class TreeDataCreater {
-  constructor ({ measureSvg, treeStyle, gapY = 14, gapX = 60, maxNodeWidth = 250 } = {}) {
+  constructor ({ measureSvg, treeStyle } = {}) {
     this.measureSvg = measureSvg
     this.treeStyle = treeStyle
-    this.gapY = gapY
-    this.gapX = gapX
-    this.maxNodeWidth = maxNodeWidth
+    this.gapY = 14
+    this.gapX = 60
+    this.maxNodeWidth = 250
     this.offsetBottom = 4
     this.borderXPadding = 4
     this.borderYPadding = 3
@@ -96,11 +96,23 @@ export class TreeDataCreater {
 
       const extraX = node.contentWidth + this.borderXPadding + this.offsetPath - this.btnSize / 2
       const extraY = node.depth > 1
-        ? node.contentHeight + this.offsetBottom
+        ? node.contentHeight + this.offsetBottom + 1
         : (node.contentHeight - this.btnSize) / 2
 
       node.colx = node.tx + extraX
       node.coly = node.ty + extraY
+
+      const lineStart = {
+        // x: node.colx - this.btnSize / 2,
+        x: node.colx + this.btnSize / 2,
+        y: node.coly + this.btnSize / 2
+      }
+      const lineEnd = {
+        x: lineStart.x - this.offsetPath,
+        y: lineStart.y
+      }
+      console.log(lineStart, lineEnd)
+      node.colLine = `M${lineStart.x} ${lineStart.y}L${lineEnd.x} ${lineEnd.y}`
     })
   }
 
@@ -125,11 +137,17 @@ export class TreeDataCreater {
             n.y = n.y + extraY
           })
         }
+        let descendantsCount = 0
+        children.forEach(child => {
+          descendantsCount = descendantsCount + 1 + child.descendantsCount
+        })
+        node.descendantsCount = descendantsCount
       } else {
         node.y = preNode
           ? preNode.y + rectHeight + this.gapY
           : (node.y ? node.y : 30 + rectHeight)
         preNode = node
+        node.descendantsCount = 0
       }
     })
     // 算X值-前序遍历
