@@ -68,12 +68,6 @@ import { defineComponent, ref } from 'vue'
 import { useDocStore } from '@/store/doc'
 import { useUserStore } from '@/store/user'
 import SvgIcon from '@/components/SvgIcon.vue'
-import '@/assets/pic/more.svg'
-import '@/assets/pic/folder.svg'
-import '@/assets/pic/delete.svg'
-import '@/assets/pic/add-quick.svg'
-import '@/assets/pic/rename.svg'
-import '@/assets/pic/file-small.svg'
 
 export default defineComponent({
   name: 'BreadCrumb',

@@ -127,11 +127,6 @@ import { useUserStore } from '@/store/user'
 import { useRouter } from 'vue-router'
 import SvgIcon from '@/components/SvgIcon.vue'
 import 'cropperjs/dist/cropper.css'
-import '@/assets/pic/settings.svg'
-import '@/assets/pic/logout.svg'
-import '@/assets/pic/skin.svg'
-import '@/assets/pic/triangle.svg'
-import '@/assets/pic/upload.svg'
 
 export default defineComponent({
   name: 'ProfilePopover',

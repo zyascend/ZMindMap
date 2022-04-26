@@ -74,13 +74,6 @@ import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import OperatePopover from '@/components/OperatePopover.vue'
 import ProfilePopover from '@/components/ProfilePopover.vue'
-import '@/assets/pic/home.svg'
-import '@/assets/pic/quick.svg'
-import '@/assets/pic/latest.svg'
-import '@/assets/pic/folder.svg'
-import '@/assets/pic/file-small.svg'
-import '@/assets/pic/search.svg'
-import '@/assets/pic/add-file.svg'
 
 export default defineComponent({
   name: 'Home',

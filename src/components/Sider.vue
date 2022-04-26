@@ -23,8 +23,6 @@
 <script>
 import { defineComponent, reactive, ref } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-import '@/assets/pic/arrow-left.svg'
-import '@/assets/pic/hamberger.svg'
 export default defineComponent({
   name: 'Sider',
   components: {

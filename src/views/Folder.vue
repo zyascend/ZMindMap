@@ -56,14 +56,6 @@ import { useRouter, useRoute } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import OperatePopover from '@/components/OperatePopover.vue'
-
-import '@/assets/pic/file-small.svg'
-import '@/assets/pic/folder-large.svg'
-import '@/assets/pic/file-large.svg'
-import '@/assets/pic/folder.svg'
-import '@/assets/pic/more.svg'
-import '@/assets/pic/table.svg'
-import '@/assets/pic/grid.svg'
 import ICON_EMPTY from '@/assets/pic/empty.png'
 
 export default defineComponent({

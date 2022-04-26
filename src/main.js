@@ -10,6 +10,11 @@ import {
 import './assets/css/reset.css'
 import 'element-plus/lib/theme-chalk/index.css'
 
+// 一次性引入所有svg图
+const req = require.context('./assets/pic', false, /\.svg$/)
+const requireAll = requireContext => requireContext.keys().map(requireContext)
+requireAll(req)
+
 const app = createApp(App)
 
 app.component(ElTooltip.name, ElTooltip)

@@ -12,7 +12,6 @@
 <script>
 import { defineComponent, computed } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-import '@/assets/pic/arrow-right.svg'
 
 export default defineComponent({
   name: 'BreadCrumb',

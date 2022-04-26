@@ -63,7 +63,6 @@ export const findNavigationPaths = (id, data) => {
     for (const f of data.folders) {
       if (parent === f.id) {
         parent = f.folderId
-        console.log(parent)
         paths.push(f)
         break
       }

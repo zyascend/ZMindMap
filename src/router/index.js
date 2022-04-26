@@ -16,14 +16,10 @@ const routes = [
     redirect: '/app/folder',
     children: [
       {
-        // 当 /user/:id/profile 匹配成功
-        // UserProfile 将被渲染到 User 的 <router-view> 内部
         path: 'edit/:id',
-        component: () => import(/* webpackChunkName: "3rd-patch" */ '@/views/Edit.vue')
+        component: () => import(/* webpackChunkName: "edit-patch" */ '@/views/Edit.vue')
       },
       {
-        // 当 /user/:id/posts 匹配成功
-        // UserPosts 将被渲染到 User 的 <router-view> 内部
         path: 'folder/:id?',
         component: Folder
       }
@@ -38,7 +34,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "2nd-patch" */ '../views/Login.vue')
+    component: () => import(/* webpackChunkName: "login-patch" */ '../views/Login.vue')
   }
 ]
 

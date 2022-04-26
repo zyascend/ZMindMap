@@ -40,7 +40,6 @@ import NotePopover from '@/components/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
 import Snapshot from '@/hooks/useSnapshot'
 import { moveToLastFocus, collapse, addNode, tabNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
-import '@/assets/pic/triangle.svg'
 
 export default defineComponent({
   name: 'Note',

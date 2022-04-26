@@ -22,8 +22,6 @@ import { defineComponent, computed } from 'vue'
 import { useMapStore } from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { convertToImg, ErrorTip } from '@/hooks/utils'
-import '@/assets/pic/more.svg'
-import '@/assets/pic/download.svg'
 
 export default defineComponent({
   name: 'MapOpPopover',

@@ -48,3 +48,18 @@ https://www.cnblogs.com/eightFlying/p/cropper-demo.html
   - edit页集中维护 ---> map.store集中维护
   - 流向如何
 
+### 优化措施
+  - v-show替换v-if ---> 导图与Note切换时
+  - svg相关
+    - 封装SvgIcon组件 传入icon="name"属性方便使用
+    - main.js 一次性引入所有svg图标 不用单独引入
+    - svgo-loader 压缩了svg冗余内容 减小体积
+  - 网络传输相关
+    - DNS Prefetch
+      ```js
+      <meta http-equiv="x-dns-prefetch-control" content="on" />
+      <link ref="dns-prefetch" href="//cdn.kimjisoo.cn" />
+      <link ref="dns-prefetch" href="//mapapi.kimjisoo.cn" />
+      ```
+  
+  

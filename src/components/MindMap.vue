@@ -93,8 +93,6 @@ import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
 import { collapse, addNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
 import SvgIcon from './SvgIcon.vue'
-import '@/assets/pic/fit-view.svg'
-import '@/assets/pic/theme.svg'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
 import PIC_ADD from '@/assets/map/add.svg'
 
