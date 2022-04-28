@@ -54,7 +54,7 @@ var instance = axios.create({
   // TODO 如何动态获取域名？
   // baseURL: process.env.NODE_ENV === 'production' ? 'https://mapapi.kimjisoo.cn' : 'http://localhost:3003'
   // eslint-disable-next-line no-undef
-  baseURL: BASE_URL
+  baseURL: BASE_API_URL
 })
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/json'

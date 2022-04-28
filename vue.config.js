@@ -89,7 +89,7 @@ module.exports = {
     },
     plugins: [
       new webpack.DefinePlugin({
-        BASE_URL: IS_PROD ? JSON.stringify('https://mapapi.kimjisoo.cn')
+        BASE_API_URL: IS_PROD ? JSON.stringify('https://mapapi.kimjisoo.cn')
           : JSON.stringify('http://localhost:3003')
       })
     ]
