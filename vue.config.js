@@ -7,12 +7,14 @@ module.exports = {
     index: {
       entry: './src/main.js',
       template: './public/index.html',
-      title: 'ZMind思维导图'
+      title: 'ZMind思维导图',
+      chunks: ['chunk-vendors', 'chunk-common', 'chunk-ele', 'index']
     },
     mlogin: {
       entry: './src/mlogin/main.js',
       template: './public/mlogin.html',
-      title: '扫码登录ZMindMap'
+      title: '扫码登录ZMindMap',
+      chunks: ['chunk-vendors', 'chunk-common', 'mlogin']
     }
   },
   chainWebpack: config => {
