@@ -18,10 +18,10 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue'
-import { useMapStore } from '@/store/map'
+import { defineComponent } from 'vue'
+// import { useMapStore } from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
-import { convertToImg, ErrorTip } from '@/hooks/utils'
+import { ErrorTip } from '@/hooks/utils'
 
 export default defineComponent({
   name: 'MapOpPopover',
@@ -35,15 +35,16 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const store = useMapStore()
-    const mapData = computed(() => store.mapData)
+    // const store = useMapStore()
+    // const mapData = computed(() => store.mapData)
     const download = async () => {
-      if (!props.isMap) {
-        ErrorTip('请切换到导图再试')
-        return
-      }
-      const elem = document.getElementById('mapContainer')
-      await convertToImg(elem, mapData.value?.name)
+      ErrorTip('暂不支持')
+      // if (!props.isMap) {
+      //   ErrorTip('请切换到导图再试')
+      //   return
+      // }
+      // const elem = document.getElementById('mapContainer')
+      // await convertToImg(elem, mapData.value?.name)
     }
     return {
       download
