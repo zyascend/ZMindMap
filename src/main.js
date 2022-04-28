@@ -7,7 +7,7 @@ import {
   ElMessage, ElTree, ElTable, ElTableColumn, ElPopover, ElDialog,
   ElSwitch
 } from 'element-plus'
-import './assets/css/reset.css'
+import '@/assets/css/reset.css'
 import 'element-plus/lib/theme-chalk/index.css'
 
 // 一次性引入所有svg图
