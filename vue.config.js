@@ -72,12 +72,15 @@ module.exports = {
       .end()
       .use('file-loader')
       .loader('file-loader')
-    // config
-    //   .plugin('html')
-    //   .tap(args => {
-    //     args[0].title = 'ZMind思维导图'
-    //     return args
-    //   })
+    config.module
+      .rule('worker')
+      .test(/\.worker\.js$/)
+      .use('worker-loader')
+      .loader('worker-loader')
+      .end()
+    // 解决：worker 热更新问题
+    config.module
+      .rule('js').exclude.add(/\.worker\.js$/)
   },
   configureWebpack: {
     module: {
