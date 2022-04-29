@@ -47,6 +47,7 @@ import SvgIcon from '@/components/SvgIcon.vue'
 
 export default defineComponent({
   name: 'BreadCrumb',
+  emits: ['onColorSelect'],
   components: {
     SvgIcon
   },

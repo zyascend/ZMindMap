@@ -133,12 +133,6 @@ export default defineComponent({
   components: {
     SvgIcon
   },
-  props: {
-    data: {
-      type: Object,
-      required: true
-    }
-  },
   setup () {
     const websiteStore = useWebsiteStore()
     const userStore = useUserStore()

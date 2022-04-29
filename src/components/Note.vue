@@ -1,5 +1,5 @@
 <template>
-  <div class="note-container">
+  <div class="note-container" v-show="show">
     <div class="doc-main">
       <div class="name"
         @input="onNameInput($event, rootNode)"
@@ -8,7 +8,7 @@
       </div>
       <div class="content">
         <div class="note-node" v-for="node in childNodes" :key="node.id">
-          <div class="indent" v-for="i in node.level" :key="`${index}-${i}`" />
+          <div class="indent" v-for="i in node.level" :key="`ident-${node.id}-${i}`" />
           <div class="node-content" :id="`node-${node.id}`">
             <div
               class="action-wrapper"
@@ -46,6 +46,12 @@ export default defineComponent({
   components: {
     SvgIcon,
     NotePopover
+  },
+  props: {
+    show: {
+      type: Boolean,
+      required: true
+    }
   },
   setup () {
     const store = useMapStore()

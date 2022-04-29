@@ -1,5 +1,5 @@
 <template>
-  <div class="map-container" id="mapContainer">
+  <div class="map-container" id="mapContainer" v-show="show">
     <svg class="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g" ref="mainG">
         <g>
@@ -99,6 +99,12 @@ import PIC_ADD from '@/assets/map/add.svg'
 export default defineComponent({
   components: { SvgIcon },
   name: 'MindMap',
+  props: {
+    show: {
+      type: Boolean,
+      required: true
+    }
+  },
   setup () {
     const mainSvg = ref()
     const mainG = ref()

@@ -22,8 +22,8 @@
       </div>
       <map-op-popover :isMap="showMap"/>
     </header>
-    <note v-show="!showMap" />
-    <mind-map v-show="showMap" />
+    <note :show="!showMap" />
+    <mind-map :show="showMap" />
   </div>
 </template>
 <script>
