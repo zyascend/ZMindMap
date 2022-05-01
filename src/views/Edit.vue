@@ -34,12 +34,6 @@ import MindMap from '@/components/MindMap.vue'
 import Note from '@/components/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import MapOpPopover from '@/components/MapOpPopover.vue'
-import '@/assets/pic/fit-view.svg'
-import '@/assets/pic/folder.svg'
-import '@/assets/pic/theme.svg'
-import '@/assets/pic/tree.svg'
-import '@/assets/pic/note.svg'
-import '@/assets/pic/more.svg'
 
 export default defineComponent({
   components: {

@@ -9,29 +9,36 @@
         <h2 class="title">已有账号？</h2>
         <el-button type="primary" @click="toggleSign" class="btn">去登录</el-button>
       </div>
-      <div :class="`form ${isLogin ? 'active' : ''}`">
-        <h3 class="title">{{isLogin ? '登录' : '注册'}}<span>ZMindMap</span></h3>
-        <el-form
-          ref="loginFormRef"
-          :model="loginForm"
-          :rules="rules"
-          size="large"
-        >
-          <el-form-item prop="email" size="large">
-            <el-input v-model="loginForm.email" type="text" placeholder="请输入邮箱地址" ></el-input>
-          </el-form-item>
-          <el-form-item prop="pwd" size="large">
-            <el-input v-model="loginForm.pwd" type="password" placeholder="请输入密码"></el-input>
-          </el-form-item>
-        </el-form>
-        <el-button
-          type="primary"
-          @click="submitForm"
-          native-type="submit"
-          :loading="isSubmitting"
-          class="btn">
-          {{isLogin ? '登录' : '注册'}}
-        </el-button>
+      <div class="form" :class="{ active: isLogin }">
+        <template v-if="!qrLogin">
+          <div class="btn-qr" @click="qrLogin = !qrLogin"/>
+          <h3 class="title">{{isLogin ? '登录' : '注册'}}<span>ZMindMap</span></h3>
+          <el-form
+            ref="loginFormRef"
+            :model="loginForm"
+            :rules="rules"
+            size="large"
+          >
+            <el-form-item prop="email" size="large">
+              <el-input v-model="loginForm.email" type="text" placeholder="请输入邮箱地址" ></el-input>
+            </el-form-item>
+            <el-form-item prop="pwd" size="large">
+              <el-input v-model="loginForm.pwd" type="password" placeholder="请输入密码"></el-input>
+            </el-form-item>
+          </el-form>
+          <el-button
+            type="primary"
+            @click="submitForm"
+            native-type="submit"
+            :loading="isSubmitting"
+            class="btn">
+            {{isLogin ? '登录' : '注册'}}
+          </el-button>
+        </template>
+        <template v-else>
+          <div class="btn-pc" @click="qrLogin = !qrLogin"/>
+          <qrcode />
+        </template>
       </div>
     </div>
   </div>
@@ -42,13 +49,18 @@ import { ref, defineComponent, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useUserStore } from '@/store/user'
 import md5 from 'js-md5'
-import useLogin from '../hooks/useLogin'
+import useLogin from '@/hooks/useLogin'
+import Qrcode from '@/components/Qrcode.vue'
 
 export default defineComponent({
+  components: {
+    Qrcode
+  },
   setup () {
     const router = useRouter()
     const route = useRoute()
     const store = useUserStore()
+    const qrLogin = ref(false)
     const loginForm = reactive({
       email: '',
       pwd: ''
@@ -87,6 +99,7 @@ export default defineComponent({
       loginForm,
       rules,
       isLogin,
+      qrLogin,
       isSubmitting,
       toggleSign,
       submitForm
@@ -146,6 +159,28 @@ export default defineComponent({
         span {
           color: $color-base;
         }
+      }
+      .btn-qr, .btn-pc {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 64px;
+        height: 64px;
+        cursor: pointer;
+        &::after {
+          content: "";
+          position: absolute;
+          width: 0;
+          height: 0;
+          border-bottom: 64px solid #fff;
+          border-right: 64px solid transparent;
+        }
+      }
+      .btn-pc {
+        background: url(../assets/pic/pc.png) no-repeat;
+      }
+      .btn-qr {
+        background: url(../assets/pic/qrcode.png) no-repeat;
       }
     }
     .active {

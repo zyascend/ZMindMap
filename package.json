@@ -26,6 +26,7 @@
     "pinia-plugin-persist": "^1.0.0",
     "vant": "^3.4.8",
     "vue": "^3.2.31",
+    "vue-qr": "^4.0.6",
     "vue-router": "^4.0.0-0"
   },
   "devDependencies": {
