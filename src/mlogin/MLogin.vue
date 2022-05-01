@@ -28,6 +28,10 @@
       </Form>
     </template>
     <template v-else>
+      <div class="info" v-if="currentUser">
+        <img alt="" :src="currentUser.avatar">
+        <div>{{ currentUser.name }}</div>
+      </div>
       <Button round block type="primary" @click="confirmLogin">
         确认登录
       </Button>
@@ -45,7 +49,7 @@ const email = ref('')
 const pwd = ref('')
 const hasLogin = ref(false)
 const loginDone = ref(false)
-const currentUser = ref({})
+const currentUser = ref(null)
 const { qid } = getUrlParams()
 
 const reportScan = async () => {
@@ -62,9 +66,9 @@ const checkLogin = () => {
   const expired = Date.now() > Number(expiredTime)
   hasLogin.value = user && !expired
   if (hasLogin.value) {
-    currentUser.value = user
+    currentUser.value = user.user
   }
-  console.log('hasLogin > ', hasLogin.value)
+  console.log('hasLogin > ', currentUser.value)
 }
 
 reportScan()
@@ -79,7 +83,7 @@ const onSubmit = async values => {
   const user = await asyncHttp(`/users/login?qid=${qid}`, { method: 'post', data: loginForm })
   if (user && user?.code === 0) {
     const info = {
-      user,
+      user: user.data,
       expiredTime: Date.now() + 1000 * 60 * 60 - 1000 * 60 * 10
     }
     localStorage.setItem('mindmap-info', JSON.stringify(info))
