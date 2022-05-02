@@ -1,43 +1,45 @@
 <template>
   <div class="login" v-show="!confirmed">
-    <h1>登录ZMindMap</h1>
+    <h1 class="title">扫码登录ZMindMap</h1>
     <template v-if="!hasLogin">
-      <Form @submit="onSubmit">
+      <Form @submit="onSubmit" class="form">
         <CellGroup inset>
           <Field
             v-model="email"
             name="email"
-            label="用户名"
-            placeholder="用户名"
-            :rules="[{ required: true, message: '请填写用户名' }]"
+            label="用户账号"
+            placeholder="用户账号"
+            :rules="[{ required: true, message: '请填写密码' }]"
           />
           <Field
             v-model="pwd"
             type="password"
             name="pwd"
-            label="密码"
-            placeholder="密码"
+            label="用户密码"
+            placeholder="用户密码"
             :rules="[{ required: true, message: '请填写密码' }]"
           />
         </CellGroup>
-        <div style="margin: 16px;">
-          <Button round block type="primary" native-type="submit">
-            登录
-          </Button>
-        </div>
+        <Button size="large" type="primary" class="login-btn" native-type="submit">
+          登录
+        </Button>
       </Form>
     </template>
     <template v-else>
       <div class="info" v-if="currentUser">
-        <img alt="" :src="currentUser.avatar">
-        <div>{{ currentUser.name }}</div>
+        <img alt="用户头像" :src="currentUser.avatar">
+        <p>{{ currentUser.name }}</p>
       </div>
-      <Button round block type="primary" @click="confirmLogin">
+      <Button color="#5856d5" class="btn" size="large" type="primary" @click="confirmLogin">
         确认登录
       </Button>
     </template>
   </div>
-  <div class="done" v-show="confirmed">登录成功</div>
+  <div class="confirmed" v-show="confirmed">
+    <div class="success"></div>
+    <h1>登录成功!</h1>
+    <p>请回到PC端操作!</p>
+  </div>
 </template>
 <script setup>
 import { ref } from 'vue'
@@ -107,8 +109,62 @@ const confirmLogin = async () => {
 
 </script>
 <style lang="scss">
-#app {
+#mlogin {
   width: 100%;
   height: 100%;
+  .btn {
+    font-size: 15px;
+  }
+  .login {
+    position: relative;
+    padding: 10vw 10vw;
+    .title {
+      font-size: 20px;
+      margin-bottom: 20vw;
+      font-weight: bold;
+    }
+    .info {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      img {
+        width: 50vw;
+        height: 50vw;
+        margin-bottom: 5vw;
+      }
+      p {
+        font-size: 20px;
+        margin-bottom: 20vw;
+      }
+    }
+    .form {
+      margin-top: 20vw;
+    }
+    .login-btn {
+      margin-top: 10vw;
+    }
+  }
+  .confirmed {
+    position: relative;
+    padding: 10vw 10vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .success {
+      width: 50vw;
+      height: 50vw;
+      background: center url('../assets/pic/success.png') no-repeat;
+      margin-bottom: 10vw;
+    }
+    h1 {
+      font-size: 20px;
+      margin-bottom: 10vw;
+      font-weight: bold;
+    }
+    p {
+      font-size: 20px;
+    }
+  }
 }
 </style>
