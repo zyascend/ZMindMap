@@ -23,7 +23,11 @@ export const useUserStore = defineStore('user', {
     async login (payload) {
       const { isLogin, loginForm } = payload
       const data = await asyncHttp(isLogin ? API.login : API.register, { method: 'post', data: loginForm })
+      this.setUser(data)
+    },
+    setUser (data) {
       this.token = data?.token
+      localStorage.setItem('token', this.token)
       this.user = data?.user
     },
     logout () {

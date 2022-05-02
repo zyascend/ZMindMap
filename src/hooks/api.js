@@ -3,7 +3,8 @@ export default {
   login: '/users/login',
   editProfile: 'users/editProfile',
 
-  generate: '/code/generate',
+  getCode: '/code/generate',
+  getCodeStatus: '/code/getStatus',
 
   getCurrentUser: 'users/getUser',
   getAllDocs: 'docs/getAllDocs',

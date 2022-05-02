@@ -1,5 +1,5 @@
 <template>
-  <div class="login" v-show="!loginDone">
+  <div class="login" v-show="!confirmed">
     <h1>登录ZMindMap</h1>
     <template v-if="!hasLogin">
       <Form @submit="onSubmit">
@@ -37,7 +37,7 @@
       </Button>
     </template>
   </div>
-  <div class="done" v-show="loginDone">登录成功</div>
+  <div class="done" v-show="confirmed">登录成功</div>
 </template>
 <script setup>
 import { ref } from 'vue'
@@ -48,14 +48,20 @@ import { getUrlParams, asyncHttp } from './util'
 const email = ref('')
 const pwd = ref('')
 const hasLogin = ref(false)
-const loginDone = ref(false)
+const confirmed = ref(false)
 const currentUser = ref(null)
 const { qid } = getUrlParams()
 
-const reportScan = async () => {
-  const res = await asyncHttp('/code/update', { method: 'post', data: { qid, status: 'SCANED' } })
+const setStatus = async (status, data) => {
+  const res = await asyncHttp('/code/setStatus', {
+    method: 'post',
+    data: { qid, status, data }
+  })
   if (res) {
-    console.log('/code/update SCANED!', res)
+    console.log('setStatus!', status, data, res)
+    if (status === 'CONFIRMED') {
+      confirmed.value = true
+    }
   }
 }
 const checkLogin = () => {
@@ -67,11 +73,11 @@ const checkLogin = () => {
   hasLogin.value = user && !expired
   if (hasLogin.value) {
     currentUser.value = user.user
+    setStatus('CONFIRMING', currentUser.value)
   }
   console.log('hasLogin > ', currentUser.value)
 }
 
-reportScan()
 checkLogin()
 
 const onSubmit = async values => {
@@ -87,27 +93,16 @@ const onSubmit = async values => {
       expiredTime: Date.now() + 1000 * 60 * 60 - 1000 * 60 * 10
     }
     localStorage.setItem('mindmap-info', JSON.stringify(info))
-    loginDone.value = true
+    hasLogin.value = true
+    currentUser.value = user.data.user
+    setStatus('CONFIRMING', currentUser.value)
   } else {
     console.log('login failed! > ', user)
   }
 }
 
 const confirmLogin = async () => {
-  const res = await asyncHttp('/code/update', {
-    method: 'post',
-    data: {
-      qid,
-      status: 'CONFIRMED',
-      user: currentUser.value
-    }
-  })
-  if (res) {
-    loginDone.value = true
-    console.log('/code/update CONFIRMED!')
-  } else {
-    console.log('/code/update CONFIRMED! FAILED')
-  }
+  await setStatus('CONFIRMED', currentUser.value)
 }
 
 </script>
