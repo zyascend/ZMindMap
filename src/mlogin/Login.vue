@@ -20,7 +20,7 @@
             :rules="[{ required: true, message: '请填写密码' }]"
           />
         </CellGroup>
-        <Button size="large" type="primary" class="login-btn" native-type="submit">
+        <Button size="large" color="#5856d5" type="primary" class="login-btn" native-type="submit">
           登录
         </Button>
       </Form>
@@ -112,6 +112,7 @@ const confirmLogin = async () => {
 #mlogin {
   width: 100%;
   height: 100%;
+  background-image: linear-gradient(to top, #9890e3 0%, #b1f4cf 100%);
   .btn {
     font-size: 15px;
   }
@@ -122,6 +123,7 @@ const confirmLogin = async () => {
       font-size: 20px;
       margin-bottom: 20vw;
       font-weight: bold;
+      /* color: #5856d5; */
     }
     .info {
       display: flex;

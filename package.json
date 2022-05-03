@@ -51,6 +51,8 @@
     "sass-loader": "^8.0.2",
     "svg-sprite-loader": "^6.0.11",
     "svgo-loader": "^3.0.0",
+    "unplugin-auto-import": "^0.7.1",
+    "unplugin-vue-components": "^0.19.3",
     "worker-loader": "^3.0.8"
   }
 }

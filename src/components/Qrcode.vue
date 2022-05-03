@@ -9,7 +9,6 @@
         :text="codeUrl"
       />
     </div>
-    <div class="empty" v-show="codeStatus === 'EMPTY'"></div>
     <div class="refresh" v-show="codeStatus === 'EXPIRED'">
       <i class="refresh_mask"></i>
       <i class="refresh_icon" @click.stop="generateCode" title="点击刷新"></i>
@@ -124,13 +123,6 @@ onUnmounted(() => {
     font-size: 14px;
     padding: 0 40px;
     line-height: 1.8;
-  }
-  .empty {
-    display: block;
-    width: 200px;
-    height: 200px;
-    margin: 35px auto 25px;
-    background: #d7e8fc;
   }
   .refresh {
     display: block;

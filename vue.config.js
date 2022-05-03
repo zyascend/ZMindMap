@@ -1,5 +1,8 @@
 const path = require('path')
 const webpack = require('webpack')
+const AutoImport = require('unplugin-auto-import/webpack')
+const Components = require('unplugin-vue-components/webpack')
+const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 const IS_PROD = process.env.NODE_ENV === 'production'
 module.exports = {
   publicPath: IS_PROD ? 'https://cdn.kimjisoo.cn/' : '/',
@@ -96,6 +99,12 @@ module.exports = {
       new webpack.DefinePlugin({
         BASE_API_URL: IS_PROD ? JSON.stringify('https://mapapi.kimjisoo.cn')
           : JSON.stringify('http://localhost:3003')
+      }),
+      AutoImport({
+        resolvers: [ElementPlusResolver()]
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()]
       })
     ]
   }

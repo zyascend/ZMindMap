@@ -114,6 +114,11 @@ export default defineComponent({
   @include wh100;
   @include centerFlex;
   transition: .2s;
+  /* background-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); */
+  background-image: linear-gradient(to top, #9890e3 0%, #b1f4cf 100%);
+  /* background-image: linear-gradient(to top, #a8edea 0%, #fed6e3 100%); */
+
+  /* background-image: linear-gradient(120deg, #89f7fe 0%, #66a6ff 100%); */
   .main {
     position: relative;
     width: 1000px;

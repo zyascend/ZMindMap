@@ -18,7 +18,7 @@
 - Element-plus
   - splitChunks单独打包
 - 基于七牛云的CDN加速
-- more...
+- JWT & 二维码扫码登录
 
 ## TODO
 - [x] 基于vue响应式，通过数据驱动svg子元素更新
@@ -30,6 +30,8 @@
   - [x] 待优化bug
 - [ ] 导图风格切换
 - [ ] 支持导出
-  - [ ] 导出为图片 [!Pendding]
+  - [ ] 导出为图片 [**!pendding**]
     - [ ] bug fix
   - [ ] 导出为其他格式
+- [x] 二维码扫码登录
+  - [ ] 轮询接口查状态 => websocket
