@@ -3,15 +3,15 @@
     <div class="main">
       <div class="box signin">
         <h2 class="title">没有账号？</h2>
-        <el-button type="primary" @click="toggleSign" class="btn">去注册</el-button>
+        <el-button type="primary" @click="isLogin = !isLogin" class="btn">去注册</el-button>
       </div>
       <div class="box signup">
         <h2 class="title">已有账号？</h2>
-        <el-button type="primary" @click="toggleSign" class="btn">去登录</el-button>
+        <el-button type="primary" @click="isLogin = !isLogin" class="btn">去登录</el-button>
       </div>
       <div class="form" :class="{ active: isLogin }">
         <template v-if="!qrLogin">
-          <div class="btn-qr" @click="qrLogin = !qrLogin"/>
+          <div class="btn-qr"  v-show="isLogin" @click="qrLogin = !qrLogin" />
           <h3 class="title">{{isLogin ? '登录' : '注册'}}<span>ZMindMap</span></h3>
           <el-form
             ref="loginFormRef"
@@ -36,7 +36,7 @@
           </el-button>
         </template>
         <template v-else>
-          <div class="btn-pc" @click="qrLogin = !qrLogin"/>
+          <div class="btn-pc" v-show="isLogin" @click="qrLogin = !qrLogin"/>
           <qrcode />
         </template>
       </div>
@@ -91,9 +91,6 @@ export default defineComponent({
         }
       })
     }
-    const toggleSign = () => {
-      isLogin.value = !isLogin.value
-    }
     return {
       loginFormRef,
       loginForm,
@@ -101,7 +98,6 @@ export default defineComponent({
       isLogin,
       qrLogin,
       isSubmitting,
-      toggleSign,
       submitForm
     }
   }
