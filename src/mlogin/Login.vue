@@ -43,7 +43,7 @@
 </template>
 <script setup>
 import { ref } from 'vue'
-import { Form, Field, CellGroup, Button } from 'vant'
+import { Form, Field, CellGroup, Button, Toast } from 'vant'
 import md5 from 'js-md5'
 import { getUrlParams, asyncHttp } from './util'
 
@@ -59,11 +59,11 @@ const setStatus = async (status, data) => {
     method: 'post',
     data: { qid, status, data }
   })
-  if (res) {
-    console.log('setStatus!', status, data, res)
-    if (status === 'CONFIRMED') {
-      confirmed.value = true
-    }
+  if (res && status === 'CONFIRMED') {
+    confirmed.value = true
+  }
+  if (!res) {
+    Toast.fail('系统繁忙, 请重试！')
   }
 }
 const checkLogin = () => {
@@ -77,19 +77,19 @@ const checkLogin = () => {
     currentUser.value = user.user
     setStatus('CONFIRMING', currentUser.value)
   }
-  console.log('hasLogin > ', currentUser.value)
 }
-
-checkLogin()
-
 const onSubmit = async values => {
-  console.log(values)
+  Toast.loading({
+    message: '登录中...',
+    forbidClick: true
+  })
   const loginForm = {
     ...values,
     pwd: md5(values.pwd)
   }
   const user = await asyncHttp(`/users/login?qid=${qid}`, { method: 'post', data: loginForm })
   if (user && user?.code === 0) {
+    Toast.clear()
     const info = {
       user: user.data,
       expiredTime: Date.now() + 1000 * 60 * 60 - 1000 * 60 * 10
@@ -99,14 +99,13 @@ const onSubmit = async values => {
     currentUser.value = user.data.user
     setStatus('CONFIRMING', currentUser.value)
   } else {
-    console.log('login failed! > ', user)
+    Toast.fail('登录失败, 请重试！')
   }
 }
-
 const confirmLogin = async () => {
   await setStatus('CONFIRMED', currentUser.value)
 }
-
+checkLogin()
 </script>
 <style lang="scss">
 #mlogin {
