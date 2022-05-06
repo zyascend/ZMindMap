@@ -18,12 +18,13 @@
     "d3-shape": "^3.0.1",
     "d3-transition": "^3.0.1",
     "d3-zoom": "^3.0.0",
-    "element-plus": "^1.0.2-beta.53",
+    "element-plus": "^2.1.11",
     "js-md5": "^0.7.3",
     "mitt": "^3.0.0",
     "nanoid": "^3.3.3",
     "pinia": "^2.0.13",
     "pinia-plugin-persist": "^1.0.0",
+    "save-svg-as-png": "^1.4.17",
     "vant": "^3.4.8",
     "vue": "^3.2.31",
     "vue-qr": "^4.0.6",
@@ -52,6 +53,7 @@
     "svg-sprite-loader": "^6.0.11",
     "svgo-loader": "^3.0.0",
     "unplugin-auto-import": "^0.7.1",
+    "unplugin-element-plus": "^0.4.0",
     "unplugin-vue-components": "^0.19.3",
     "worker-loader": "^3.0.8"
   }

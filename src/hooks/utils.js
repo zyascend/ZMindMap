@@ -1,6 +1,5 @@
-// import 'element-plus/es/components/message/style/css'
 import { ElMessage } from 'element-plus'
-// import html2canvas from 'html2canvas'
+import saveSvg from 'save-svg-as-png'
 
 /**
  * 深拷贝：新对象的改变不影响旧对象
@@ -87,14 +86,11 @@ export function throttle (fn, wait) {
   }
 }
 
-// export async function convertToImg (element, name) {
-//   await html2canvas(element).then(canvas => {
-//     const dataUrl = canvas.toDataURL()
-//     const window = open()
-//     if (window) {
-//       window.document.write(`<img src='${dataUrl}'>`)
-//       window.document.title = name
-//       window.document.close()
-//     }
-//   })
-// }
+export async function convertToImg (name) {
+  const _svg = document.getElementById('main-svg')
+  const _clone = _svg.cloneNode(true)
+  const _rect = _svg.getBoundingClientRect()
+  _clone.viewBox.baseVal.width = _rect.width
+  _clone.viewBox.baseVal.height = _rect.height
+  await saveSvg.saveSvgAsPng(_clone, name + '.png')
+}

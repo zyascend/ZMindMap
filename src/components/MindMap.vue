@@ -1,16 +1,16 @@
 <template>
   <div class="map-container" id="mapContainer" v-show="show">
-    <svg class="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
+    <svg :style="svgStyle" class="main-svg" id="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g" ref="mainG">
         <g>
-          <path v-for="p in pathData" :key="p.id" :d="p.data"></path>
-          <path v-for="n in nodeData" :key="n.data.id" :d="n.colLine" v-show="showCollapse(n.data)"></path>
+          <path :style="pathStyle" v-for="p in pathData" :key="p.id" :d="p.data"></path>
+          <path :style="pathStyle" v-for="n in nodeData" :key="n.data.id" :d="n.colLine" v-show="showCollapse(n.data)"></path>
         </g>
         <image
           v-for="d in nodeData"
           v-show="showCollapse(d.data)"
-          :key="`image-add-${d.id}`"
           class="image-collapse"
+          :key="`image-add-${d.id}`"
           :x="d.colx"
           :y="d.coly"
           :width="d.imageWidth"
@@ -35,6 +35,7 @@
             :ry="d.rectRY"
             :width="d.rectWidth"
             :height="d.rectHeight"
+            :style="rectStyle(d)"
           />
           <foreignObject
             :width="d.foWidth"
@@ -42,9 +43,10 @@
             :x="0"
             :dy="d.contentHeight"
           >
-            <div>{{ d.data.html }}</div>
+            <div :style="foDivStyle(d)">{{ d.data.html }}</div>
           </foreignObject>
           <image
+            :style="imageStyle"
             class="image-add"
             :x="d.addX"
             :y="d.addY"
@@ -87,10 +89,11 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, onUnmounted, nextTick, watchEffect } from 'vue'
+import { defineComponent, onMounted, ref, toRefs, reactive, onUnmounted, nextTick, watchEffect } from 'vue'
 import { useMapStore } from '@/store/map'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
+import { getStyle } from '@/hooks/useMapStyle'
 import { collapse, addNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
 import SvgIcon from './SvgIcon.vue'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
@@ -114,7 +117,7 @@ export default defineComponent({
     const store = useMapStore()
     const pathData = ref([])
     const nodeData = ref([])
-    // const contentData = computed(() => store.treedData)
+    const styles = reactive(getStyle())
 
     const showEditDialog = ref(false)
     const nodeHtml = ref()
@@ -130,7 +133,6 @@ export default defineComponent({
         mainG: mainG.value,
         measureSvg: measureSvg.value
       })
-      // render()
       setObserver()
     })
     onUnmounted(() => {
@@ -153,10 +155,11 @@ export default defineComponent({
       })
     }
     watchEffect(() => {
-      // 立即执行传入的一个函数，并响应式追踪其依赖，并在其依赖变更时重新运行该函数
+      //  watchEffect：立即执行传入的函数，并响应式追踪其依赖，在其依赖变更时重新运行该函数
       render()
     })
     const setObserver = () => {
+      // 监听侧边栏的打开/折叠 使Map适应屏幕
       sizeObserver = new MutationObserver(mutations => {
         zoomTimer = setTimeout(() => {
           useZoomMap.registerZoom()
@@ -224,6 +227,7 @@ export default defineComponent({
       }
     }
     return {
+      ...toRefs(styles),
       pathData,
       nodeData,
       showEditDialog,
@@ -341,26 +345,28 @@ export default defineComponent({
       foreignObject {
         div {
           height: 100%;
-          word-break: normal;
           width: fit-content;
+          word-break: normal;
           text-justify: distribute-all-lines;
           white-space: pre-wrap;
           word-wrap: break-word;
           overflow: hidden;
-          /* display: block; */
         }
       }
       .image-add {
+        display: none !important;
         cursor: pointer;
         visibility: hidden;
       }
       &:hover {
         .image-add {
+          display: block !important;
           visibility: hidden;
         }
       }
       &:focus {
         .image-add {
+          display: block !important;
           visibility: visible;
         }
       }
@@ -374,14 +380,6 @@ export default defineComponent({
         fill: #FFF;
         cursor: default;
       }
-    }
-    .foreignDiv {
-      display: inline-block;
-      outline: none;
-      width: max-content;
-      min-width: 22px;
-      padding: 1px;
-      white-space: pre;
     }
   }
 }

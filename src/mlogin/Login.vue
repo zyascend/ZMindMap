@@ -39,6 +39,9 @@
     <div class="success"></div>
     <h1>登录成功!</h1>
     <p>请回到PC端操作!</p>
+    <Button class="btn" size="large" type="warning" @click="logout">
+      注销登录
+    </Button>
   </div>
 </template>
 <script setup>
@@ -99,11 +102,16 @@ const onSubmit = async values => {
     currentUser.value = user.data.user
     setStatus('CONFIRMING', currentUser.value)
   } else {
+    console.log('error', user)
     Toast.fail('登录失败, 请重试！')
   }
 }
 const confirmLogin = async () => {
   await setStatus('CONFIRMED', currentUser.value)
+}
+const logout = () => {
+  localStorage.clear()
+  Toast.success('已注销当前移动端登录信息')
 }
 checkLogin()
 </script>
@@ -165,6 +173,7 @@ checkLogin()
     }
     p {
       font-size: 20px;
+      margin-bottom: 25vw;
     }
   }
 }

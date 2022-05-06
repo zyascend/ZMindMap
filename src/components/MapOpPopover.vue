@@ -18,10 +18,12 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-// import { useMapStore } from '@/store/map'
+import { defineComponent, computed, onUnmounted } from 'vue'
+import { useMapStore } from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
-import { ErrorTip } from '@/hooks/utils'
+import { ErrorTip, convertToImg } from '@/hooks/utils'
+import useZoomMap from '@/hooks/useZoomMap'
+import { ElLoading } from 'element-plus'
 
 export default defineComponent({
   name: 'MapOpPopover',
@@ -35,17 +37,30 @@ export default defineComponent({
     }
   },
   setup (props) {
-    // const store = useMapStore()
-    // const mapData = computed(() => store.mapData)
-    const download = async () => {
-      ErrorTip('暂不支持')
-      // if (!props.isMap) {
-      //   ErrorTip('请切换到导图再试')
-      //   return
-      // }
-      // const elem = document.getElementById('mapContainer')
-      // await convertToImg(elem, mapData.value?.name)
+    const store = useMapStore()
+    const mapData = computed(() => store.mapData)
+    let loading
+    let timer
+    const download = () => {
+      if (!props.isMap) {
+        ErrorTip('请切换到导图再试')
+        return
+      }
+      loading = ElLoading.service({
+        lock: true,
+        text: '努力导出中...',
+        background: 'rgba(0, 0, 0, 0.5)'
+      })
+      useZoomMap.fitView()
+      timer = setTimeout(async () => {
+        await convertToImg(mapData.value?.name)
+        loading.close()
+      }, 1000)
     }
+    onUnmounted(() => {
+      loading && loading.close()
+      clearTimeout(timer)
+    })
     return {
       download
     }

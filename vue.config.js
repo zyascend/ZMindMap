@@ -105,7 +105,8 @@ module.exports = {
       }),
       Components({
         resolvers: [ElementPlusResolver()]
-      })
+      }),
+      require('unplugin-element-plus/webpack')({})
     ]
   }
   // css: {
