@@ -43,7 +43,7 @@ module.exports = {
           },
           elementui: {
             name: 'chunk-ele',
-            test: /[\\/]node_modules[\\/]element-plus[\\/]/,
+            test: /[\\/]node_modules[\\/]@?element-plus[\\/]/,
             chunks: 'initial',
             priority: 3,
             reuseExistingChunk: true,
