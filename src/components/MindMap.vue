@@ -1,14 +1,14 @@
 <template>
   <div class="map-container" id="mapContainer" v-show="show">
-    <svg :style="svgStyle" class="main-svg" id="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
+    <svg :style="styles.svgStyle" class="main-svg" id="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g" ref="mainG">
         <g>
-          <path :style="pathStyle" v-for="p in pathData" :key="p.id" :d="p.data"></path>
-          <path :style="pathStyle" v-for="n in nodeData" :key="n.data.id" :d="n.colLine" v-show="showCollapse(n.data)"></path>
+          <path :style="styles.pathStyle" v-for="p in pathData" :key="p.id" :d="p.data"></path>
+          <path :style="styles.pathStyle" v-for="n in nodeData" :key="n.data.id" :d="n.colLine" v-show="isShowCollapse(n.data)"></path>
         </g>
         <image
           v-for="d in nodeData"
-          v-show="showCollapse(d.data)"
+          v-show="isShowCollapse(d.data)"
           class="image-collapse"
           :key="`image-add-${d.id}`"
           :x="d.colx"
@@ -35,7 +35,7 @@
             :ry="d.rectRY"
             :width="d.rectWidth"
             :height="d.rectHeight"
-            :style="rectStyle(d)"
+            :style="styles.rectStyle(d)"
           />
           <foreignObject
             :width="d.foWidth"
@@ -43,10 +43,10 @@
             :x="0"
             :dy="d.contentHeight"
           >
-            <div :style="foDivStyle(d)">{{ d.data.html }}</div>
+            <div :style="styles.foDivStyle(d)">{{ d.data.html }}</div>
           </foreignObject>
           <image
-            :style="imageStyle"
+            :style="styles.imageStyle"
             class="image-add"
             :x="d.addX"
             :y="d.addY"
@@ -70,6 +70,33 @@
         <SvgIcon class="icon" icon="fit-view" />
       </div>
     </el-tooltip>
+    <el-popover
+      title="选择主题"
+      placement="left-start"
+      trigger="hover"
+      popper-class="map-theme-popper"
+      :show-arrow="true"
+      :offset="20"
+      :width="200"
+    >
+      <template #reference>
+        <div class="fit-btn">
+          <SvgIcon class="icon" icon="theme" />
+        </div>
+      </template>
+      <div class="theme-list">
+        <div
+          class="theme-item"
+          title="点击切换"
+          v-for="(theme, index) in styleList"
+          :class="{ 'active-item': index === activeStyle }"
+          :key="`theme-${theme[0]}`"
+          @click="switchTheme(index)"
+        >
+          <span v-for="color in theme" :style="`background-color:${color};`" :key="color"/>
+        </div>
+      </div>
+    </el-popover>
   </div>
   <el-dialog
     v-model="showEditDialog"
@@ -89,12 +116,13 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, toRefs, reactive, onUnmounted, nextTick, watchEffect } from 'vue'
+import { defineComponent, onMounted, ref, onUnmounted, nextTick, watchEffect, computed } from 'vue'
 import { useMapStore } from '@/store/map'
+import { useWebsiteStore } from '@/store/website'
+import { getStyle, getStyleList } from '@/hooks/useMapStyle'
+import { collapse, addNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
 import useMap from '@/hooks/useMap'
 import useZoomMap from '@/hooks/useZoomMap'
-import { getStyle } from '@/hooks/useMapStyle'
-import { collapse, addNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
 import SvgIcon from './SvgIcon.vue'
 import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
 import PIC_ADD from '@/assets/map/add.svg'
@@ -115,9 +143,14 @@ export default defineComponent({
     const mapContainer = ref()
 
     const store = useMapStore()
+    const websiteStore = useWebsiteStore()
+
     const pathData = ref([])
     const nodeData = ref([])
-    const styles = reactive(getStyle())
+
+    const styles = computed(() => getStyle(websiteStore.mapStyleIndex))
+    const styleList = computed(() => getStyleList())
+    const activeStyle = computed(() => websiteStore.mapStyleIndex)
 
     const showEditDialog = ref(false)
     const nodeHtml = ref()
@@ -173,18 +206,21 @@ export default defineComponent({
         attributeOldValue: true
       })
     }
+    const fitView = () => {
+      useZoomMap.registerZoom()
+      useZoomMap.fitView()
+    }
+    const switchTheme = index => {
+      websiteStore.switchMapStyle(index)
+    }
+    const isShowCollapse = d => {
+      return d.children.length || d._children.length
+    }
     const onCollapse = async (event, d) => {
       await collapse(d.id)
     }
     const onAddClick = async d => {
       await addNode(d.id, { isMap: true })
-    }
-    const fitView = () => {
-      useZoomMap.registerZoom()
-      useZoomMap.fitView()
-    }
-    const showCollapse = d => {
-      return d.children.length || d._children.length
     }
     const onEditHtml = async (event, node) => {
       event.preventDefault()
@@ -227,19 +263,22 @@ export default defineComponent({
       }
     }
     return {
-      ...toRefs(styles),
+      styles,
+      styleList,
+      activeStyle,
       pathData,
       nodeData,
       showEditDialog,
       nodeHtml,
       PIC_COLLAPSE,
       PIC_ADD,
+      switchTheme,
       onCollapse,
       onAddClick,
       onKeyDown,
       onEditHtml,
       submitEdit,
-      showCollapse,
+      isShowCollapse,
       fitView,
       mainSvg,
       mainG,
@@ -251,7 +290,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import '../assets/css/mixin';
+@import '../assets/css/handler';
 .operation {
   position: absolute;
   z-index: 2;
@@ -272,55 +311,46 @@ export default defineComponent({
       height: 20px;
     }
   }
+  .fit-btn+.fit-btn {
+    margin-top: 10px;
+  }
+}
+.map-theme-popper {
+  padding: 7px 7px !important;
+  /* @include background_color(bc_popover); */
+  border: none !important;
+  .el-popover__title {
+    text-align: center;
+  }
+  .theme-list {
+    display: grid;
+    grid-template-columns:repeat(2, 1fr);
+    gap: 10px;
+    .theme-item {
+      padding: 3px;
+      cursor: pointer;
+      display: grid;
+      grid-template-columns:repeat(4, 1fr);
+      border-radius: 3px;
+      border: 2px solid #8b8b8eb0;
+      span {
+        flex: 1;
+        height: 30px;
+      }
+    }
+    .active-item {
+      border-color: $color-base;
+    }
+  }
 }
 .map-container {
   width: 100%;
   height: calc(100% - 46px);
   .main-svg{
-    @include wh100;
-    background-color: #eeeef3;
-    path {
-      stroke:#5856d5;
-      fill: none;
-      stroke-width: 1.5px
-    }
     .image-collapse {
       cursor: pointer;
     }
-    .collapsed {
-      opacity: 1;
-    }
-    .g-root {
-      rect {
-        fill: #5856d5;
-        opacity: 1;
-      }
-      foreignObject {
-        div {
-          color: #FFF;
-          font-size: 16px;
-          line-height: 16px;
-        }
-      }
-    }
-    .g-subroot {
-      rect {
-        fill: #0CAFFF;
-      }
-      foreignObject {
-        div {
-          color: #fdfafa;
-          font-size: 14px;
-          line-height: 14px;
-        }
-      }
-    }
     .g-leaf {
-      rect {
-        fill: transparent;
-        opacity: 1;
-        stroke-width: 1.5px;
-      }
       &:hover {
         rect {
           stroke: #5856d57d;
@@ -331,32 +361,13 @@ export default defineComponent({
           stroke: #5856d5;
         }
       }
-      foreignObject {
-        div {
-          color: #4B4B4B;
-          font-size: 14px;
-          line-height: 14px;
-        }
-      }
     }
     .g-root, .g-subroot, .g-leaf {
+      cursor: pointer;
       outline: none;
       transition: .2s ease-in-out all;
-      foreignObject {
-        div {
-          height: 100%;
-          width: fit-content;
-          word-break: normal;
-          text-justify: distribute-all-lines;
-          white-space: pre-wrap;
-          word-wrap: break-word;
-          overflow: hidden;
-        }
-      }
       .image-add {
-        display: none !important;
         cursor: pointer;
-        visibility: hidden;
       }
       &:hover {
         .image-add {
@@ -369,16 +380,6 @@ export default defineComponent({
           display: block !important;
           visibility: visible;
         }
-      }
-    }
-    .rect-depth-root {
-      rect {
-        fill: #5856d5;
-        opacity: 1;
-      }
-      text {
-        fill: #FFF;
-        cursor: default;
       }
     }
   }

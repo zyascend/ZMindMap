@@ -89,8 +89,16 @@ export function throttle (fn, wait) {
 export async function convertToImg (name) {
   const _svg = document.getElementById('main-svg')
   const _clone = _svg.cloneNode(true)
+  // clone的Node无法获取到正常的宽高 需额外设置
   const _rect = _svg.getBoundingClientRect()
   _clone.viewBox.baseVal.width = _rect.width
   _clone.viewBox.baseVal.height = _rect.height
+  // 添加水印
+  const _waterPrint = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  _waterPrint.setAttribute('x', _rect.width - 150)
+  _waterPrint.setAttribute('y', _rect.height - 10)
+  _waterPrint.setAttribute('style', 'color:#000;opacity:0.2;font-size:16px;')
+  _waterPrint.innerHTML = '@map.kimjisoo.cn'
+  _clone.appendChild(_waterPrint)
   await saveSvg.saveSvgAsPng(_clone, name + '.png')
 }

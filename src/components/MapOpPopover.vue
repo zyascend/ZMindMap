@@ -1,7 +1,7 @@
 <template>
   <el-popover
     placement="bottom"
-    trigger="click"
+    trigger="hover"
     :show-arrow="false"
     popper-class="map-op-popper"
   >
@@ -20,6 +20,7 @@
 <script>
 import { defineComponent, computed, onUnmounted } from 'vue'
 import { useMapStore } from '@/store/map'
+// import { useWebsiteStore } from '@/store/website'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { ErrorTip, convertToImg } from '@/hooks/utils'
 import useZoomMap from '@/hooks/useZoomMap'

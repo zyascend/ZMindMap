@@ -1,18 +1,52 @@
-const colorMap = {
-  0: {
+const colorArrays = [
+  {
     svgBg: '#eeeef3',
-    pathStroke: '#5856d5',
     rootRectFill: '#5856d5',
-    subRootRectFill: '#0CAFFF',
-    leafRectFill: 'transparent',
     rootFoDivFontColor: '#fff',
+    pathStroke: '#5856d5',
+    subRootRectFill: '#0CAFFF',
     subRootFoDivFontColor: '#fdfafa',
+    leafRectFill: 'transparent',
     leafFoDivFontColor: '#4B4B4B'
+  },
+  {
+    svgBg: '#2C2C2F',
+    rootRectFill: '#5856D5',
+    rootFoDivFontColor: '#FFF',
+    pathStroke: '#5856d5',
+    subRootRectFill: '#49494E',
+    subRootFoDivFontColor: '#FFF',
+    leafRectFill: 'transparent',
+    leafFoDivFontColor: '#FFF'
+  },
+  {
+    svgBg: '#FFF',
+    rootRectFill: '#597391',
+    rootFoDivFontColor: '#FFF',
+    pathStroke: '#A0BAD2',
+    subRootRectFill: '#FDF2F2',
+    subRootFoDivFontColor: '#848289',
+    leafRectFill: 'transparent',
+    leafFoDivFontColor: '#848289'
+  },
+  {
+    svgBg: '#DFDFDF',
+    rootRectFill: '#A53626',
+    rootFoDivFontColor: '#FFF',
+    pathStroke: '#383833',
+    subRootRectFill: '#383833',
+    subRootFoDivFontColor: '#FFF',
+    leafRectFill: 'transparent',
+    leafFoDivFontColor: '#57575B'
   }
+]
+
+export function getStyleList () {
+  return colorArrays.map(style => Object.values(style))
 }
 
-export function getStyle (styleName = '0') {
-  const colors = colorMap[styleName]
+export function getStyle (styleName = 0) {
+  const colors = colorArrays[styleName]
   return {
     svgStyle: {
       width: '100%',
