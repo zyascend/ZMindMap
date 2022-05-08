@@ -10,6 +10,16 @@
     <link ref="dns-prefetch" href="//mapapi.kimjisoo.cn" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <script>
+      var _hmt = _hmt || [];
+      window._hmt = _hmt;
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?e62ef51ba4cae3940ed9b24a9b62ac11";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+      </script>
   </head>
   <body>
     <noscript>

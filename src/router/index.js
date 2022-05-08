@@ -43,6 +43,10 @@ const router = createRouter({
   routes
 })
 router.beforeEach((to, from, next) => {
+  // 百度统计
+  if (to.path && window._hmt) {
+    window._hmt.push(['_trackPageview', to.fullPath])
+  }
   const store = useUserStore()
   if (to.meta.isLogin) {
     // 如果去登陆页的话 不用验证token

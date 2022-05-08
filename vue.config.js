@@ -69,6 +69,10 @@ module.exports = {
       .end()
       .use('svgo-loader')
       .loader('svgo-loader')
+      .options({
+        name: 'removeAttrs',
+        params: { attrs: 'fill' }
+      })
       .end()
     const fileRule = config.module.rule('file')
     fileRule.uses.clear()

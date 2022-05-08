@@ -1,9 +1,3 @@
-<template>
-  <svg :class="className" :aria-hidden="true">
-    <use :xlink:href="icon" />
-  </svg>
-</template>
-
 <script>
 import { defineComponent, computed } from 'vue'
 export default defineComponent({
