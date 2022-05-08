@@ -2,8 +2,11 @@ const path = require('path')
 const webpack = require('webpack')
 const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
+const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
+
 const IS_PROD = process.env.NODE_ENV === 'production'
+
 module.exports = {
   publicPath: IS_PROD ? 'https://cdn.kimjisoo.cn/' : '/',
   pages: {
@@ -106,31 +109,12 @@ module.exports = {
       Components({
         resolvers: [ElementPlusResolver()]
       }),
-      require('unplugin-element-plus/webpack')({})
+      require('unplugin-element-plus/webpack')({}),
+      new SentryWebpackPlugin({
+        dryRun: !IS_PROD, // 只有生成环境才上传source map
+        include: 'dist',
+        ignore: ['node_modules', 'webpack.config.js']
+      })
     ]
   }
-  // css: {
-  //   loaderOptions: {
-  //     postcss: {
-  //       plugins: [
-  //         require('postcss-px-to-viewport')({
-  //           unitToConvert: 'px',
-  //           viewportWidth: 1920,
-  //           unitPrecision: 5,
-  //           propList: ['*', '!font-size'], // 指定转换的css属性的单位，*代表全部css属性的单位都进行转换
-  //           viewportUnit: 'vw', // 指定需要转换成的视窗单位，默认vw
-  //           fontViewportUnit: 'vw', // 指定字体需要转换成的视窗单位，默认vw
-  //           // landscapeUnit: 'vh', // 横屏时使用的单位 手机横屏使用
-  //           // landscapeWidth: 667, // 横屏时使用的视口宽度
-  //           selectorBlackList: [], // 指定不转换为视窗单位的类名
-  //           minPixelValue: 1, // 默认值1，小于或等于1px则不进行转换
-  //           mediaQuery: false, // 是否在媒体查询的css代码中也进行转换，默认false
-  //           replace: true, // 是否转换后直接更换属性值
-  //           // landscape: false, // 是否处理横屏情况
-  //           exclude: /(\/|\\)(node_modules)(\/|\\)/ // 设置忽略文件，用正则做目录名匹配
-  //         })
-  //       ]
-  //     }
-  //   }
-  // }
 }

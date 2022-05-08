@@ -1,0 +1,7 @@
+[auth]
+token = 0a50065d170e45a6b066c1b53800496ea72ef418688f4fa68c31b2c88fc646ab
+
+[defaults]
+url = https://sentry.io/
+org = zy1996
+project = zmindmap

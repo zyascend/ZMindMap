@@ -3,8 +3,9 @@
 
 预览地址：[ZMind思维导图](https://map.kimjisoo.cn)
 
-后台地址：[mind-map-node](https://github.com/zyascend/mind-map-node)
+后台地址：[mind-map-node](https://github.com/zyascend/mind-map-node)  
 
+![](https://github.com/zyascend/ZMindMap/blob/main/assets/export01.png?raw=true)
 *努力完善中...*
 
 ## Features
@@ -14,11 +15,12 @@
 - SVG画图
   - 类幕布思维导图的文档构建方式实现
     - 数据驱动UI的思路
-  - d3.js控制Svg
+  - svg导出为png图片 
 - Element-plus
   - splitChunks单独打包
 - 基于七牛云的CDN加速
 - JWT & 二维码扫码登录
+- 使用Sentry收集错误信息
 
 ## TODO
 - [x] 基于vue响应式，通过数据驱动svg子元素更新
