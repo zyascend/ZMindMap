@@ -1,4 +1,5 @@
 import { useMapStore } from '@/store/map'
+import { xss } from '@/hooks/utils'
 import { customAlphabet } from 'nanoid'
 const nanoid = customAlphabet('1234567890abcdef', 5)
 
@@ -98,6 +99,6 @@ export async function changeNodeHtml (id, html) {
   const content = store.content
   // ! 由于debounce 此事件可能发生在deleteNode之后 此id节点可能被删除 需要判空
   if (!content[id]) return
-  content[id].html = html
+  content[id].html = xss(html)
   await store.setContent(content)
 }

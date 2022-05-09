@@ -1,5 +1,6 @@
 import { ElMessage } from 'element-plus'
 import saveSvg from 'save-svg-as-png'
+import filterXSS from 'xss'
 
 /**
  * 深拷贝：新对象的改变不影响旧对象
@@ -101,4 +102,70 @@ export async function convertToImg (name) {
   _waterPrint.innerHTML = '@map.kimjisoo.cn'
   _clone.appendChild(_waterPrint)
   await saveSvg.saveSvgAsPng(_clone, name + '.png')
+}
+
+const xssFilterOptions = {
+  stripIgnoreTagBody: true, // 不在白名单中的标签以及标签里面的内容直接删除
+  whiteList: {
+    h1: ['style'],
+    h2: ['style'],
+    h3: ['style'],
+    h4: ['style'],
+    h5: ['style'],
+    h6: ['style'],
+    hr: ['style'],
+    span: ['style'],
+    strong: ['style'],
+    b: ['style'],
+    i: ['style'],
+    br: [],
+    p: ['style'],
+    pre: ['style'],
+    code: ['style'],
+    a: ['style', 'target', 'href', 'title', 'rel'],
+    img: ['style', 'src', 'title'],
+    div: ['style'],
+    table: ['style', 'width', 'border'],
+    tr: ['style'],
+    td: ['style', 'width', 'colspan'],
+    th: ['style', 'width', 'colspan'],
+    tbody: ['style'],
+    ul: ['style'],
+    li: ['style'],
+    ol: ['style'],
+    dl: ['style'],
+    dt: ['style'],
+    em: ['style'],
+    cite: ['style'],
+    section: ['style'],
+    header: ['style'],
+    footer: ['style'],
+    blockquote: ['style'],
+    audio: ['autoplay', 'controls', 'loop', 'preload', 'src'],
+    video: [
+      'autoplay',
+      'controls',
+      'loop',
+      'preload',
+      'src',
+      'height',
+      'width'
+    ]
+  },
+  css: {
+    whiteList: {
+      color: true,
+      'background-color': true,
+      width: true,
+      height: true,
+      'max-width': true,
+      'max-height': true,
+      'min-width': true,
+      'min-height': true,
+      'font-size': true
+    }
+  }
+}
+export function xss (content) {
+  return filterXSS(content, xssFilterOptions)
 }

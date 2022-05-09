@@ -29,7 +29,8 @@
     "vant": "^3.4.8",
     "vue": "^3.2.31",
     "vue-qr": "^4.0.6",
-    "vue-router": "^4.0.0-0"
+    "vue-router": "^4.0.0-0",
+    "xss": "^1.0.11"
   },
   "devDependencies": {
     "@sentry/webpack-plugin": "^1.18.9",
