@@ -2,8 +2,8 @@ import { useMapStore } from '@/store/map'
 import { xss } from '@/hooks/utils'
 import { customAlphabet } from 'nanoid'
 const nanoid = customAlphabet('1234567890abcdef', 5)
-
 const store = useMapStore()
+
 export async function addNode (pid, options = { isMap: false, cid: undefined }) {
   const content = store.content
   const node = content[pid]
@@ -27,7 +27,7 @@ export async function addNode (pid, options = { isMap: false, cid: undefined }) 
     node.children.splice(index + 1, 0, id)
   }
   const child = {
-    html: id,
+    html: '请输入内容',
     id,
     children: [],
     _children: [],
@@ -91,7 +91,34 @@ export function moveToLastFocus (id) {
 }
 
 export async function tabNode (id, noteList) {
-  // TODO
+  // 1. 首先判断能不能tab
+  // 该节点作为第一个孩子节点时 不能tab
+  const content = store.content
+  const node = content[id]
+  const pNode = content[node.parent]
+  const index = pNode.children.indexOf(id)
+  const canTab = index !== 0
+  if (!canTab) return
+  // 2. 找到要tab到哪个节点下
+  let newPid
+  for (const i in noteList) {
+    if (id === noteList[i].id) {
+      newPid = noteList[i - 1].id
+      break
+    }
+  }
+  // 3. 旧的父node删除该节点
+  pNode.children.splice(index, 1)
+  // 4. 该节点重新赋值新的父node id
+  node.parent = newPid
+  // 5. 如果newPid折叠了，打开
+  const newPNode = content[newPid]
+  if (newPNode._children.length) {
+    ;[newPNode.children, newPNode._children] = [newPNode._children, newPNode.children]
+  }
+  // 6. 该节点作为newPid的最后一个孩子
+  newPNode.children.push(id)
+  await store.setContent(content)
   return id
 }
 

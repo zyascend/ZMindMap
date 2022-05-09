@@ -1,5 +1,5 @@
 <template>
-  <div class="map-container" id="mapContainer" v-show="show">
+  <div class="map-container" id="mapContainer">
     <svg :style="styles.svgStyle" class="main-svg" id="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g" ref="mainG">
         <g>
@@ -130,12 +130,6 @@ import PIC_ADD from '@/assets/map/add.svg'
 export default defineComponent({
   components: { SvgIcon },
   name: 'MindMap',
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    }
-  },
   setup () {
     const mainSvg = ref()
     const mainG = ref()
@@ -182,6 +176,7 @@ export default defineComponent({
       const treeData = useMap(store.treedData)
       pathData.value = treeData.path
       nodeData.value = treeData.node
+      console.log(nodeData.value)
       nextTick(() => {
         useZoomMap.registerZoom()
         useZoomMap.fitView()

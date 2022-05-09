@@ -1,5 +1,5 @@
 <template>
-  <div class="note-container" v-show="show">
+  <div class="note-container">
     <div class="doc-main">
       <div class="name"
         @input="onNameInput($event, rootNode)"
@@ -47,12 +47,6 @@ export default defineComponent({
     SvgIcon,
     NotePopover
   },
-  props: {
-    show: {
-      type: Boolean,
-      required: true
-    }
-  },
   setup () {
     const store = useMapStore()
     const rootNode = computed(() => store.getRootNode)
@@ -78,7 +72,6 @@ export default defineComponent({
     const onDeleteNode = async (node, event) => {
       // 节点文字删除完毕才删除此节点
       // event.preventDefault()
-      console.log('onDeleteNode', event.target.innerText)
       if (event.target.innerText !== '') return
       // 当前只有一个节点 删除完文字之后停止
       if (childNodes.value.length === 1) {
@@ -95,7 +88,7 @@ export default defineComponent({
     const onTabNode = async (node, event) => {
       event.preventDefault()
       const newId = await tabNode(node.id, childNodes.value)
-      nextTick(() => {
+      newId && nextTick(() => {
         // 将光标移动到最后的位置
         moveToLastFocus(`note-node-${newId}`)
       })
@@ -118,18 +111,18 @@ export default defineComponent({
     }
     const onUpDownArrow = (event, node) => {
       event.preventDefault()
-      // let target = -1
-      // const code = event.keyCode
-      // for (const index in noteList.value) {
-      //   if (noteList.value[index].id === node.id) {
-      //     target = Number(index)
-      //     break
-      //   }
-      // }
-      // // 遇到头和尾的节点无法再移动
-      // if ((code === 38 && target !== 0) || (code === 40 && target !== noteList.value.length - 1)) {
-      //   moveToLastFocus(`note-node-${noteList.value[code === 38 ? target - 1 : target + 1].id}`)
-      // }
+      let target = -1
+      const code = event.keyCode
+      for (const index in childNodes.value) {
+        if (childNodes.value[index].id === node.id) {
+          target = Number(index)
+          break
+        }
+      }
+      // 遇到头和尾的节点无法再移动
+      if ((code === 38 && target !== 0) || (code === 40 && target !== childNodes.value.length - 1)) {
+        moveToLastFocus(`note-node-${childNodes.value[code === 38 ? target - 1 : target + 1].id}`)
+      }
     }
     /**
      * ctrl+z 撤回操作

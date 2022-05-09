@@ -22,8 +22,13 @@
       </div>
       <map-op-popover :isMap="showMap"/>
     </header>
-    <note :show="!showMap" />
-    <mind-map :show="showMap" />
+    <!-- v-show导致缩放的bug 暂时未解决 先用v-if -->
+    <template v-if="!showMap">
+      <note />
+    </template>
+    <template v-if="showMap">
+      <mind-map />
+    </template>
   </div>
 </template>
 <script>

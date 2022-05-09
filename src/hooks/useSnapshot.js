@@ -11,7 +11,6 @@ export default class Snapshot {
   }
 
   get hasPrev () {
-    console.log(this.cursor)
     return this.cursor > 0
   }
 
@@ -24,7 +23,6 @@ export default class Snapshot {
     // 确保历史记录条数限制
     if (this.snapshots.length > this.length) { this.snapshots.shift() }
     this.cursor = this.snapshots.length - 1
-    console.log('snap', this.snapshots)
   }
 
   prev () {
