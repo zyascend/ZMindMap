@@ -48,9 +48,9 @@
   ```
 ## 效果图
 
-| <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export01.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export01.png?raw=true" style="zoom:20%;" /> |
+| <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export01.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export02.png?raw=true" style="zoom:20%;" /> |
 | :------------------------------------------------------------------------------: | -------------------------------------------------------------------------------- |
-| <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export01.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export01.png?raw=true" style="zoom:20%;" /> |
+| <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export03.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export04.png?raw=true" style="zoom:20%;" /> |
 
 
 

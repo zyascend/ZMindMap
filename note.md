@@ -44,6 +44,10 @@ https://www.cnblogs.com/eightFlying/p/cropper-demo.html
   - publicPath: 'cdn' ----->干扰了路由：https://blog.csdn.net/weixin_29491885/article/details/119253898
   解决：修改createWebHistory()
 
+### 打包构建优化
+  - 缩小文件检索解析范围 添加别名 避免无用的检索与递归遍历，使用alias指定引用时候的模块 
+  `config.resolve.alias.set('@', getAliasPath('src'))`
+
 ### Map数据流向修改
   - edit页集中维护 ---> map.store集中维护
   - 流向如何

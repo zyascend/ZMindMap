@@ -3,9 +3,12 @@ const webpack = require('webpack')
 const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
+const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
+
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
 const IS_PROD = process.env.NODE_ENV === 'production'
+const getAliasPath = dir => path.join(__dirname, dir)
 
 module.exports = {
   publicPath: IS_PROD ? 'https://cdn.kimjisoo.cn/' : '/',
@@ -89,8 +92,14 @@ module.exports = {
       .loader('worker-loader')
       .end()
     // 解决：worker 热更新问题
-    config.module
-      .rule('js').exclude.add(/\.worker\.js$/)
+    config.module.rule('js').exclude.add(/\.worker\.js$/)
+    config.resolve.alias
+      .set('@', getAliasPath('src'))
+      .set('assets', getAliasPath('src/assets'))
+      .set('hooks', getAliasPath('src/hooks'))
+      .set('views', getAliasPath('src/views'))
+      .set('store', getAliasPath('src/store'))
+      .set('components', getAliasPath('src/components'))
   },
   configureWebpack: {
     module: {
@@ -118,7 +127,8 @@ module.exports = {
         dryRun: !IS_PROD, // 只有生成环境才上传source map
         include: 'dist',
         ignore: ['node_modules', 'webpack.config.js']
-      })
+      }),
+      new SpeedMeasurePlugin()
     ]
   }
 }

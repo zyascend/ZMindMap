@@ -119,9 +119,13 @@ export default defineComponent({
           break
         }
       }
-      // 遇到头和尾的节点无法再移动
-      if ((code === 38 && target !== 0) || (code === 40 && target !== childNodes.value.length - 1)) {
-        moveToLastFocus(`note-node-${childNodes.value[code === 38 ? target - 1 : target + 1].id}`)
+      // 光标向上移动
+      if (code === 38 && target !== 0) {
+        moveToLastFocus(`note-node-${childNodes.value[target - 1].id}`)
+      }
+      // 光标向下移动
+      if (code === 40 && target !== childNodes.value.length - 1) {
+        moveToLastFocus(`note-node-${childNodes.value[target + 1].id}`)
       }
     }
     /**

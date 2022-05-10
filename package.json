@@ -53,6 +53,7 @@
     "node-sass": "^7.0.1",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
+    "speed-measure-webpack-plugin": "^1.5.0",
     "svg-sprite-loader": "^6.0.11",
     "svgo-loader": "^3.0.0",
     "unplugin-auto-import": "^0.7.1",

@@ -117,15 +117,15 @@
 
 <script>
 import { defineComponent, onMounted, ref, onUnmounted, nextTick, watchEffect, computed } from 'vue'
-import { useMapStore } from '@/store/map'
-import { useWebsiteStore } from '@/store/website'
-import { getStyle, getStyleList } from '@/hooks/useMapStyle'
-import { collapse, addNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
-import useMap from '@/hooks/useMap'
-import useZoomMap from '@/hooks/useZoomMap'
+import { useMapStore } from 'store/map'
+import { useWebsiteStore } from 'store/website'
+import { getStyle, getStyleList } from 'hooks/useMapStyle'
+import { collapse, addNode, deleteNode, changeNodeHtml } from 'hooks/useContent'
+import useMap from 'hooks/useMap'
+import useZoomMap from 'hooks/useZoomMap'
 import SvgIcon from './SvgIcon.vue'
-import PIC_COLLAPSE from '@/assets/map/arrow-left.svg'
-import PIC_ADD from '@/assets/map/add.svg'
+import PIC_COLLAPSE from 'assets/map/arrow-left.svg'
+import PIC_ADD from 'assets/map/add.svg'
 
 export default defineComponent({
   components: { SvgIcon },
