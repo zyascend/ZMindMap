@@ -312,7 +312,6 @@ export default defineComponent({
 }
 .map-theme-popper {
   padding: 7px 7px !important;
-  /* @include background_color(bc_popover); */
   border: none !important;
   .el-popover__title {
     text-align: center;
@@ -381,6 +380,6 @@ export default defineComponent({
 }
 .node-edit-dialog {
   border-radius: 4px !important;
-  box-shadow: rgb(0 0 0 / 16%) 0px 2px 30px 0px !important;
+  box-shadow: rgb(0 0 0 / 16%) 0 2px 30px 0 !important;
 }
 </style>

@@ -6,7 +6,7 @@ import API from '@/hooks/api'
 import { deepClone, ErrorTip } from '@/hooks/utils'
 import { useUserStore } from './user'
 import * as handler from './handler'
-import * as d3 from 'd3-selection'
+import { select } from 'd3-selection'
 
 export const useMapStore = defineStore('map', {
   state: () => {
@@ -42,7 +42,7 @@ export const useMapStore = defineStore('map', {
     setRefs (refs) {
       this.refs = refs
       for (const key in refs) {
-        this.selections[key] = d3.select(refs[key])
+        this.selections[key] = select(refs[key])
       }
     },
     transform (content, id = 'map-root', level = 0, list = []) {

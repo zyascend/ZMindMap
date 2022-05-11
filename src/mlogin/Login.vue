@@ -130,7 +130,6 @@ checkLogin()
       font-size: 20px;
       margin-bottom: 20vw;
       font-weight: bold;
-      /* color: #5856d5; */
     }
     .info {
       display: flex;

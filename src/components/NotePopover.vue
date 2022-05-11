@@ -116,7 +116,7 @@ export default defineComponent({
     height: 32px;
     line-height: 32px;
     box-sizing: border-box;
-    padding: 0px 10px;
+    padding: 0 10px;
     &:hover {
       @include background_color(bc_pop_hover);
     }
@@ -133,7 +133,7 @@ export default defineComponent({
 .divider {
   height: 1px;
   margin: 4px 5px;
-  padding: 0px 10px;
+  padding: 0 10px;
   box-sizing: border-box;
   @include background_color(bc_divider);
 }
@@ -145,7 +145,7 @@ export default defineComponent({
   align-items: center;
   font-size: 14px;
   cursor: pointer;
-  padding: 0px 10px;
+  padding: 0 10px;
   span {
     width: 32px;
     text-align: center;

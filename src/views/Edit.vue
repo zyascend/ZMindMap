@@ -86,6 +86,44 @@ export default defineComponent({
     cursor: pointer;
     font-size: 14px;
     line-height: 22px;
+    .show-map {
+      position: relative;
+      @include centerFlex;
+      width: auto;
+      min-width: 0;
+      height: 26px;
+      margin-right: 10px;
+      padding: 0 6px;
+      background-color: #f4f4f5;
+      border-radius: 6px;
+      transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
+      svg {
+        width: 20px;
+        height: 20px;
+        margin-right: 2px;
+      }
+      &:hover {
+        color: #75757d;
+        background-color: #0000000a;
+      }
+    }
+    .more-op {
+      @include centerFlex;
+      height: 26px;
+      padding: 0 6px;
+      margin-right: 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      background-color: #f4f4f5;
+      &:hover {
+        background-color: #0000000a;
+      }
+      svg {
+        width: 20px;
+        height: 20px;
+        fill: #75757d;
+      }
+    }
     .info {
       flex: 1 1 0%;
       @include horiFlex;
@@ -96,7 +134,7 @@ export default defineComponent({
         text-align: center;
         color: #92929c;
         border-radius: 4px;
-        padding: 0px 4px;
+        padding: 0 4px;
         text-overflow: ellipsis;
         white-space: nowrap;
         &:hover {
@@ -126,53 +164,13 @@ export default defineComponent({
       height: 15px;
       animation: spin 1s linear infinite;
     }
-
     @-webkit-keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
-
     @keyframes spin {
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
-    }
-    .show-map {
-      position: relative;
-      @include centerFlex;
-      width: auto;
-      min-width: 0px;
-      height: 26px;
-      margin-right: 10px;
-      padding: 0px 6px;
-      background-color: #f4f4f5;
-      border-radius: 6px;
-      transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
-      &:hover {
-        color: #75757d;
-        background-color: #0000000a;
-      }
-      svg {
-        width: 20px;
-        height: 20px;
-        margin-right: 2px;
-      }
-    }
-    .more-op {
-      @include centerFlex;
-      height: 26px;
-      padding: 0px 6px;
-      margin-right: 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      background-color: #f4f4f5;
-      &:hover {
-        background-color: #0000000a;
-      }
-      svg {
-        width: 20px;
-        height: 20px;
-        fill: #75757d;
-      }
     }
   }
 }

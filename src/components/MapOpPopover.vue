@@ -74,7 +74,7 @@ export default defineComponent({
 .map-op-more {
   @include centerFlex;
   height: 26px;
-  padding: 0px 6px;
+  padding: 0 6px;
   margin-right: 10px;
   border-radius: 6px;
   cursor: pointer;
@@ -102,7 +102,7 @@ export default defineComponent({
     height: 32px;
     line-height: 32px;
     box-sizing: border-box;
-    padding: 0px 10px;
+    padding: 0 10px;
     &:hover {
       @include background_color(bc_pop_hover);
     }
@@ -118,7 +118,7 @@ export default defineComponent({
 }
 .my-dialog {
   border-radius: 4px !important;
-  box-shadow: rgb(0 0 0 / 16%) 0px 2px 30px 0px !important;
+  box-shadow: rgb(0 0 0 / 16%) 0 2px 30px 0 !important;
 }
 .el-overlay {
   background-color: rgba(0,0,0,.2) !important;

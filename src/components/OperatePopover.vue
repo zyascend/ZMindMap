@@ -150,7 +150,7 @@ export default defineComponent({
 <style lang="scss">
 @import "@/assets/css/handler";
 .more {
-  padding: 0px 4px;
+  padding: 0 4px;
   margin-right: 4px;
   border-radius: 4px;
   color: #1d1d1f;
@@ -180,7 +180,7 @@ export default defineComponent({
     height: 32px;
     line-height: 32px;
     box-sizing: border-box;
-    padding: 0px 10px;
+    padding: 0 10px;
     &:hover {
       @include background_color(bc_pop_hover);
     }
@@ -196,7 +196,7 @@ export default defineComponent({
 }
 .my-dialog {
   border-radius: 4px !important;
-  box-shadow: rgb(0 0 0 / 16%) 0px 2px 30px 0px !important;
+  box-shadow: rgb(0 0 0 / 16%) 0 2px 30px 0 !important;
 }
 .el-overlay {
   background-color: rgba(0,0,0,.2) !important;

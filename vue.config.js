@@ -47,11 +47,19 @@ module.exports = {
             reuseExistingChunk: true,
             enforce: true
           },
+          vendors2: {
+            name: 'chunk-vendors-2',
+            test: /[\\/]node_modules[\\/][@sentry,@vueuse]/,
+            chunks: 'initial',
+            priority: 3,
+            reuseExistingChunk: true,
+            enforce: true
+          },
           elementui: {
             name: 'chunk-ele',
             test: /[\\/]node_modules[\\/]@?element-plus[\\/]/,
             chunks: 'initial',
-            priority: 3,
+            priority: 4,
             reuseExistingChunk: true,
             enforce: true
           }

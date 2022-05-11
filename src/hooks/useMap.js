@@ -1,4 +1,5 @@
-import * as d3 from './d3'
+import { linkHorizontal } from 'd3-shape'
+import { hierarchy } from 'd3-hierarchy'
 import { useMapStore } from '@/store/map'
 
 export class TreeDataCreater {
@@ -37,7 +38,7 @@ export class TreeDataCreater {
     let bottomLineLeaf = ''
 
     const { x, y, contentWidth, rectHeight, depth } = d.source
-    const bézierCurveGenerator = d3.linkHorizontal().x(d => d.x).y(d => d.y)
+    const bézierCurveGenerator = linkHorizontal().x(d => d.x).y(d => d.y)
 
     if (depth === 0) {
       const horiStart = {
@@ -210,7 +211,7 @@ export class TreeDataCreater {
 }
 
 const useMap = content => {
-  const hierarchyData = d3.hierarchy(content)
+  const hierarchyData = hierarchy(content)
   const store = useMapStore()
   const measureSvg = store.selections.measureSvg
   const creator = new TreeDataCreater({ measureSvg })

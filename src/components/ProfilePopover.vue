@@ -279,7 +279,7 @@ export default defineComponent({
   .nickname {
     @include horiFlex;
     height: 24px;
-    padding: 0px 4px;
+    padding: 0 4px;
     margin-left: 6px;
     border-radius: 4px;
     align-items: center;
@@ -292,7 +292,7 @@ export default defineComponent({
       font-size: 14px;
       overflow: hidden;
       max-width: 140px;
-      margin: 0px 2px 0px 0px;
+      margin: 0 2px 0 0;
       text-overflow: ellipsis;
       white-space: nowrap;
       line-height: 24px;
@@ -312,12 +312,12 @@ export default defineComponent({
   @include background_color(bc_divider);
 }
 .profile-popover {
-  padding: 0px 20px 10px 20px !important;
+  padding: 0 20px 10px 20px !important;
   @include background_color(bc_popover);
   border: none !important;
   .info {
     @include vertFlex;
-    margin: 30px 0px 30px;
+    margin: 30px 0 30;
     align-items: center;
     .img {
       @include centerFlex;
@@ -325,14 +325,14 @@ export default defineComponent({
       height: 42px;
       border-radius: 50%;
       overflow: hidden;
-      margin-bottom: 10px;
+      margin-bottom: 10;
       &>img {
         width: 42px;
         height: 42px;
       }
     }
     &>p{
-      padding: 0px 20px;
+      padding: 0 20;
       overflow: hidden;
       -webkit-line-clamp: 1;
       text-overflow: ellipsis;
@@ -353,7 +353,7 @@ export default defineComponent({
     line-height: 32px;
     text-align: center;
     box-sizing: border-box;
-    padding: 5px 0px;
+    padding: 5px 0;
     &:hover {
       background-color: rgb(0 0 0 / 3%);
     }
@@ -361,7 +361,6 @@ export default defineComponent({
       width: 20px;
       height: 20px;
       fill: #75757d;
-      /* margin-right: 10px; */
     }
     span {
       margin-left: 15px;
@@ -379,7 +378,7 @@ export default defineComponent({
 .profile-dialog {
   border-radius: 4px !important;
   @include background_color(bc_dialog_right);
-  box-shadow: rgb(0 0 0 / 16%) 0px 2px 30px 0px !important;
+  box-shadow: rgb(0 0 0 / 16%) 0 2px 30px 0 !important;
   .el-dialog__body {
     padding: 0 0;
     .settings {
@@ -391,7 +390,7 @@ export default defineComponent({
       .left {
         box-sizing: border-box;
         position: absolute;
-        top: 0px;
+        top: 0;
         height: 100%;
         padding-top: 40px;
         border-right: 1px solid;
@@ -408,7 +407,7 @@ export default defineComponent({
           height: 38px;
           align-items: center;
           justify-content: center;
-          margin: 0px 0px 12px;
+          margin: 0 0 12px;
           color: #5856d5;
           cursor: pointer;
           font-size: 16px;
@@ -418,8 +417,8 @@ export default defineComponent({
             content: "";
             position: absolute;
             display: block;
-            top: 0px;
-            left: 0px;
+            top: 0;
+            left: 0;
             width: 3px;
             height: 100%;
             color: #5856d5;
@@ -434,8 +433,7 @@ export default defineComponent({
         box-sizing: border-box;
         .user-message {
           min-height: 534px;
-          padding: 10px 60px 0px 40px;
-          /* background: #ffffff; */
+          padding: 10px 60px 0 40px;
           .title {
             display: flex;
             height: 38px;
@@ -481,7 +479,7 @@ export default defineComponent({
                 transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                 white-space: nowrap;
                 &:hover {
-                  @include background_color(bc_avatar_btn_hover)
+                  @include background_color(bc_avatar_btn_hover);
                 }
               }
             }
@@ -524,7 +522,7 @@ export default defineComponent({
                   transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                   white-space: nowrap;
                   &:hover {
-                    @include background_color(bc_avatar_btn_hover)
+                    @include background_color(bc_avatar_btn_hover);
                   }
                 }
                 .el-input__inner {

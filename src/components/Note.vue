@@ -238,7 +238,6 @@ export default defineComponent({
           height: 34px;
           padding-left: 1px;
           box-sizing: border-box;
-          /* border-left: 1px solid #dee0e3; */
           transform: translateX(8px);
         }
         &:hover {
@@ -270,7 +269,6 @@ export default defineComponent({
             width: 30px;
             height: 30px;
             cursor: pointer;
-            /* background: #fff; */
             .icon-collapsed {
               transform: rotate(-90deg);
             }
@@ -280,30 +278,11 @@ export default defineComponent({
               transition: .2s ease all;
             }
           }
-          /* .bullet-wrapper {
-            width: 18px;
-            height: 18px;
-            margin-top: 6px;
-            .bullet {
-              @include wh100;
-              @include centerFlex;
-              border-radius: 9px;
-              div {
-                z-index: 10;
-                width: 6px;
-                height: 6px;
-                background-color: #646a73;
-                border-radius: 3px;
-              }
-            }
-            .bullet-circled {
-              background-color: #ebecec;
-            }
-          } */
           .text-wrapper {
             flex: 1;
             min-height: 30px;
-            box-sizing: border-box;
+            /* stylelint-disable-next-line comment-empty-line-before */
+            /* box-sizing: border-box; */
             padding: 2px 0 2px 8px;
             line-height: 26px;
             font-size: 16px;

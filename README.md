@@ -19,6 +19,7 @@
 **仿[幕布](https://mubu.com)思维导图。**  
 
 ## 项目地址：
+项目总结：[ZMindMap-Wiki](https://github.com/zyascend/ZMindMap/wiki)  
 
 预览地址：[ZMind思维导图](https://map.kimjisoo.cn)
 
@@ -51,8 +52,6 @@
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export01.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export02.png?raw=true" style="zoom:20%;" /> |
 | :------------------------------------------------------------------------------: | -------------------------------------------------------------------------------- |
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export03.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export04.png?raw=true" style="zoom:20%;" /> |
-
-
 
 
 ## Features

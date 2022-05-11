@@ -157,7 +157,7 @@ export default defineComponent({
         height: 20px;
         padding: 1px;
         border: none;
-        margin: 0px 0px 0px 4px;
+        margin: 0 0 0 4px;
         background-color: transparent;
         @include font_color(fc_input);
         font-size: 13px;
@@ -269,12 +269,11 @@ export default defineComponent({
       align-items: center;
       .icon {
         width: 20px !important;
-        width: 20px;
         margin-right: 10px;
       }
     }
     .more {
-      padding: 0px 4px;
+      padding: 0 4px;
       margin-right: 4px;
       border-radius: 4px;
       color: #1d1d1f;
@@ -305,7 +304,7 @@ export default defineComponent({
     height: 32px;
     line-height: 32px;
     box-sizing: border-box;
-    padding: 0px 10px;
+    padding: 0 10px;
     &:hover {
       @include background_color(bc_pop_hover);
     }

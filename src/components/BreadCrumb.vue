@@ -36,15 +36,15 @@ export default defineComponent({
 <style lang="scss">
 @import '../assets/css/handler';
 .bread-wrapper {
+  align-items: center;
   width: 100%;
   @include horiFlex;
-  align-items: center;
   .link {
     position: relative;
     overflow: hidden;
-    max-width: 220px;
     box-sizing: border-box;
-    padding: 0px 4px;
+    max-width: 220px;
+    padding: 0 4px;
     border-radius: 4px;
     @include font_color(fc_bread);
     cursor: pointer;
@@ -59,7 +59,7 @@ export default defineComponent({
   .icon {
     width: 14px;
     height: 14px;
-    margin: 0px 6px;
+    margin: 0 6px;
     fill: #92929c;
     &:last-child {
       display: none;

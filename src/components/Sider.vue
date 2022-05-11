@@ -73,7 +73,6 @@ export default defineComponent({
 .sidebar {
   @include wh100;
   @include vertFlex;
-  /* @include bg-color(bc_sidebar); */
   @include background_color(bc_sidebar);
   position: fixed;
   border-right: 1px #dedee1 solid;

@@ -136,7 +136,7 @@ export default defineComponent({
         box-sizing: border-box;
         align-items: center;
         justify-content: center;
-        padding: 0px 8px;
+        padding: 0 8px;
         border: none;
         cursor: pointer;
         font-size: 14px;
@@ -156,7 +156,6 @@ export default defineComponent({
     width: 100%;
     height: auto;
     display: grid;
-    /* grid-template-columns: repeat(8,1fr); */
     grid-template-columns: repeat(auto-fill, 146px);
     row-gap: 30px;
     column-gap: 30px;
@@ -176,7 +175,7 @@ export default defineComponent({
         border: 1px solid;
         @include background_color(bc_griditem_hover);
         @include border_color(bdc_grid);
-        box-shadow: rgb(17 34 51 / 15%) 0px 4px 8px;
+        box-shadow: rgb(17 34 51 / 15%) 0 4px 8px;
         .popover {
           .more {
             visibility: visible !important;
@@ -191,14 +190,13 @@ export default defineComponent({
         line-height: 20px;
         text-align: center;
         overflow: hidden;
-        box-orient: vertical;
         line-clamp: 2;
         text-overflow: ellipsis;
         word-break: break-all;
       }
       .icon {
-        margin: 27px 0px 12px;
-        transform: translateZ(0px) scale(1, 1);
+        margin: 27px 0 12px;
+        transform: translateZ(0) scale(1, 1);
         width: 57px;
         height: 57px;
       }

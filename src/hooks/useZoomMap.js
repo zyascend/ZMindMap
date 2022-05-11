@@ -1,18 +1,18 @@
+import { zoom, zoomIdentity } from 'd3-zoom'
 import { useMapStore } from '@/store/map'
-import * as d3 from './d3'
 const store = useMapStore()
-let zoom
+let zoomer
 /**
  * 使图具有缩放能力
  */
 const registerZoom = () => {
   const selections = store.selections
   const { mainG, mainSvg } = selections
-  zoom = d3.zoom().on('zoom', event => {
+  zoomer = zoom().on('zoom', event => {
     mainG.attr('transform', event.transform)
   }).scaleExtent([0.1, 4])
   // .translateExtent([[-1000, -1000], [1000, 800]])
-  zoom(selections.mainSvg)
+  zoomer(selections.mainSvg)
   mainSvg.on('dblclick.zoom', null)
 }
 /**
@@ -21,7 +21,7 @@ const registerZoom = () => {
 const fitView = () => {
   const refs = store.refs
   const selections = store.selections
-  if (!zoom) return
+  if (!zoomer) return
   const gMetrics = refs.mainG.getBBox()
   const svgMetrics = refs.mainSvg.getBoundingClientRect()
 
@@ -32,11 +32,11 @@ const fitView = () => {
   // 计算移动的中心
   const svgCenter = { x: svgMetrics.width / 2, y: svgMetrics.height / 2 }
   const gCenter = { x: gMetrics.width * scale / 2, y: gMetrics.height * scale / 2 }
-  const center = d3.zoomIdentity.translate(
+  const center = zoomIdentity.translate(
     -gMetrics.x * scale + svgCenter.x - gCenter.x,
     -gMetrics.y * scale + svgCenter.y - gCenter.y
   ).scale(scale)
-  selections.mainSvg.transition().duration(500).call(zoom.transform, center)
+  selections.mainSvg.transition().duration(500).call(zoomer.transform, center)
 }
 
 export default { registerZoom, fitView }
