@@ -152,10 +152,10 @@ export default defineComponent({
 .more {
   padding: 0 4px;
   margin-right: 4px;
-  border-radius: 4px;
   color: #1d1d1f;
   cursor: pointer;
   visibility: hidden;
+  border-radius: 4px;
   &:hover {
     background: #0000000d;
   }
@@ -172,15 +172,15 @@ export default defineComponent({
   .pop-item {
     @include horiFlex;
     @include font_color(fc_nickname);
-    width: 100%;
     position: relative;
-    align-items: center;
-    cursor: pointer;
-    font-size: 14px;
-    height: 32px;
-    line-height: 32px;
     box-sizing: border-box;
+    align-items: center;
+    width: 100%;
+    height: 32px;
     padding: 0 10px;
+    font-size: 14px;
+    line-height: 32px;
+    cursor: pointer;
     &:hover {
       @include background_color(bc_pop_hover);
     }

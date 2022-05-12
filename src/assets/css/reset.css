@@ -79,13 +79,13 @@ time,
 mark,
 audio,
 video {
-  margin: 0;
   padding: 0;
+  margin: 0;
   font: inherit;
   font-size: 100%;
   vertical-align: baseline;
-  border: 0;
   user-select: none;
+  border: 0;
 }
 
 /* HTML5 display-role reset for older browsers */
@@ -126,8 +126,8 @@ q::after {
 }
 
 table {
-  border-collapse: collapse;
   border-spacing: 0;
+  border-collapse: collapse;
 }
 
 body {

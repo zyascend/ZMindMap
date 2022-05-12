@@ -11,7 +11,7 @@ module.exports = {
         "ignoreAtRules": ["mixin", "include","extend"]
       }
     ],
-    "order/properties-order": null,
+    // "order/properties-order": null,
     "declaration-empty-line-before": null,
     "no-descending-specificity": null
   }

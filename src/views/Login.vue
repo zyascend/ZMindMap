@@ -107,10 +107,10 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/assets/css/mixin';
 .container {
-  @include wh100;
   @include centerFlex;
-  transition: .2s;
+  @include wh100;
   background-image: linear-gradient(to top, #9890e3 0%, #b1f4cf 100%);
+  transition: .2s;
   .main {
     position: relative;
     width: 1000px;
@@ -125,34 +125,34 @@ export default defineComponent({
     }
     .box {
       position: relative;
-      width: 50%;
-      height: 100%;
       @include centerFlex;
       flex-direction: column;
+      width: 50%;
+      height: 100%;
       h2 {
-        color: #fff;
+        margin-bottom: 20px;
         font-size: 1.5em;
         font-weight: 500;
-        margin-bottom: 20px;
+        color: #fff;
       }
     }
     .form {
       position: absolute;
       top: 0;
       left: 0;
-      width: 50%;
-      height: 100%;
-      background: #fff;
       z-index: 1000;
       @include centerFlex;
       flex-direction: column;
+      width: 50%;
+      height: 100%;
+      background: #fff;
       box-shadow: 0 5px 45px rgba(0, 0, 0, .25);
       transition: .5s ease-in-out all;
       h3 {
-        font-size: 1.5em;
-        color: #333;
         margin-bottom: 20px;
+        font-size: 1.5em;
         font-weight: 500;
+        color: #333;
         span {
           color: $color-base;
         }
@@ -165,12 +165,12 @@ export default defineComponent({
         height: 64px;
         cursor: pointer;
         &::after {
-          content: "";
           position: absolute;
           width: 0;
           height: 0;
-          border-bottom: 64px solid #fff;
+          content: "";
           border-right: 64px solid transparent;
+          border-bottom: 64px solid #fff;
         }
       }
       .btn-pc {

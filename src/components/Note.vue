@@ -209,35 +209,35 @@ export default defineComponent({
     margin: 0 auto;
      @include font_color(fc_normal);
     .name {
+      box-sizing: content-box;
       min-height: 42px;
+      padding: 62px 0 0;
+      margin-bottom: 27px;
       font-size: 34px;
       font-weight: 600;
       line-height: 48px;
-      padding: 62px 0 0;
-      margin-bottom: 27px;
-      user-select: text;
       word-wrap: break-word;
-      -webkit-nbsp-mode: space;
-      box-sizing: content-box;
-      cursor: text;
-      outline: 0;
       white-space: pre-wrap;
+      cursor: text;
+      user-select: text;
+      outline: 0;
+      -webkit-nbsp-mode: space;
     }
     .content {
+      align-items: center;
       width: 100%;
       @include vertFlex;
-      align-items: center;
       .note-node {
-        width: 100%;
-        @include horiFlex;
         align-items: center;
+        width: 100%;
         transition: .1s all;
         transition-timing-function: cubic-bezier(0.3, 1.02, 0.68, 1.01);
+        @include horiFlex;
         .indent {
+          box-sizing: border-box;
           width: 26px;
           height: 34px;
           padding-left: 1px;
-          box-sizing: border-box;
           transform: translateX(8px);
         }
         &:hover {
@@ -254,21 +254,21 @@ export default defineComponent({
         .node-content {
           position: relative;
           flex: 1;
-          @include horiFlex;
           align-items: flex-start;
+          @include horiFlex;
           ::selection{
             background-color: #bacefd;
           }
           .action-wrapper {
             @include centerFlex;
-            opacity: 0;
-            z-index: 2;
             position: absolute;
             top: 0;
             left: -33px;
+            z-index: 2;
             width: 30px;
             height: 30px;
             cursor: pointer;
+            opacity: 0;
             .icon-collapsed {
               transform: rotate(-90deg);
             }
@@ -279,24 +279,24 @@ export default defineComponent({
             }
           }
           .text-wrapper {
+            box-sizing: content-box;
             flex: 1;
+            width: fit-content;
             min-height: 30px;
             /* stylelint-disable-next-line comment-empty-line-before */
             /* box-sizing: border-box; */
             padding: 2px 0 2px 8px;
-            line-height: 26px;
-            font-size: 16px;
-            user-select: text;
-            -webkit-nbsp-mode: space;
-            box-sizing: content-box;
-            cursor: text;
-            outline: 0;
-            word-break: normal;
-            width: fit-content;
-            text-justify: distribute-all-lines;
-            white-space: pre-wrap;
-            word-wrap: break-word;
             overflow: hidden;
+            font-size: 16px;
+            line-height: 26px;
+            text-justify: distribute-all-lines;
+            word-break: normal;
+            word-wrap: break-word;
+            white-space: pre-wrap;
+            cursor: text;
+            user-select: text;
+            outline: 0;
+            -webkit-nbsp-mode: space;
           }
         }
       }

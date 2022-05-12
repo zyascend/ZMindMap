@@ -156,12 +156,12 @@ export default defineComponent({
         width: 100%;
         height: 20px;
         padding: 1px;
-        border: none;
         margin: 0 0 0 4px;
-        background-color: transparent;
-        @include font_color(fc_input);
         font-size: 13px;
         line-height: 18px;
+        @include font_color(fc_input);
+        background-color: transparent;
+        border: none;
         outline: none;
       }
       svg {
@@ -172,16 +172,16 @@ export default defineComponent({
     }
     .adder {
       position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       width: 28px;
       min-width: 28px;
       height: 28px;
       margin-left: 16px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      cursor: pointer;
       @include background_color(bc_adder);
       border-radius: 16px;
-      cursor: pointer;
       &>svg {
         width: 15px;
         height: 15px;
@@ -194,23 +194,23 @@ export default defineComponent({
     }
   }
   .divider {
-    margin-bottom: 2px;
     height: 1px;
+    margin-bottom: 2px;
     background: #dedee1;
   }
   .folders {
     position: relative;
-    height: 32px;
     @include horiFlex;
     align-items: center;
+    height: 32px;
     padding: 2px 8px;
     margin: 5px 8px;
-    border-radius: 6px;
     @include font_color(fc_side_link);
     font-size: 14px;
-    transition: background 0.1s ease-in-out 0s, color 0.1s ease-in-out 0s;
-    user-select: none;
     white-space: nowrap;
+    user-select: none;
+    border-radius: 6px;
+    transition: background 0.1s ease-in-out 0s, color 0.1s ease-in-out 0s;
     &:first-child {
       margin: 5px 8px;
     }
@@ -254,19 +254,19 @@ export default defineComponent({
   }
   }
   .node {
+    position: relative;
     @include horiFlex;
     align-items: center;
     justify-content: space-between;
     width: 100%;
     height: auto !important;
     padding: 2px 8px;
-    position: relative;
     .link {
       flex: 1;
-      @include font_color(fc_tree_node);
-      height: 32px;
       @include horiFlex;
       align-items: center;
+      height: 32px;
+      @include font_color(fc_tree_node);
       .icon {
         width: 20px !important;
         margin-right: 10px;
@@ -275,10 +275,10 @@ export default defineComponent({
     .more {
       padding: 0 4px;
       margin-right: 4px;
-      border-radius: 4px;
       color: #1d1d1f;
       cursor: pointer;
       visibility: hidden;
+      border-radius: 4px;
       &:hover {
         background: #0000000d;
       }
@@ -294,17 +294,17 @@ export default defineComponent({
   @include background_color(bc_popover);
   border: none !important;
   .pop-item {
-    @include horiFlex;
-    width: 100%;
     position: relative;
-    align-items: center;
-    @include font_color(fc_nickname);
-    cursor: pointer;
-    font-size: 14px;
-    height: 32px;
-    line-height: 32px;
     box-sizing: border-box;
+    @include horiFlex;
+    align-items: center;
+    width: 100%;
+    height: 32px;
     padding: 0 10px;
+    @include font_color(fc_nickname);
+    font-size: 14px;
+    line-height: 32px;
+    cursor: pointer;
     &:hover {
       @include background_color(bc_pop_hover);
     }

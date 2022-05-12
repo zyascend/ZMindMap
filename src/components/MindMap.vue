@@ -288,17 +288,17 @@ export default defineComponent({
 @import '../assets/css/handler';
 .operation {
   position: absolute;
-  z-index: 2;
   top: 80px;
   right: 50px;
-  padding: 8px;
-  @include centerFlex;
+  z-index: 2;
   flex-direction: column;
-  border: 1px solid #dee0e3;
+  padding: 8px;
+  user-select: none;
   background-color: #fff;
+  border: 1px solid #dee0e3;
   border-radius: 5px;
   box-shadow: 0 0 8px 4px rgb(31 35 41 / 6%);
-  user-select: none;
+  @include centerFlex;
   .fit-btn {
     cursor: pointer;
     .icon {
@@ -321,12 +321,12 @@ export default defineComponent({
     grid-template-columns:repeat(2, 1fr);
     gap: 10px;
     .theme-item {
-      padding: 3px;
-      cursor: pointer;
       display: grid;
       grid-template-columns:repeat(4, 1fr);
-      border-radius: 3px;
+      padding: 3px;
+      cursor: pointer;
       border: 2px solid #8b8b8eb0;
+      border-radius: 3px;
       span {
         flex: 1;
         height: 30px;

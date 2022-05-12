@@ -109,41 +109,41 @@ export default defineComponent({
 <style lang="scss">
 @import '@/assets/css/handler';
 .container {
-  @include wh100;
-  transition: 0.3s ease all;
-  padding: 0 82px;
   box-sizing: border-box;
+  @include wh100;
+  padding: 0 82px;
+  transition: 0.3s ease all;
   .header {
     position: relative;
     @include horiFlex;
     justify-content: space-between;
     padding: 31px 16px 9px 8px;
     .btn-wrapper {
-      @include horiFlex;
       position: relative;
+      @include horiFlex;
       align-items: center;
-      border: 1px solid;
-      @include border_color(bdc_show_btn);
       margin-left: 10px;
-      border-radius: 4px;
+      @include border_color(bdc_show_btn);
       cursor: pointer;
       user-select: none;
+      border: 1px solid;
+      border-radius: 4px;
       .btn-show {
         position: relative;
-        display: inline-flex;
-        width: auto;
-        height: 28px;
         box-sizing: border-box;
+        display: inline-flex;
         align-items: center;
         justify-content: center;
+        width: auto;
+        height: 28px;
         padding: 0 8px;
-        border: none;
-        cursor: pointer;
         font-size: 14px;
-        outline: none;
         text-align: center;
         text-decoration: none;
+        cursor: pointer;
+        border: none;
         border-radius: 4px;
+        outline: none;
         .icon {
           width: 14px;
           height: 14px;
@@ -153,28 +153,28 @@ export default defineComponent({
     }
   }
   .grid {
-    width: 100%;
-    height: auto;
+    box-sizing: border-box;
     display: grid;
     grid-template-columns: repeat(auto-fill, 146px);
     row-gap: 30px;
     column-gap: 30px;
+    width: 100%;
+    height: auto;
     padding: 25px 5px;
-    box-sizing: border-box;
     .grid-item {
       position: relative;
+      box-sizing: border-box;
       @include vertFlex;
+      align-items: center;
       width: 146px;
       height: 142px;
-      border-radius: 8px;
-      align-items: center;
       cursor: pointer;
+      border-radius: 8px;
       transition: box-shadow 100ms linear 0s;
-      box-sizing: border-box;
       &:hover {
-        border: 1px solid;
         @include background_color(bc_griditem_hover);
         @include border_color(bdc_grid);
+        border: 1px solid;
         box-shadow: rgb(17 34 51 / 15%) 0 4px 8px;
         .popover {
           .more {
@@ -185,20 +185,20 @@ export default defineComponent({
       span {
         width: 123px;
         height: 40px;
+        overflow: hidden;
         @include font_color(fc_grid);
         font-size: 14px;
         line-height: 20px;
         text-align: center;
-        overflow: hidden;
         line-clamp: 2;
         text-overflow: ellipsis;
         word-break: break-all;
       }
       .icon {
-        margin: 27px 0 12px;
-        transform: translateZ(0) scale(1, 1);
         width: 57px;
         height: 57px;
+        margin: 27px 0 12px;
+        transform: translateZ(0) scale(1, 1);
       }
       .popover {
         position: absolute;
@@ -208,16 +208,16 @@ export default defineComponent({
     }
   }
   .row {
-    @include horiFlex;
     position: relative;
-    height: 64px;
+    @include horiFlex;
     align-items: center;
+    height: 64px;
+    font-size: 16px;
     text-overflow: ellipsis;
     white-space: nowrap;
-    font-size: 16px;
     .icon {
-      height: 40px;
       width: 40px;
+      height: 40px;
       margin-right: 15px;
     }
   }
@@ -254,11 +254,11 @@ export default defineComponent({
     position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
-    color: #92929c;
     font-size: 14px;
     line-height: 1.45;
+    color: #92929c;
     transition: .2s all ease;
+    transform: translate(-50%, -50%);
   }
 }
 </style>

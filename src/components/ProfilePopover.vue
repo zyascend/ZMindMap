@@ -265,50 +265,50 @@ export default defineComponent({
 <style lang="scss">
 @import "@/assets/css/handler";
 .profile {
-  width: 100%;
-  @include horiFlex;
-  padding: 13px 16px 5px;
   position: relative;
   align-items: center;
+  width: 100%;
+  padding: 13px 16px 5px;
+  @include horiFlex;
   .avatar {
     width: 28px;
     height: 28px;
-    border-radius: 50%;
     cursor: pointer;
+    border-radius: 50%;
   }
   .nickname {
     @include horiFlex;
+    align-items: center;
     height: 24px;
     padding: 0 4px;
     margin-left: 6px;
-    border-radius: 4px;
-    align-items: center;
     cursor: pointer;
+    border-radius: 4px;
     &:hover {
       @include background_color(bc_hover_nickname);
     }
     &>p {
       @include font_color(fc_nickname);
-      font-size: 14px;
-      overflow: hidden;
       max-width: 140px;
       margin: 0 2px 0 0;
+      overflow: hidden;
+      font-size: 14px;
+      line-height: 24px;
       text-overflow: ellipsis;
       white-space: nowrap;
-      line-height: 24px;
     }
     &>svg {
       @include fill_color(fc_nickname);
-      height: 10px;
       width: 10px;
+      height: 10px;
       transform: rotate(-90deg);
     }
   }
 }
 .divider {
+  box-sizing: border-box;
   height: 1px;
   margin: 4px 5px;
-  box-sizing: border-box;
   @include background_color(bc_divider);
 }
 .profile-popover {
@@ -317,15 +317,15 @@ export default defineComponent({
   border: none !important;
   .info {
     @include vertFlex;
-    margin: 30px 0 30;
     align-items: center;
+    margin: 30px 0 30;
     .img {
       @include centerFlex;
       width: 42px;
       height: 42px;
-      border-radius: 50%;
-      overflow: hidden;
       margin-bottom: 10;
+      overflow: hidden;
+      border-radius: 50%;
       &>img {
         width: 42px;
         height: 42px;
@@ -334,26 +334,26 @@ export default defineComponent({
     &>p{
       padding: 0 20;
       overflow: hidden;
-      -webkit-line-clamp: 1;
       text-overflow: ellipsis;
       word-break: break-all;
+      -webkit-line-clamp: 1;
       @include font_color(fc_nickname);
     }
   }
   .pop-item {
     @include horiFlex;
     @include font_color(fc_nickname);
-    width: 100%;
     position: relative;
-    align-items: center;
-    color: #1d1d1f;
-    cursor: pointer;
-    font-size: 14px;
-    height: 32px;
-    line-height: 32px;
-    text-align: center;
     box-sizing: border-box;
+    align-items: center;
+    width: 100%;
+    height: 32px;
     padding: 5px 0;
+    font-size: 14px;
+    line-height: 32px;
+    color: #1d1d1f;
+    text-align: center;
+    cursor: pointer;
     &:hover {
       background-color: rgb(0 0 0 / 3%);
     }
@@ -385,65 +385,65 @@ export default defineComponent({
       display: flex;
       width: 700px;
       height: 534px;
-      border-radius: 4px;
       overflow: hidden auto;
+      border-radius: 4px;
       .left {
-        box-sizing: border-box;
         position: absolute;
         top: 0;
+        box-sizing: border-box;
         height: 100%;
         padding-top: 40px;
+        font-size: 16px;
+        background: #f4f4f5;
         border-right: 1px solid;
+        border-top-left-radius: 4px;
+        border-bottom-left-radius: 4px;
         @include border_color(bdc_dialog_left);
         @include background_color(bc_dialog_left);
-        background: #f4f4f5;
-        border-bottom-left-radius: 4px;
-        border-top-left-radius: 4px;
-        font-size: 16px;
         .tab {
           position: relative;
           display: flex;
-          width: 140px;
-          height: 38px;
           align-items: center;
           justify-content: center;
+          width: 140px;
+          height: 38px;
           margin: 0 0 12px;
-          color: #5856d5;
-          cursor: pointer;
           font-size: 16px;
-          user-select: none;
+          color: #5856d5;
           text-decoration: none;
+          cursor: pointer;
+          user-select: none;
           &::before {
-            content: "";
             position: absolute;
-            display: block;
             top: 0;
             left: 0;
+            display: block;
             width: 3px;
             height: 100%;
             color: #5856d5;
+            content: "";
             background: #5856d5;
           }
         }
       }
       .right {
-        width: 557px;
-        flex: 1 1 0%;
-        margin-left: 140px;
         box-sizing: border-box;
+        flex: 1 1 0%;
+        width: 557px;
+        margin-left: 140px;
         .user-message {
           min-height: 534px;
           padding: 10px 60px 0 40px;
           .title {
             display: flex;
-            height: 38px;
-            -webkit-box-align: center;
             align-items: center;
+            height: 38px;
             margin-bottom: 12px;
-            @include font_color(fc_normal);
             font-size: 18px;
             font-weight: normal;
             line-height: 1.45;
+            -webkit-box-align: center;
+            @include font_color(fc_normal);
           }
           .content {
             @include horiFlex;
@@ -451,11 +451,11 @@ export default defineComponent({
               @include vertFlex;
               margin-right: 40px;
               div {
+                position: relative;
                 width: 80px;
                 height: 80px;
-                position: relative;
-                @include centerFlex;
                 border-radius: 50%;
+                @include centerFlex;
                 img {
                   @include wh100;
                   border-radius: 50%;
@@ -467,17 +467,17 @@ export default defineComponent({
                 height: 20px;
                 padding: 4px;
                 margin-top: 20px;
-                border: none;
-                background-color: transparent;
-                border-radius: 5px;
-                color: #5856d5;
-                cursor: pointer;
                 font-size: 14px;
-                outline: none;
+                color: #5856d5;
                 text-align: center;
                 text-decoration: none;
-                transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                 white-space: nowrap;
+                cursor: pointer;
+                background-color: transparent;
+                border: none;
+                border-radius: 5px;
+                outline: none;
+                transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                 &:hover {
                   @include background_color(bc_avatar_btn_hover);
                 }
@@ -486,41 +486,41 @@ export default defineComponent({
             .info {
               width: 338px;
               .label {
-                font-size: 14px;
                 margin-bottom: 10px;
+                font-size: 14px;
                 color: #92929c;
               }
               .editer {
                 @include horiFlex;
-                min-height: 22px;
-                justify-content: space-between;
                 align-items: center;
+                justify-content: space-between;
+                min-height: 22px;
                 padding: 5px 8px;
-                @include background_color(bc_dialog_left);
-                border-radius: 4px;
-                line-height: 20px;
                 margin-bottom: 28px;
+                line-height: 20px;
+                border-radius: 4px;
+                @include background_color(bc_dialog_left);
                 .name {
                   @include font_color(fc_normal);
                   font-size: 16px;
                 }
                 .info-edit {
                   position: relative;
-                  height: 20px;
                   box-sizing: border-box;
+                  height: 20px;
                   padding: 4px;
-                  @include centerFlex;
-                  border: none;
-                  background-color: transparent;
-                  border-radius: 4px;
-                  color: #5856d5;
-                  cursor: pointer;
                   font-size: 14px;
-                  outline: none;
+                  color: #5856d5;
                   text-align: center;
                   text-decoration: none;
-                  transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                   white-space: nowrap;
+                  cursor: pointer;
+                  background-color: transparent;
+                  border: none;
+                  border-radius: 4px;
+                  outline: none;
+                  transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
+                  @include centerFlex;
                   &:hover {
                     @include background_color(bc_avatar_btn_hover);
                   }
@@ -549,8 +549,8 @@ export default defineComponent({
       }
       .right-imgs {
         @include vertFlex;
-        justify-content: flex-start;
         display: flex;
+        justify-content: flex-start;
         width: 150px;
         margin-left: 23px;
         div {
@@ -587,25 +587,25 @@ export default defineComponent({
     align-items: center;
     justify-content: flex-end;
     .upload-btn {
+      position: relative;
+      box-sizing: border-box;
+      display: inline-block;
       width: 144px;
       height: 40px;
-      display: inline-block;
+      padding: 12px 20px;
+      margin-right: 14px;
+      font-size: 14px;
+      font-weight: 500;
       line-height: 1;
-      cursor: pointer;
-      border: 1px solid #DCDFE6;
       color: #606266;
       text-align: center;
-      box-sizing: border-box;
-      font-weight: 500;
-      padding: 12px 20px;
-      font-size: 14px;
+      cursor: pointer;
+      border: 1px solid #DCDFE6;
       border-radius: 4px;
-      margin-right: 14px;
-      position: relative;
       &:hover {
         color: #409EFF;
-        border-color: #c6e2ff;
         background-color: #ecf5ff;
+        border-color: #c6e2ff;
         .upload-content {
           svg {
             fill: #409EFF;
@@ -616,9 +616,9 @@ export default defineComponent({
         position: absolute;
         top: 0;
         left: 0;
-        @include wh100;
-        opacity: 0;
         z-index: 10;
+        opacity: 0;
+        @include wh100;
       }
       .upload-content {
         @include wh100;

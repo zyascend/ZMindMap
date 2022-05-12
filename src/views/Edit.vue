@@ -78,22 +78,22 @@ export default defineComponent({
   .map-header {
     position: relative;
     display: flex;
+    align-items: center;
     width: 100%;
     height: 46px;
-    align-items: center;
     padding: 4px 16px 0 0;
-    color: #92929c;
-    cursor: pointer;
     font-size: 14px;
     line-height: 22px;
+    color: #92929c;
+    cursor: pointer;
     .show-map {
       position: relative;
       @include centerFlex;
       width: auto;
       min-width: 0;
       height: 26px;
-      margin-right: 10px;
       padding: 0 6px;
+      margin-right: 10px;
       background-color: #f4f4f5;
       border-radius: 6px;
       transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
@@ -112,9 +112,9 @@ export default defineComponent({
       height: 26px;
       padding: 0 6px;
       margin-right: 10px;
-      border-radius: 6px;
       cursor: pointer;
       background-color: #f4f4f5;
+      border-radius: 6px;
       &:hover {
         background-color: #0000000a;
       }
@@ -131,19 +131,19 @@ export default defineComponent({
       .name {
         @include horiFlex;
         align-items: center;
-        text-align: center;
-        color: #92929c;
-        border-radius: 4px;
         padding: 0 4px;
+        color: #92929c;
+        text-align: center;
         text-overflow: ellipsis;
         white-space: nowrap;
+        border-radius: 4px;
         &:hover {
           color: #1d1d1f;
           background-color: rgba(0, 0, 0, 0.04);
         }
         svg {
-          height: 20px;
           width: 20px;
+          height: 20px;
           margin-right: 2px;
         }
       }
@@ -152,16 +152,16 @@ export default defineComponent({
       min-width: 50px;
       padding-top: 2px;
       margin-right: 10px;
-      color: #bbbfc4;
       font-size: 13px;
+      color: #bbbfc4;
     }
     .loader {
-      margin-right: 10px;
-      border: 2px solid #f3f3f3;
-      border-radius: 50%;
-      border-top: 2px solid $color-base;
       width: 15px;
       height: 15px;
+      margin-right: 10px;
+      border: 2px solid #f3f3f3;
+      border-top: 2px solid $color-base;
+      border-radius: 50%;
       animation: spin 1s linear infinite;
     }
     @-webkit-keyframes spin {
@@ -175,7 +175,7 @@ export default defineComponent({
   }
 }
 .popper {
-  font-size: 10px !important;
   padding: 6px !important;
+  font-size: 10px !important;
 }
 </style>

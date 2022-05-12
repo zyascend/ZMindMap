@@ -75,26 +75,26 @@ export default defineComponent({
   @include vertFlex;
   @include background_color(bc_sidebar);
   position: fixed;
-  border-right: 1px #dedee1 solid;
   box-sizing: border-box;
-  transition: 0.3s ease all;
   min-width: 325px;
+  border-right: 1px #dedee1 solid;
+  transition: 0.3s ease all;
   .toggle-wrapper {
     position: absolute;
+    top: 0;
+    right: -3px;
     width: 6px;
     height: 100%;
     cursor: col-resize;
-    right: -3px;
-    top: 0;
-    transition: .2s ease-in-out all;
     opacity: 0;
+    transition: .2s ease-in-out all;
     &::before {
       position: absolute;
       left: 3px;
       width: 1px;
       height: 100%;
-      background-color: #5856d5;
       content: "";
+      background-color: #5856d5;
     }
     &:hover {
       opacity: 1;
@@ -104,16 +104,16 @@ export default defineComponent({
       position: absolute;
       top: 26px;
       left: 50%;
-      width: 24px;
-      height: 24px;
       z-index: 100;
       box-sizing: border-box;
-      border: 1px solid #5856d5;
-      @include background_color(bc_collapser);
-      border-radius: 100%;
+      width: 24px;
+      height: 24px;
       cursor: pointer;
-      transform: translateX(-50%) translateY(-50%) rotateY(0deg);
+      border: 1px solid #5856d5;
+      border-radius: 100%;
       transition: all .2s ease-in-out;
+      transform: translateX(-50%) translateY(-50%) rotateY(0deg);
+      @include background_color(bc_collapser);
       .icon {
         @include wh100;
         fill: $color-base;
@@ -129,16 +129,16 @@ export default defineComponent({
 }
 .open {
   position: fixed;
-  @include centerFlex;
-  box-sizing: border-box;
   top: 15px;
   left: 20px;
+  z-index: 200;
+  box-sizing: border-box;
   width: 25px;
   height: 25px;
   padding: 2px;
-  z-index: 200;
   cursor: pointer;
   transition: all 0.2s ease 0s;
+  @include centerFlex;
   .icon {
     width: 20px;
     height: 20px;

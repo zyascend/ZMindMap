@@ -29,7 +29,7 @@ export default defineComponent({
 
 <style scoped>
   .svg-icon {
-    fill: currentColor;
     overflow: hidden;
+    fill: currentColor;
   }
 </style>

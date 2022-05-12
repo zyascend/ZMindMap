@@ -108,15 +108,15 @@ export default defineComponent({
   .pop-item {
     @include horiFlex;
     @include font_color(fc_nickname);
-    width: 100%;
     position: relative;
-    align-items: center;
-    cursor: pointer;
-    font-size: 14px;
-    height: 32px;
-    line-height: 32px;
     box-sizing: border-box;
+    align-items: center;
+    width: 100%;
+    height: 32px;
     padding: 0 10px;
+    font-size: 14px;
+    line-height: 32px;
+    cursor: pointer;
     &:hover {
       @include background_color(bc_pop_hover);
     }
@@ -131,21 +131,21 @@ export default defineComponent({
   }
 }
 .divider {
-  height: 1px;
-  margin: 4px 5px;
-  padding: 0 10px;
   box-sizing: border-box;
+  height: 1px;
+  padding: 0 10px;
+  margin: 4px 5px;
   @include background_color(bc_divider);
 }
 .font-color {
-  height: 32px;
-  line-height: 32px;
-  @include horiFlex;
-  justify-content: space-around;
   align-items: center;
-  font-size: 14px;
-  cursor: pointer;
+  justify-content: space-around;
+  height: 32px;
   padding: 0 10px;
+  font-size: 14px;
+  line-height: 32px;
+  cursor: pointer;
+  @include horiFlex;
   span {
     width: 32px;
     text-align: center;

@@ -127,8 +127,8 @@ checkLogin()
     position: relative;
     padding: 10vw 10vw;
     .title {
-      font-size: 20px;
       margin-bottom: 20vw;
+      font-size: 20px;
       font-weight: bold;
     }
     .info {
@@ -142,8 +142,8 @@ checkLogin()
         margin-bottom: 5vw;
       }
       p {
-        font-size: 20px;
         margin-bottom: 20vw;
+        font-size: 20px;
       }
     }
     .form {
@@ -155,24 +155,24 @@ checkLogin()
   }
   .confirmed {
     position: relative;
-    padding: 10vw 10vw;
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding: 10vw 10vw;
     .success {
       width: 50vw;
       height: 50vw;
-      background: center url('../assets/pic/success.png') no-repeat;
       margin-bottom: 10vw;
+      background: center url('../assets/pic/success.png') no-repeat;
     }
     h1 {
-      font-size: 20px;
       margin-bottom: 10vw;
+      font-size: 20px;
       font-weight: bold;
     }
     p {
-      font-size: 20px;
       margin-bottom: 25vw;
+      font-size: 20px;
     }
   }
 }

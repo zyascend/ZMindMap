@@ -41,17 +41,17 @@ export default defineComponent({
   @include horiFlex;
   .link {
     position: relative;
-    overflow: hidden;
     box-sizing: border-box;
     max-width: 220px;
     padding: 0 4px;
-    border-radius: 4px;
-    @include font_color(fc_bread);
-    cursor: pointer;
+    overflow: hidden;
     font-size: 16px;
     line-height: 22px;
     text-overflow: ellipsis;
     white-space: nowrap;
+    cursor: pointer;
+    border-radius: 4px;
+    @include font_color(fc_bread);
   }
   .link-active {
     @include font_color(fc_bread_active);

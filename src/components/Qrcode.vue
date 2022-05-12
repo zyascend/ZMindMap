@@ -112,44 +112,44 @@ onUnmounted(() => {
     margin: 35px auto 25px;
   }
   .sub_title {
-    text-align: center;
+    margin-bottom: 23px;
     font-size: 19px;
     color: #353535;
-    margin-bottom: 23px;
+    text-align: center;
   }
   .sub_desc {
-    text-align: center;
-    color: #a3a3a3;
-    font-size: 14px;
     padding: 0 40px;
+    font-size: 14px;
     line-height: 1.8;
+    color: #a3a3a3;
+    text-align: center;
   }
   .refresh {
-    display: block;
     position: absolute;
-    left: 0;
     top: 0;
+    left: 0;
+    display: block;
     width: 100%;
     height: 240px;
     .refresh_mask {
       position: absolute;
-      left: 50%;
       top: 55%;
-      margin-left: -120px;
-      margin-top: -120px;
+      left: 50%;
       width: 240px;
       height: 240px;
+      margin-top: -120px;
+      margin-left: -120px;
       background: #ffffffe0;
     }
     .refresh_icon {
       position: absolute;
-      left: 50%;
       top: 45%;
-      height: 48px;
+      left: 50%;
       width: 48px;
-      transform: translate(-50%, -50%);
+      height: 48px;
       cursor: pointer;
       background: url(../assets/pic/refresh.png) no-repeat;
+      transform: translate(-50%, -50%);
       &:hover {
         animation: refresh 1s linear infinite;
       }
@@ -161,19 +161,19 @@ onUnmounted(() => {
     height: 240px;
     margin: 15px auto 25px;
     .u_avatar {
-      height: 150px;
       width: 150px;
+      height: 150px;
       margin-top: 15px;
       border-radius: 5px;
-      box-shadow: 0 2px 10px #999;
       -moz-box-shadow: #999 0 2px 10px;
       -webkit-box-shadow: #999 0 2px 10px;
+      box-shadow: 0 2px 10px #999;
     }
     .u_name {
-      text-align: center;
+      margin-top: 20px;
       font-size: 19px;
       color: #353535;
-      margin-top: 20px;
+      text-align: center;
     }
   }
 }
