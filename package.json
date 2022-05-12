@@ -8,13 +8,16 @@
     "build": "vue-cli-service build",
     "report": "vue-cli-service build --report",
     "lint": "vue-cli-service lint",
-    "stylelint:fix": "stylelint **/*.{vue,css,scss}  --fix"
+    "stylelint:fix": "stylelint **/*.{vue,css,scss}  --fix",
+    "postinstall": "husky install",
+    "commitlint": "commitlint --from=master"
   },
-  "husky": {
-    "hooks": {
-      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
-    }
-  },  
+  "lint-staged": {
+    "**/*.{scss}": [
+      "npm run stylelint:fix",
+      "git add --force"
+    ]
+  },
   "dependencies": {
     "@sentry/tracing": "^6.19.7",
     "@sentry/vue": "^6.19.7",
@@ -59,7 +62,9 @@
     "eslint-plugin-standard": "^4.0.0",
     "eslint-plugin-vue": "^8.7.1",
     "husky": "^8.0.1",
+    "lint-staged": "^12.4.1",
     "node-sass": "^7.0.1",
+    "pre-commit": "^1.2.2",
     "sass": "^1.26.5",
     "sass-loader": "^8.0.2",
     "speed-measure-webpack-plugin": "^1.5.0",
