@@ -1,18 +1,18 @@
 <div align="center">
 <img src="https://cdn.kimjisoo.cn/pic/logo.png" align="center" width="176" height="56"/>
 </div>  
-  
-  
 <p align="center">
-    <a href="./LICENSE">
-        <img src="https://img.shields.io/github/license/zyascend/ZMindMap" alt="MIT License" />
-    </a>
-    <a href="https://v3.cn.vuejs.org/">
-        <img src="https://img.shields.io/badge/vue.js-3.2-green" alt="Vue3.2">
-    </a>
-    <a href="https://map.kimjisoo.cn">
-        <img src="https://img.shields.io/badge/🚀-open--in--browser-blueviolet" alt="Live Demo">
-    </a>
+</p>
+<p align="center">
+  <a href="./LICENSE">
+      <img src="https://img.shields.io/github/license/zyascend/ZMindMap" alt="MIT License" />
+  </a>
+  <a href="https://v3.cn.vuejs.org/">
+      <img src="https://img.shields.io/badge/vue.js-3.2-green" alt="Vue3.2">
+  </a>
+  <a href="https://map.kimjisoo.cn">
+      <img src="https://img.shields.io/badge/🚀-open--in--browser-blueviolet" alt="Live Demo">
+  </a>
 </p>
 
 ## 简介
@@ -70,7 +70,7 @@
   - 使用Sentry收集错误信息
   - 百度统计
 
-## TODO
+## TODOs
 - [x] 基于vue响应式，通过数据驱动svg子元素更新
 - [x] 对于大纲编辑，如何不通过递归查找的方式在源数据中定位到待更新的节点
   - [x] key-value形式构建map
@@ -87,3 +87,4 @@
   - [ ] 轮询接口查状态 => websocket
 - [ ] 大纲编辑页相关优化
   - [x] 防止XSS攻击
+- [ ] 重写节点宽高计算逻辑

@@ -148,10 +148,6 @@ export default defineComponent({
       isSaving: false,
       editedName: userStore.getUser?.name || ''
     })
-    // const showSettings = ref(false)
-    // const showEditAvatar = ref(false)
-    // const isEditName = ref(false)
-    // const editedName = ref()
     let curFileName = ''
     let myCropper = null
     watch(isDarkMode, () => {
@@ -288,12 +284,12 @@ export default defineComponent({
       @include background_color(bc_hover_nickname);
     }
     &>p {
-      @include font_color(fc_nickname);
       max-width: 140px;
       margin: 0 2px 0 0;
       overflow: hidden;
       font-size: 14px;
       line-height: 24px;
+      @include font_color(fc_nickname);
       text-overflow: ellipsis;
       white-space: nowrap;
     }
@@ -318,7 +314,7 @@ export default defineComponent({
   .info {
     @include vertFlex;
     align-items: center;
-    margin: 30px 0 30;
+    margin: 30px 0 30px;
     .img {
       @include centerFlex;
       width: 42px;
@@ -332,7 +328,8 @@ export default defineComponent({
       }
     }
     &>p{
-      padding: 0 20;
+      padding: 0 20px;
+      margin-top: 10px;
       overflow: hidden;
       text-overflow: ellipsis;
       word-break: break-all;

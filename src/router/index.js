@@ -1,8 +1,8 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/store/user'
-import Home from '../views/Home.vue'
-// import Edit from '@/views/Edit.vue'
+import Home from '@/views/Home.vue'
 import Folder from '@/views/Folder.vue'
+import NotFound from '@/views/NotFound.vue'
 
 const routes = [
   {
@@ -35,6 +35,14 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "login-patch" */ '../views/Login.vue')
+  },
+  {
+    path: '/404',
+    component: NotFound
+  },
+  {
+    path: '/:catchAll(.*)', // 不识别的path自动匹配404
+    redirect: '/404'
   }
 ]
 

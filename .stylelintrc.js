@@ -8,7 +8,7 @@ module.exports = {
     "at-rule-no-unknown": [
       true,
       {
-        "ignoreAtRules": ["mixin", "include","extend"]
+        "ignoreAtRules": ["mixin", "include", "extend", "each", "function", "return"]
       }
     ],
     // "order/properties-order": null,
