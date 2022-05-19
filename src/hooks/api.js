@@ -12,5 +12,6 @@ export default {
   setFolder: 'docs/setFolder',
   setDoc: 'docs/setDoc',
   setDocContent: 'docs/setDocContent',
-  remove: 'docs/remove'
+  remove: 'docs/remove',
+  uploadImg: 'docs/uploadImg'
 }

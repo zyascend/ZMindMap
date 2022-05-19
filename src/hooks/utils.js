@@ -169,3 +169,33 @@ const xssFilterOptions = {
 export function xss (content) {
   return filterXSS(content, xssFilterOptions)
 }
+/**
+ * 获取图片的原始宽高
+ * TODO 错误处理 reject
+ * @param {*} url 可能是文件或者string
+ * @returns
+ */
+export async function getImageWH (url) {
+  return await new Promise((resolve, reject) => {
+    if (url instanceof File) {
+      const reader = new FileReader()
+      reader.onload = e => {
+        // 把获取到的图片展示
+        resolve(e.target.result)
+      }
+      reader.readAsDataURL(url)
+    } else {
+      resolve(url)
+    }
+  }).then(url => {
+    return new Promise((resolve, reject) => {
+      const img = new Image()
+      img.onload = function () {
+        const width = img.naturalWidth
+        const height = img.naturalHeight
+        resolve({ width, height })
+      }
+      img.src = url
+    })
+  })
+}

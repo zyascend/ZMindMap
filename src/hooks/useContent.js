@@ -1,5 +1,5 @@
 import { useMapStore } from '@/store/map'
-import { xss } from '@/hooks/utils'
+import { xss, getImageWH } from '@/hooks/utils'
 import { customAlphabet } from 'nanoid'
 const nanoid = customAlphabet('1234567890abcdef', 5)
 const store = useMapStore()
@@ -127,5 +127,25 @@ export async function changeNodeHtml (id, html) {
   // ! 由于debounce 此事件可能发生在deleteNode之后 此id节点可能被删除 需要判空
   if (!content[id]) return
   content[id].html = xss(html)
+  await store.setContent(content)
+}
+
+export async function pasteImg (file, nodeId) {
+  const { width, height } = await getImageWH(file)
+  const content = store.content
+  // TODO 把这些默认值写在一个统一的配置文件里
+  // 在上传过程种设置一个loading占位
+  content[nodeId].imgInfo = {
+    url: 'https://cdn.kimjisoo.cn/pic%2Floading.svg',
+    width: 250,
+    height: 250 * height / width
+  }
+  store.setContent(content, true)
+  await store.pasteImg({ file, nodeId, width, height })
+}
+
+export async function deleteImg (nodeId) {
+  const content = store.content
+  content[nodeId].imgInfo = undefined
   await store.setContent(content)
 }

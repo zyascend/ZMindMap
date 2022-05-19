@@ -77,6 +77,8 @@ export function getStyle (styleName = 0) {
     },
     foDivStyle: node => {
       let style = {
+        display: 'flex',
+        flexDirection: 'column',
         height: '100%',
         width: 'fit-content',
         wordBreak: 'normal',

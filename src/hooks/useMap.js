@@ -174,6 +174,14 @@ export class TreeDataCreater {
     // ! 【大坑】：取这两值一定要在 f.remove() 之前
     const { clientWidth, clientHeight } = f.node().firstElementChild
     f.remove()
+    const imgInfo = root.data?.imgInfo
+    if (imgInfo) {
+      // 节点有图片的情况
+      return {
+        clientWidth: Math.max(clientWidth, imgInfo.width),
+        clientHeight: 15 + clientHeight + imgInfo.height
+      }
+    }
     return { clientWidth, clientHeight }
   }
 

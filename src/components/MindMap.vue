@@ -43,7 +43,23 @@
             :x="0"
             :dy="d.contentHeight"
           >
-            <div :style="styles.foDivStyle(d)">{{ d.data.html }}</div>
+            <div :style="styles.foDivStyle(d)">
+              <span style="margin-bottom: 10px;">{{ d.data.html }}</span>
+              <el-image
+                v-if="d.data?.imgInfo?.url"
+                class="image-node"
+                fit="contain"
+                lazy
+                :style="`width: ${d.data.imgInfo.width}px; height: ${d.data.imgInfo.height}px`"
+                :src="d.data.imgInfo.url"
+                >
+                <template #placeholder>
+                  <div class="image-loading">
+                    <svg-icon icon="loading"/>
+                  </div>
+                </template>
+              </el-image>
+            </div>
           </foreignObject>
           <image
             :style="styles.imageStyle"
@@ -373,6 +389,16 @@ export default defineComponent({
         .image-add {
           display: block !important;
           visibility: visible;
+        }
+      }
+      .image-loading {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        svg {
+          width: 48px;
+          height: 60px;
         }
       }
     }

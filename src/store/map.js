@@ -67,7 +67,7 @@ export const useMapStore = defineStore('map', {
       }
       return [d, list]
     },
-    async setContent (content) {
+    async setContent (content, isLocal = false) {
       if (this.isSaving) {
         ErrorTip('操作过于频繁！')
         return
@@ -76,6 +76,11 @@ export const useMapStore = defineStore('map', {
       this.content = content
       // ! 必须使用deepClone 否则会改变this.content
       ;[this.treedData, this.noteList] = this.transform(deepClone(content))
+      // 只在本地更新
+      if (isLocal) {
+        this.isSaving = false
+        return
+      }
       // ! 等待远程更新完成之后再更新焦点？
       await this.remoteUpdateMap(content)
     },
@@ -104,6 +109,30 @@ export const useMapStore = defineStore('map', {
       const res = await handler.asyncHttp(url, { method: 'post', data })
       this.isSaving = false
       this.setData(res)
+    },
+    async pasteImg ({ file, nodeId, width, height }) {
+      const user = useUserStore().user
+      const url = `${API.uploadImg}/${user._id}`
+      const formData = new FormData()
+      if (file) {
+        formData.append('file', file)
+      }
+      // 首先上传图片，获得图片的url
+      const imgUrl = await handler.asyncHttp(url, {
+        method: 'post',
+        data: formData,
+        headers: {
+          'Content-Type': 'multipart/form-data;'
+        },
+        timeout: 20000
+      })
+      // 图片信息绑定到节点上
+      this.content[nodeId].imgInfo = {
+        url: imgUrl,
+        width: 250,
+        height: 250 * height / width
+      }
+      await this.setContent(this.content)
     }
   },
   persist: {

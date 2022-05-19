@@ -13,17 +13,43 @@
             <div
               class="action-wrapper"
               @click="onCollapse(node.id)"
-              v-if="node.children.length || node._children.length ">
+              v-if="node.children.length || node._children.length">
               <svg-icon icon="triangle" :class="`${node.collapsed ? 'icon-collapsed' : ''}`"/>
             </div>
             <note-popover :node="node" @onColorSelect="onChangeFontColor"/>
-            <div
-              :id="`note-node-${node.id}`"
-              class="text-wrapper"
-              contenteditable="true"
-              v-html="node.html"
-              @input="onNodeInput($event, node)"
-              @keydown="onKeyDown($event, node)">
+            <div class="content-wrapper">
+              <div
+                :id="`note-node-${node.id}`"
+                class="text-wrapper"
+                contenteditable="true"
+                v-html="node.html"
+                @paste="onPaste($event, node)"
+                @input="onNodeInput($event, node)"
+                @keydown="onKeyDown($event, node)">
+              </div>
+              <div
+                class="image-wrapper"
+                v-if="node?.imgInfo?.url"
+                :style="`width: ${node.imgInfo.width}px; height: ${node.imgInfo.height}px`"
+                >
+                <el-image
+                  title="点击查看"
+                  class="image-node"
+                  fit="contain"
+                  lazy
+                  :src="node.imgInfo.url"
+                  :preview-src-list="imgSrcList"
+                  :initial-index="imgSrcList.indexOf(node.imgInfo.url)">
+                  <template #placeholder>
+                    <div class="image-loading">
+                      <svg-icon icon="loading"/>
+                    </div>
+                  </template>
+                </el-image>
+                <div class="delete-pic" title="删除图片" @click="onDeleteImg(node)">
+                  <svg-icon icon="delete"/>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -39,7 +65,7 @@ import SvgIcon from '@/components/SvgIcon.vue'
 import NotePopover from '@/components/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
 import Snapshot from '@/hooks/useSnapshot'
-import { moveToLastFocus, collapse, addNode, tabNode, deleteNode, changeNodeHtml } from '@/hooks/useContent'
+import * as useContent from '@/hooks/useContent'
 
 export default defineComponent({
   name: 'Note',
@@ -51,6 +77,16 @@ export default defineComponent({
     const store = useMapStore()
     const rootNode = computed(() => store.getRootNode)
     const childNodes = computed(() => store.getChildNode)
+    const imgSrcList = computed(() => {
+      if (!childNodes.value) return
+      const srcList = []
+      for (const node of childNodes.value) {
+        if (node.imgInfo) {
+          srcList.push(node.imgInfo.url)
+        }
+      }
+      return srcList
+    })
     const snapshot = new Snapshot()
     onUnmounted(() => {
       document.onkeydown = undefined
@@ -66,7 +102,7 @@ export default defineComponent({
     })
     // 折叠or打开节点
     const onCollapse = async (_id) => {
-      await collapse(_id)
+      await useContent.collapse(_id)
       snap()
     }
     const onDeleteNode = async (node, event) => {
@@ -78,19 +114,19 @@ export default defineComponent({
         return
       }
       event.preventDefault()
-      const prevId = await deleteNode(node.id, childNodes.value)
+      const prevId = await useContent.deleteNode(node.id, childNodes.value)
       nextTick(() => {
         // 上一个节点自动获得光标 并将光标移动到最后的位置
-        moveToLastFocus(`note-node-${prevId}`)
+        useContent.moveToLastFocus(`note-node-${prevId}`)
       })
       snap()
     }
     const onTabNode = async (node, event) => {
       event.preventDefault()
-      const newId = await tabNode(node.id, childNodes.value)
+      const newId = await useContent.tabNode(node.id, childNodes.value)
       newId && nextTick(() => {
         // 将光标移动到最后的位置
-        moveToLastFocus(`note-node-${newId}`)
+        useContent.moveToLastFocus(`note-node-${newId}`)
       })
       snap()
     }
@@ -99,13 +135,13 @@ export default defineComponent({
       let newId
       if (node.children.length) {
         // 有孩子且孩子处于展开状态 => 添加孩子
-        newId = await addNode(node.id)
+        newId = await useContent.addNode(node.id)
       } else {
         // 添加兄弟节点
-        newId = await addNode(node.parent, { cid: node.id })
+        newId = await useContent.addNode(node.parent, { cid: node.id })
       }
       nextTick(() => {
-        moveToLastFocus(`note-node-${newId}`)
+        useContent.moveToLastFocus(`note-node-${newId}`)
       })
       snap()
     }
@@ -121,11 +157,11 @@ export default defineComponent({
       }
       // 光标向上移动
       if (code === 38 && target !== 0) {
-        moveToLastFocus(`note-node-${childNodes.value[target - 1].id}`)
+        useContent.moveToLastFocus(`note-node-${childNodes.value[target - 1].id}`)
       }
       // 光标向下移动
       if (code === 40 && target !== childNodes.value.length - 1) {
-        moveToLastFocus(`note-node-${childNodes.value[target + 1].id}`)
+        useContent.moveToLastFocus(`note-node-${childNodes.value[target + 1].id}`)
       }
     }
     /**
@@ -168,30 +204,43 @@ export default defineComponent({
     }
     const onChangeFontColor = async (prams) => {
       // const { color, node } = prams
-      // TODO
-      await changeNodeHtml('new html')
+      // TODOd
+      await useContent.changeNodeHtml('new html')
       snap()
     }
     const onNodeInput = debounce(async (event, node) => {
       const newText = event.target.innerText
-      await changeNodeHtml(node.id, newText)
+      await useContent.changeNodeHtml(node.id, newText)
       nextTick(() => {
-        moveToLastFocus(`note-node-${node.id}`)
+        useContent.moveToLastFocus(`note-node-${node.id}`)
       })
       snap()
     }, 500)
     const onNameInput = debounce(async (event, node) => {
       const newText = event.target.innerText
-      await changeNodeHtml(node.id, newText)
+      await useContent.changeNodeHtml(node.id, newText)
     }, 500)
+    const onPaste = async (event, node) => {
+      const file = event.clipboardData.files[0]
+      if (file) {
+        event.preventDefault()
+        await useContent.pasteImg(file, node.id)
+      }
+    }
+    const onDeleteImg = async node => {
+      await useContent.deleteImg(node.id)
+    }
     return {
       rootNode,
       childNodes,
+      imgSrcList,
       onCollapse,
       onKeyDown,
       onNodeInput,
       onNameInput,
-      onChangeFontColor
+      onChangeFontColor,
+      onPaste,
+      onDeleteImg
     }
   }
 })
@@ -278,25 +327,72 @@ export default defineComponent({
               transition: .2s ease all;
             }
           }
-          .text-wrapper {
-            box-sizing: content-box;
+          .content-wrapper {
+            @include vertFlex;
             flex: 1;
-            width: fit-content;
-            min-height: 30px;
-            /* stylelint-disable-next-line comment-empty-line-before */
-            /* box-sizing: border-box; */
-            padding: 2px 0 2px 8px;
-            overflow: hidden;
-            font-size: 16px;
-            line-height: 26px;
-            text-justify: distribute-all-lines;
-            word-break: normal;
-            word-wrap: break-word;
-            white-space: pre-wrap;
-            cursor: text;
-            user-select: text;
-            outline: 0;
-            -webkit-nbsp-mode: space;
+            .text-wrapper {
+              box-sizing: content-box;
+              width: fit-content;
+              min-height: 30px;
+              padding: 2px 0 2px 8px;
+              overflow: hidden;
+              font-size: 16px;
+              line-height: 26px;
+              text-justify: distribute-all-lines;
+              word-break: normal;
+              word-wrap: break-word;
+              white-space: pre-wrap;
+              cursor: text;
+              user-select: text;
+              -webkit-nbsp-mode: space;
+            }
+            .image-wrapper {
+              position: relative;
+              &:hover {
+                .image-node {
+                  border-color: #3370ff;
+                }
+                .delete-pic {
+                  visibility: visible;
+                }
+              }
+              .image-node {
+                max-height: 250px;
+                margin-left: 8px;
+                border: 2px solid transparent;
+              }
+              .image-loading {
+                display: grid;
+                place-items: center;
+                width: 100%;
+                height: 100%;
+                svg {
+                  width: 48px;
+                  height: 60px;
+                }
+              }
+              .delete-pic {
+                visibility: hidden;
+                position: absolute;
+                display: inline-flex;
+                justify-content: center;
+                align-items: center;
+                top: -12px;
+                right: -12px;
+                box-sizing: border-box;
+                width: 26px;
+                height: 26px;
+                cursor: pointer;
+                background-color: #fff;
+                border: 1px solid #3370ff;
+                border-radius: 13px;
+                svg {
+                  width: 20px;
+                  height: 20px;
+                  fill: #3370ff;
+                }
+              }
+            }
           }
         }
       }

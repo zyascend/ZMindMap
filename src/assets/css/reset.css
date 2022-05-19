@@ -86,6 +86,7 @@ video {
   vertical-align: baseline;
   user-select: none;
   border: 0;
+  outline: 0;
 }
 
 /* HTML5 display-role reset for older browsers */
