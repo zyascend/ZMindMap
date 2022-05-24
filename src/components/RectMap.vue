@@ -2,81 +2,64 @@
   <div class="map-container" id="mapContainer">
     <svg :style="styles.svgStyle" class="main-svg" id="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g" ref="mainG">
-        <g>
-          <path :style="styles.pathStyle" v-for="p in pathData" :key="p.id" :d="p.data"></path>
-          <path :style="styles.pathStyle" v-for="n in nodeData" :key="n.data.id" :d="n.colLine" v-show="isShowCollapse(n.data)"></path>
-        </g>
-        <image
-          v-for="d in nodeData"
-          v-show="isShowCollapse(d.data)"
-          class="image-collapse"
-          :key="`image-add-${d.id}`"
-          :x="d.colx"
-          :y="d.coly"
-          :width="d.imageWidth"
-          :height="d.imageHeight"
-          :xlink:href="PIC_COLLAPSE"
-          @click="onCollapse($event, d.data)"
-          />
-        <g
+        <rect
           v-for="(d, index) in nodeData"
-          :key="d"
-          :id="d._id"
-          :transform="`translate(${d.tx},${d.ty})`"
-          :class="d.depth === 0 ? 'g-root' : d.depth === 1 ? 'g-subroot' : 'g-leaf'"
-          :tabindex="index"
-          @dblclick="onEditHtml($event, d.data)"
-          @keydown="onKeyDown($event, d.data)">
-        >
-          <rect
-            :x="d.rectX"
-            :y="d.rectY"
-            :rx="d.rectRX"
-            :ry="d.rectRY"
-            :width="d.rectWidth"
-            :height="d.rectHeight"
-            :style="styles.rectStyle(d)"
-          />
-          <foreignObject
-            :width="d.foWidth"
-            :height="d.foHeight"
-            :x="0"
-            :dy="d.contentHeight"
-          >
-            <div :style="styles.foDivStyle(d)">
-              <span style="margin-bottom: 10px;">{{ d.data.html }}</span>
-              <el-image
-                v-if="d.data?.imgInfo?.url"
-                class="image-node"
-                fit="contain"
-                lazy
-                :style="`width: ${d.data.imgInfo.width}px; height: ${d.data.imgInfo.height}px`"
-                :src="d.data.imgInfo.url"
-                >
-                <template #placeholder>
-                  <div class="image-loading">
-                    <svg-icon icon="loading"/>
-                  </div>
-                </template>
-              </el-image>
-            </div>
-          </foreignObject>
-          <image
-            :style="styles.imageStyle"
-            class="image-add"
-            :x="d.addX"
-            :y="d.addY"
-            :width="d.imageWidth"
-            :height="d.imageHeight"
-            :xlink:href="PIC_ADD"
-            @click="onAddClick(d.data)"
-          />
-        </g>
+          :key="index"
+          :x="d.x"
+          :y="d.y"
+          :width="d.cw"
+          :height="d.ch"
+          style="fill: #5856d5;"
+        />
+        <text
+          v-for="(d, index) in nodeData"
+          :key="index"
+          :x="d.x"
+          :y="d.y + 30"
+          style="color: #fff;"
+        >{{ [d.data.html, d.cw, d.w,].join('/') }}</text>
       </g>
     </svg>
     <svg ref="measureSvg"></svg>
   </div>
-  <map-bar />
+  <div class="operation">
+    <el-tooltip
+      effect="light"
+      content="适应屏幕"
+      :offset="20"
+      placement="left">
+      <div class="fit-btn" @click="fitView">
+        <SvgIcon class="icon" icon="fit-view" />
+      </div>
+    </el-tooltip>
+    <el-popover
+      title="选择主题"
+      placement="left-start"
+      trigger="hover"
+      popper-class="map-theme-popper"
+      :show-arrow="true"
+      :offset="20"
+      :width="200"
+    >
+      <template #reference>
+        <div class="fit-btn">
+          <SvgIcon class="icon" icon="theme" />
+        </div>
+      </template>
+      <div class="theme-list">
+        <div
+          class="theme-item"
+          title="点击切换"
+          v-for="(theme, index) in styleList"
+          :class="{ 'active-item': index === activeStyle }"
+          :key="`theme-${theme[0]}`"
+          @click="switchTheme(index)"
+        >
+          <span v-for="color in theme" :style="`background-color:${color};`" :key="color"/>
+        </div>
+      </div>
+    </el-popover>
+  </div>
   <el-dialog
     v-model="showEditDialog"
     :append-to-body="true"
@@ -100,16 +83,14 @@ import { useMapStore } from 'store/map'
 import { useWebsiteStore } from 'store/website'
 import { getStyle, getStyleList } from 'hooks/useMapStyle'
 import { collapse, addNode, deleteNode, changeNodeHtml } from 'hooks/useContent'
-import useMap from 'hooks/useMap'
 import useRectMap from 'hooks/useRectMap'
 import useZoomMap from 'hooks/useZoomMap'
-import SvgIcon from 'components/SvgIcon.vue'
-import MapBar from 'components/MapBar.vue'
+import SvgIcon from './SvgIcon.vue'
 import PIC_COLLAPSE from 'assets/map/arrow-left.svg'
 import PIC_ADD from 'assets/map/add.svg'
 
 export default defineComponent({
-  components: { SvgIcon, MapBar },
+  components: { SvgIcon },
   name: 'MindMap',
   setup () {
     const mainSvg = ref()
@@ -120,7 +101,6 @@ export default defineComponent({
     const store = useMapStore()
     const websiteStore = useWebsiteStore()
 
-    const pathData = ref([])
     const nodeData = ref([])
 
     const styles = computed(() => getStyle(websiteStore.mapStyleIndex))
@@ -154,10 +134,8 @@ export default defineComponent({
     })
     const render = () => {
       if (!store.treedData) return
-      const treeData = useMap(store.treedData)
-      pathData.value = treeData.path
-      nodeData.value = treeData.node
       const rectData = useRectMap(store.treedData)
+      nodeData.value = rectData.node
       console.log(rectData)
       nextTick(() => {
         useZoomMap.registerZoom()
@@ -243,7 +221,6 @@ export default defineComponent({
       styles,
       styleList,
       activeStyle,
-      pathData,
       nodeData,
       showEditDialog,
       nodeHtml,

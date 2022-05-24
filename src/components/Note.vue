@@ -372,17 +372,17 @@ export default defineComponent({
                 }
               }
               .delete-pic {
-                visibility: hidden;
                 position: absolute;
-                display: inline-flex;
-                justify-content: center;
-                align-items: center;
                 top: -12px;
                 right: -12px;
                 box-sizing: border-box;
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
                 width: 26px;
                 height: 26px;
                 cursor: pointer;
+                visibility: hidden;
                 background-color: #fff;
                 border: 1px solid #3370ff;
                 border-radius: 13px;
