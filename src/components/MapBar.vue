@@ -25,7 +25,7 @@
       <div class="marker-container">
         <div
           class="icon-group"
-          v-for="marker in markerData"
+          v-for="marker in markerList"
           :key="marker.category"
           >
           <h5>{{ marker.category }}</h5>
@@ -38,6 +38,33 @@
               <img :src="imgUrl" alt="marker">
             </div>
           </div>
+        </div>
+      </div>
+    </el-popover>
+    <el-popover
+      title="导图样式"
+      placement="bottom"
+      trigger="hover"
+      popper-class="map-theme-popper"
+      :show-arrow="true"
+      :width="264"
+    >
+      <template #reference>
+        <div class="btn color-bar">
+          <SvgIcon class="icon fit-view" icon="tree" />
+        </div>
+      </template>
+      <div class="map-container">
+        <div
+          class="map-item"
+          v-for="(map, index) in mapList"
+          :class="{selected: map.id === curMapStyle}"
+          :key="map.id"
+          :tabindex="index"
+          :title="map.name"
+          @click="onChangeMapStyle(map.id)"
+          >
+          <img :src="map.imgUrl" alt="map">
         </div>
       </div>
     </el-popover>
@@ -60,10 +87,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { computed } from 'vue'
+import { useWebsiteStore } from '@/store/website'
 import useZoomMap from 'hooks/useZoomMap'
-import SvgIcon from './SvgIcon.vue'
-import { markerList } from 'hooks/useMapStyle'
+import SvgIcon from 'components/SvgIcon.vue'
+import { markerList, mapList } from 'hooks/useMapStyle'
+
+const store = useWebsiteStore()
+const curMapStyle = computed(() => store.mapStyle)
+
 const fitView = () => {
   useZoomMap.registerZoom()
   useZoomMap.fitView()
@@ -71,23 +103,26 @@ const fitView = () => {
 const addMarker = makerUrl => {
   console.log('addMarker > ', makerUrl)
 }
-const markerData = ref(markerList)
+const onChangeMapStyle = mapId => {
+  store.switchMapStyle(mapId)
+}
 </script>
 
 <style lang="scss" scoped>
 @import '../assets/css/handler';
 .map-bar {
   position: absolute;
-  @include horiFlex;
-  align-items: center;
   top: 70px;
   right: 20px;
   z-index: 2;
+  align-items: center;
   height: 44px;
+  overflow: hidden;
   user-select: none;
   background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 0 8px 4px rgb(31 35 41 / 6%);
+  @include horiFlex;
   .btn {
     display: inline-flex;
     align-items: center;
@@ -125,21 +160,50 @@ const markerData = ref(markerList)
     }
     .icons {
       display: grid;
-      margin: 0 2px;
-      grid-column-gap: 10px;
-      grid-row-gap: 8px;
-      column-gap: 4px;
       grid-template-columns: repeat(7, 1fr);
+      grid-row-gap: 8px;
+      grid-column-gap: 10px;
+      column-gap: 4px;
+      margin: 0 2px;
       .icon-wrapper {
         @include centerFlex;
-        cursor: pointer;
         padding: 2px;
+        cursor: pointer;
         border-radius: 4px;
         &:hover {
           background-color: #f2f2f2;
         }
       }
     }
+  }
+}
+.map-container {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 10px 12px;
+  padding: 0 8px;
+  .map-item {
+    cursor: pointer;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-width: 0.5px;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 1px 6px rgb(0 0 0 / 10%);
+    img {
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      border-radius: 5px;
+    }
+    &:last-child {
+      margin-bottom: 15px;
+    }
+    &:first-child {
+      margin-top: 10px;
+    }
+  }
+  .selected {
+    border-color: rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 0 3px #0f66de, 0 1px 2px rgb(0 0 0 / 10%), 0 1px 6px rgb(0 0 0 / 10%);
   }
 }
 </style>

@@ -107,66 +107,79 @@ export const markerList = [
   {
     category: '颜色',
     imgs: [
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/tagMarkers/tag-red.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/tagMarkers/tag-orange.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/tagMarkers/tag-yellow.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/tagMarkers/tag-green.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/tagMarkers/tag-blue.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/tagMarkers/tag-dark-purple.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/tagMarkers/tag-grey.svg?v=0.0.25'
+      'https://cdn.kimjisoo.cn/pic/svgicons/tag-red.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/tag-orange.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/tag-yellows.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/tag-green.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/tag-blue.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/tag-dark-purple.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/tag-grey.svg'
     ]
   },
   {
     category: '优先级',
     imgs: [
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/priorityMarkers/priority-1.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/priorityMarkers/priority-2.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/priorityMarkers/priority-3.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/priorityMarkers/priority-4.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/priorityMarkers/priority-5.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/priorityMarkers/priority-6.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/priorityMarkers/priority-7.svg?v=0.0.25'
+      'https://cdn.kimjisoo.cn/pic/svgicons/priority-1.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/priority-2.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/priority-3.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/priority-4.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/priority-5.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/priority-6.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/priority-7.svg'
     ]
   },
   {
     category: '任务',
     imgs: [
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/taskMarkers/task-start.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/taskMarkers/task-oct.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/taskMarkers/task-3oct.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/taskMarkers/task-half.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/taskMarkers/task-5oct.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/taskMarkers/task-7oct.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/taskMarkers/task-done.svg?v=0.0.25'
+      'https://cdn.kimjisoo.cn/pic/svgicons/task-start.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/task-oct.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/task-3oct.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/task-half.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/task-5oct.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/task-7oct.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/task-done.svg'
     ]
   },
   {
     category: '标记',
     imgs: [
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/flagMarkers/flag-red.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/flagMarkers/flag-orange.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/flagMarkers/flag-yellow.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/flagMarkers/flag-green.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/flagMarkers/flag-blue.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/flagMarkers/flag-purple.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/flagMarkers/flag-gray.svg?v=0.0.25'
+      'https://cdn.kimjisoo.cn/pic/svgicons/flag-red.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/flag-orange.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/flag-yellow.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/flag-green.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/flag-blue.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/flag-purple.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/flag-gray.svg'
     ]
   },
   {
     category: '符号',
     imgs: [
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/c_symbol_heart.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/c_symbol_like.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/c_symbol_dislike.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/c_symbol_heart.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/symbol-pin.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/symbol-idea.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/symbol-lightning.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/c_symbol_telephone.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/c_symbol_pen.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/symbol-run.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/symbol-exclam.svg?v=0.0.25',
-      'https://xmind.works/assets/vendors/snowbird/resource/markers/symbolMarkers/symbol-question.svg?v=0.0.25'
+      'https://cdn.kimjisoo.cn/pic/svgicons/c_symbol_heart.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/c_symbol_like.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/c_symbol_dislike.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/c_symbol_heart.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/symbol-pin.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/symbol-idea.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/symbol-lightning.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/c_symbol_telephone.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/c_symbol_pen.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/symbol-run.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/symbol-exclam.svg',
+      'https://cdn.kimjisoo.cn/pic/svgicons/symbol-question.svg'
     ]
+  }
+]
+
+export const mapList = [
+  {
+    name: 'Logic Tree',
+    id: 'MAPID-LogicTree',
+    imgUrl: 'https://cdn.kimjisoo.cn/pic/svgicons/logic-tree.svg'
+  },
+  {
+    name: 'Tree Table',
+    id: 'MAPID-TreeTable',
+    imgUrl: 'https://cdn.kimjisoo.cn/pic/svgicons/tree-table.svg'
   }
 ]

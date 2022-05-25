@@ -13,7 +13,7 @@ export const useWebsiteStore = defineStore({
       // 侧边栏是否折叠
       siderCollapse: true,
       // 导图风格
-      mapStyleIndex: 0
+      mapStyle: 'MAPID-LogicTree'
     }
   },
   actions: {
@@ -23,8 +23,8 @@ export const useWebsiteStore = defineStore({
     toggleSiderCollapse () {
       this.siderCollapse = !this.siderCollapse
     },
-    switchMapStyle (index) {
-      this.mapStyleIndex = index
+    switchMapStyle (id) {
+      this.mapStyle = id
     },
     toggleDarkMode () {
       this.isDark = !this.isDark
