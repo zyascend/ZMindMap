@@ -331,8 +331,8 @@ export default defineComponent({
             @include vertFlex;
             flex: 1;
             .text-wrapper {
-              box-sizing: content-box;
-              width: fit-content;
+              /* box-sizing: content-box; */
+              flex: 1;
               min-height: 30px;
               padding: 2px 0 2px 8px;
               overflow: hidden;

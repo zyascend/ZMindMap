@@ -2,10 +2,6 @@
   <div class="map-container" id="mapContainer">
     <svg :style="styles.svgStyle" class="main-svg" id="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g" ref="mainG">
-        <g>
-          <path :style="styles.pathStyle" v-for="p in pathData" :key="p.id" :d="p.data"></path>
-          <path :style="styles.pathStyle" v-for="n in nodeData" :key="n.data.id" :d="n.colLine" v-show="isShowCollapse(n.data)"></path>
-        </g>
         <image
           v-for="d in nodeData"
           v-show="isShowCollapse(d.data)"
@@ -44,21 +40,7 @@
             :dy="d.contentHeight"
           >
             <div :style="styles.foDivStyle(d)">
-              <span style="margin-bottom: 10px;">{{ d.data.html }}</span>
-              <el-image
-                v-if="d.data?.imgInfo?.url"
-                class="image-node"
-                fit="contain"
-                lazy
-                :style="`width: ${d.data.imgInfo.width}px; height: ${d.data.imgInfo.height}px`"
-                :src="d.data.imgInfo.url"
-                >
-                <template #placeholder>
-                  <div class="image-loading">
-                    <svg-icon icon="loading"/>
-                  </div>
-                </template>
-              </el-image>
+              <span>{{ d.data.html }}</span>
             </div>
           </foreignObject>
           <image
@@ -76,22 +58,6 @@
     </svg>
     <svg ref="measureSvg"></svg>
   </div>
-  <map-bar />
-  <el-dialog
-    v-model="showEditDialog"
-    :append-to-body="true"
-    title="编辑节点"
-    :width="400"
-    custom-class="node-edit-dialog"
-  >
-    <el-input v-model="nodeHtml" autosize type="textarea"/>
-    <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="showEditDialog = false">取消</el-button>
-        <el-button type="primary" @click="submitEdit"  native-type="submit">确认</el-button>
-      </span>
-    </template>
-  </el-dialog>
 </template>
 
 <script>

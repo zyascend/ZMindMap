@@ -76,6 +76,8 @@ export function getStyle (styleName = 0) {
       return style
     },
     foDivStyle: node => {
+      const _fontSize = node.depth === 0 ? 16 : 14
+      const _lineHeight = _fontSize + 2
       let style = {
         display: 'flex',
         flexDirection: 'column',
@@ -86,8 +88,8 @@ export function getStyle (styleName = 0) {
         whiteSpace: 'pre-wrap',
         wordWrap: 'break-word',
         overflow: 'hidden',
-        fontSize: '14px',
-        lineHeight: '14px'
+        fontSize: `${_fontSize}px`,
+        lineHeight: `${_lineHeight}px`
       }
       switch (node.depth) {
         case 0:
@@ -181,5 +183,28 @@ export const mapList = [
     name: 'Tree Table',
     id: 'MAPID-TreeTable',
     imgUrl: 'https://cdn.kimjisoo.cn/pic/svgicons/tree-table.svg'
+  }
+]
+
+export const colorList = [
+  {
+    id: 'COLOR-Energy-2',
+    imgUrl: 'https://cdn.kimjisoo.cn/pic/svgicons/colors/energy-2.svg',
+    style: {}
+  },
+  {
+    id: 'COLOR-Energy-4',
+    imgUrl: 'https://cdn.kimjisoo.cn/pic/svgicons/colors/energy-4.svg',
+    style: {}
+  },
+  {
+    id: 'COLOR-Florid-2',
+    imgUrl: 'https://cdn.kimjisoo.cn/pic/svgicons/colors/florid-2.svg',
+    style: {}
+  },
+  {
+    id: 'COLOR-Sakura-2',
+    imgUrl: 'https://cdn.kimjisoo.cn/pic/svgicons/colors/sakura-2.svg',
+    style: {}
   }
 ]

@@ -42,6 +42,33 @@
       </div>
     </el-popover>
     <el-popover
+      title="颜色主题"
+      placement="bottom"
+      trigger="hover"
+      popper-class="map-theme-popper"
+      :show-arrow="true"
+      :width="264"
+    >
+      <template #reference>
+        <div class="btn">
+          <SvgIcon class="icon" icon="theme" />
+        </div>
+      </template>
+      <div class="color-container">
+        <div
+          class="color-item"
+          v-for="(color, index) in colorList"
+          :class="{selected: color.id === curColorStyle}"
+          :key="color.id"
+          :tabindex="index"
+          :title="color.id"
+          @click="onColorStyle(color.id)"
+          >
+          <img :src="color.imgUrl" alt="color">
+        </div>
+      </div>
+    </el-popover>
+    <el-popover
       title="导图样式"
       placement="bottom"
       trigger="hover"
@@ -50,7 +77,7 @@
       :width="264"
     >
       <template #reference>
-        <div class="btn color-bar">
+        <div class="btn">
           <SvgIcon class="icon fit-view" icon="tree" />
         </div>
       </template>
@@ -68,21 +95,6 @@
         </div>
       </div>
     </el-popover>
-    <el-popover
-      title="选择主题"
-      placement="bottom"
-      trigger="hover"
-      popper-class="map-theme-popper"
-      :show-arrow="true"
-      :width="264"
-    >
-      <template #reference>
-        <div class="btn color-bar">
-          <SvgIcon class="icon" icon="theme" />
-        </div>
-      </template>
-      <div>theme</div>
-    </el-popover>
   </div>
 </template>
 
@@ -91,10 +103,11 @@ import { computed } from 'vue'
 import { useWebsiteStore } from '@/store/website'
 import useZoomMap from 'hooks/useZoomMap'
 import SvgIcon from 'components/SvgIcon.vue'
-import { markerList, mapList } from 'hooks/useMapStyle'
+import { markerList, mapList, colorList } from 'hooks/useMapStyle'
 
 const store = useWebsiteStore()
 const curMapStyle = computed(() => store.mapStyle)
+const curColorStyle = computed(() => store.mapColor)
 
 const fitView = () => {
   useZoomMap.registerZoom()
@@ -105,6 +118,9 @@ const addMarker = makerUrl => {
 }
 const onChangeMapStyle = mapId => {
   store.switchMapStyle(mapId)
+}
+const onColorStyle = colorId => {
+  store.switchMapColor(colorId)
 }
 </script>
 
@@ -141,9 +157,6 @@ const onChangeMapStyle = mapId => {
       height: 24px;
       margin: 8px;
     }
-  }
-  .btn+.btn {
-    margin-left: 10px;
   }
 }
 .marker-container {
@@ -192,13 +205,38 @@ const onChangeMapStyle = mapId => {
       width: 100%;
       max-width: 100%;
       height: 100%;
-      border-radius: 5px;
+      object-fit: cover;
+      border-radius: inherit;
     }
     &:last-child {
       margin-bottom: 15px;
     }
     &:first-child {
       margin-top: 10px;
+    }
+  }
+  .selected {
+    border-color: rgba(0, 0, 0, 0.05);
+    box-shadow: 0 0 0 3px #0f66de, 0 1px 2px rgb(0 0 0 / 10%), 0 1px 6px rgb(0 0 0 / 10%);
+  }
+}
+.color-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px 12px;
+  padding: 0 8px 8px;
+  .color-item {
+    cursor: pointer;
+    border-color: rgba(0, 0, 0, 0.1);
+    border-width: 0.5px;
+    border-radius: 5px;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 10%), 0 1px 6px rgb(0 0 0 / 10%);
+    img {
+      width: 100%;
+      max-width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: inherit;
     }
   }
   .selected {

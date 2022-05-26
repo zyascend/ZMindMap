@@ -168,8 +168,9 @@ export class TreeDataCreater {
     const f = this.measureSvg.append('foreignObject').attr('width', this.maxNodeWidth)
     // 根节点字大一点
     const fontSize = root.depth === 0 ? 16 : 14
+    const lineHeight = fontSize + 2
     f.append('xhtml:div')
-      .attr('style', `word-break:normal; width:auto;width:fit-content;display:block;white-space:pre-wrap;word-wrap:break-word;overflow:hidden;font-size:${fontSize}px;`)
+      .attr('style', `word-break:normal; width:auto;width:fit-content;display:block;white-space:pre-wrap;word-wrap:break-word;overflow:hidden;font-size:${fontSize}px;line-height:${lineHeight}px;`)
       .text(root.data.html)
     // ! 【大坑】：取这两值一定要在 f.remove() 之前
     const { clientWidth, clientHeight } = f.node().firstElementChild
@@ -182,7 +183,10 @@ export class TreeDataCreater {
         clientHeight: 15 + clientHeight + imgInfo.height
       }
     }
-    return { clientWidth, clientHeight }
+    return {
+      clientWidth: Math.min(this.maxNodeWidth, clientWidth),
+      clientHeight
+    }
   }
 
   measureWidthAndHeight (root) {

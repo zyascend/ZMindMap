@@ -13,7 +13,8 @@ export const useWebsiteStore = defineStore({
       // 侧边栏是否折叠
       siderCollapse: true,
       // 导图风格
-      mapStyle: 'MAPID-LogicTree'
+      mapStyle: 'MAPID-LogicTree',
+      mapColor: 'COLOR-Energy-2'
     }
   },
   actions: {
@@ -25,6 +26,9 @@ export const useWebsiteStore = defineStore({
     },
     switchMapStyle (id) {
       this.mapStyle = id
+    },
+    switchMapColor (id) {
+      this.mapColor = id
     },
     toggleDarkMode () {
       this.isDark = !this.isDark
