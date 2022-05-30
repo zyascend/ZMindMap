@@ -69,6 +69,7 @@
 import { defineComponent, computed, ref } from 'vue'
 import { useDocStore } from '@/store/doc'
 import { useUserStore } from '@/store/user'
+import { useWebsiteStore } from '@/store/website'
 import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -86,13 +87,17 @@ export default defineComponent({
   setup () {
     const store = useDocStore()
     const userStore = useUserStore()
+    const websiteStore = useWebsiteStore()
     const route = useRoute()
     const asideData = computed(() => store.allTreeDocs || [])
     const isDrawerOpen = ref(true)
     const showDeleteDialog = ref(false)
     const showRenameDialog = ref(false)
     const searchText = ref('')
+
     store.fetchAllDocuments()
+    websiteStore.fetchMapStyles()
+
     const getUrl = (row) => {
       const isFolder = 'folderType' in row
       if (isFolder) {

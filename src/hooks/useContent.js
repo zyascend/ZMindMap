@@ -32,6 +32,7 @@ export async function addNode (pid, options = { isMap: false, cid: undefined }) 
     children: [],
     _children: [],
     parent: pid,
+    markerList: [],
     collapsed: false
   }
   content[id] = child

@@ -1,3 +1,5 @@
+import { useWebsiteStore } from '@/store/website'
+const websiteStore = useWebsiteStore()
 const colorArrays = [
   {
     svgBg: '#eeeef3',
@@ -45,16 +47,18 @@ export function getStyleList () {
   return colorArrays.map(style => Object.values(style))
 }
 
-export function getStyle (styleName = 0) {
-  const colors = colorArrays[styleName]
+export default function useMapStyle (styles = { colorId: 'COLOR-Energy-2' }) {
+  const { colorId } = styles
+  const allColors = websiteStore.styles.colorList
+  const { style: { colors } } = allColors.find(item => item.id === colorId)
   return {
     svgStyle: {
       width: '100%',
       height: '100%',
-      backgroundColor: colors.svgBg
+      backgroundColor: colors.bgSvg
     },
     pathStyle: {
-      stroke: colors.pathStroke,
+      stroke: colors.path,
       fill: 'none',
       strokeWidth: '1.5px'
     },
@@ -62,44 +66,40 @@ export function getStyle (styleName = 0) {
       display: 'none'
     },
     rectStyle: node => {
-      let style
+      let style = {
+        stroke: colors.border,
+        strokeWidth: '1.5px'
+      }
       switch (node.depth) {
         case 0:
-          style = { fill: colors.rootRectFill }
+          style = { ...style, fill: colors.bgRoot }
           break
         case 1:
-          style = { fill: colors.subRootRectFill }
+          style = { ...style, fill: colors.bgSubRoot }
           break
         default:
-          style = { fill: colors.leafRectFill, strokeWidth: '1.5px' }
+          style = { ...style, fill: colors.bgLeaf }
       }
       return style
     },
-    foDivStyle: node => {
+    textStyle: node => {
       const _fontSize = node.depth === 0 ? 16 : 14
       const _lineHeight = _fontSize + 2
       let style = {
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        width: 'fit-content',
-        wordBreak: 'normal',
-        textJustify: 'distribute-all-lines',
-        whiteSpace: 'pre-wrap',
-        wordWrap: 'break-word',
-        overflow: 'hidden',
         fontSize: `${_fontSize}px`,
-        lineHeight: `${_lineHeight}px`
+        lineHeight: `${_lineHeight}px`,
+        textAnchor: 'start',
+        whiteSpace: 'initial'
       }
       switch (node.depth) {
         case 0:
-          style = { ...style, color: colors.rootFoDivFontColor, fontSize: '16px', lineHeight: '16px' }
+          style = { ...style, color: colors.textRoot }
           break
         case 1:
-          style = { ...style, color: colors.subRootFoDivFontColor }
+          style = { ...style, color: colors.textSubRoot }
           break
         default:
-          style = { ...style, color: colors.leafFoDivFontColor }
+          style = { ...style, color: colors.textLeaf }
       }
       return style
     }

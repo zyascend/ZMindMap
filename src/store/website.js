@@ -2,6 +2,8 @@
  * 网站页面相关状态
  */
 import { defineStore } from 'pinia'
+import { asyncHttp } from './handler'
+import API from '@/hooks/api'
 export const useWebsiteStore = defineStore({
   id: 'website',
   state: () => {
@@ -13,8 +15,7 @@ export const useWebsiteStore = defineStore({
       // 侧边栏是否折叠
       siderCollapse: true,
       // 导图风格
-      mapStyle: 'MAPID-LogicTree',
-      mapColor: 'COLOR-Energy-2'
+      styles: undefined
     }
   },
   actions: {
@@ -34,6 +35,10 @@ export const useWebsiteStore = defineStore({
       this.isDark = !this.isDark
       const mode = this.isDark ? 'dark' : 'light'
       window.document.documentElement.setAttribute('data-theme', mode)
+    },
+    async fetchMapStyles () {
+      const data = await asyncHttp(API.getStyles)
+      this.styles = data
     }
   },
   persist: {

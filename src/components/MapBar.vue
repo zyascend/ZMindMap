@@ -25,7 +25,7 @@
       <div class="marker-container">
         <div
           class="icon-group"
-          v-for="marker in markerList"
+          v-for="marker in styles.markerList"
           :key="marker.category"
           >
           <h5>{{ marker.category }}</h5>
@@ -57,8 +57,8 @@
       <div class="color-container">
         <div
           class="color-item"
-          v-for="(color, index) in colorList"
-          :class="{selected: color.id === curColorStyle}"
+          v-for="(color, index) in styles.colorList"
+          :class="{selected: color.id === curStyle.colorId}"
           :key="color.id"
           :tabindex="index"
           :title="color.id"
@@ -84,8 +84,8 @@
       <div class="map-container">
         <div
           class="map-item"
-          v-for="(map, index) in mapList"
-          :class="{selected: map.id === curMapStyle}"
+          v-for="(map, index) in styles.mapList"
+          :class="{selected: map.id === curStyle.mapStyleId}"
           :key="map.id"
           :tabindex="index"
           :title="map.name"
@@ -101,26 +101,34 @@
 <script setup>
 import { computed } from 'vue'
 import { useWebsiteStore } from '@/store/website'
+import { useMapStore } from '@/store/map'
 import useZoomMap from 'hooks/useZoomMap'
 import SvgIcon from 'components/SvgIcon.vue'
-import { markerList, mapList, colorList } from 'hooks/useMapStyle'
 
-const store = useWebsiteStore()
-const curMapStyle = computed(() => store.mapStyle)
-const curColorStyle = computed(() => store.mapColor)
+const websiteStore = useWebsiteStore()
+const mapStore = useMapStore()
+// 所有可选的主题列表
+const styles = computed(() => websiteStore.styles)
+// 当前导图的主题id
+const curStyle = computed(() => mapStore?.mapData.styles)
 
 const fitView = () => {
   useZoomMap.registerZoom()
   useZoomMap.fitView()
 }
-const addMarker = makerUrl => {
-  console.log('addMarker > ', makerUrl)
+const addMarker = async (makerUrl) => {
+  const markerList = mapStore.content[mapStore.idFocused]?.markerList
+  console.log('addMarker', markerList)
+  if (markerList?.includes(makerUrl)) return
+  mapStore.setMarkers(markerList.concat(makerUrl))
 }
-const onChangeMapStyle = mapId => {
-  store.switchMapStyle(mapId)
+const onChangeMapStyle = async (mapStyleId) => {
+  if (mapStyleId === curStyle.value.mapStyleId) return
+  await mapStore.setStyle({ ...curStyle.value, mapStyleId })
 }
-const onColorStyle = colorId => {
-  store.switchMapColor(colorId)
+const onColorStyle = async (colorId) => {
+  if (colorId === curStyle.value.colorId) return
+  await mapStore.setStyle({ ...curStyle.value, colorId })
 }
 </script>
 

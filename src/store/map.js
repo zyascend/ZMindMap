@@ -27,7 +27,8 @@ export const useMapStore = defineStore('map', {
       treedData: undefined,
 
       // 设置Edit页面的数据的加载状态
-      isSaving: false
+      isSaving: false,
+      idFocused: undefined
     }
   },
   getters: {
@@ -45,6 +46,10 @@ export const useMapStore = defineStore('map', {
         this.selections[key] = select(refs[key])
       }
     },
+    setIdFocused (id) {
+      this.idFocused = id
+    },
+    // ! 是否该把此逻辑抽取到hooks/useContent中 store逻辑应该单一化
     transform (content, id = 'map-root', level = 0, list = []) {
       if (typeof id === 'object') {
         id = id.id
@@ -82,7 +87,38 @@ export const useMapStore = defineStore('map', {
         return
       }
       // ! 等待远程更新完成之后再更新焦点？
-      await this.remoteUpdateMap(content)
+      const data = {
+        ...this.mapData,
+        definition: JSON.stringify(content)
+      }
+      await this.remoteUpdateMap(data)
+    },
+    async setStyle (newStyle) {
+      if (this.isSaving) {
+        ErrorTip('操作过于频繁！')
+        return
+      }
+      this.isSaving = true
+      const data = {
+        ...this.mapData,
+        styles: newStyle
+      }
+      await this.remoteUpdateMap(data)
+    },
+    async setMarkers (markerList) {
+      if (this.isSaving) {
+        ErrorTip('操作过于频繁！')
+        return
+      }
+      if (!this.idFocused) return
+      this.isSaving = true
+      this.content[this.idFocused].markerList = markerList
+      ;[this.treedData, this.noteList] = this.transform(deepClone(this.content))
+      const data = {
+        ...this.mapData,
+        definition: JSON.stringify(this.content)
+      }
+      await this.remoteUpdateMap(data)
     },
     setData (data) {
       if (data && data.definition) {
@@ -99,13 +135,9 @@ export const useMapStore = defineStore('map', {
       this.setData(res)
       ;[this.treedData, this.noteList] = this.transform(deepClone(this.content))
     },
-    async remoteUpdateMap (content) {
+    async remoteUpdateMap (data) {
       const user = useUserStore().user
       const url = `${API.setDocContent}/${user._id}`
-      const data = {
-        ...this.mapData,
-        definition: JSON.stringify(content)
-      }
       const res = await handler.asyncHttp(url, { method: 'post', data })
       this.isSaving = false
       this.setData(res)

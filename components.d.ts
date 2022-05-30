@@ -5,6 +5,7 @@ import '@vue/runtime-core'
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    BaseMap: typeof import('./src/components/BaseMap.vue')['default']
     BreadCrumb: typeof import('./src/components/BreadCrumb.vue')['default']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElDialog: typeof import('element-plus/es')['ElDialog']
@@ -20,6 +21,7 @@ declare module '@vue/runtime-core' {
     ElTree: typeof import('element-plus/es')['ElTree']
     MapBar: typeof import('./src/components/MapBar.vue')['default']
     MapOpPopover: typeof import('./src/components/MapOpPopover.vue')['default']
+    MapRender: typeof import('./src/components/MapRender.vue')['default']
     MindMap: typeof import('./src/components/MindMap.vue')['default']
     Note: typeof import('./src/components/Note.vue')['default']
     NotePopover: typeof import('./src/components/NotePopover.vue')['default']

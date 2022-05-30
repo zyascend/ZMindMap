@@ -13,5 +13,7 @@ export default {
   setDoc: 'docs/setDoc',
   setDocContent: 'docs/setDocContent',
   remove: 'docs/remove',
-  uploadImg: 'docs/uploadImg'
+  uploadImg: 'docs/uploadImg',
+
+  getStyles: 'styles'
 }

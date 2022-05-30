@@ -27,7 +27,7 @@
       <note />
     </template>
     <template v-if="showMap">
-      <mind-map />
+      <base-map />
     </template>
   </div>
 </template>
@@ -35,14 +35,14 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMapStore } from '@/store/map'
-import MindMap from '@/components/MindMap.vue'
+import BaseMap from '@/components/BaseMap.vue'
 import Note from '@/components/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import MapOpPopover from '@/components/MapOpPopover.vue'
 
 export default defineComponent({
   components: {
-    MindMap,
+    BaseMap,
     SvgIcon,
     Note,
     MapOpPopover
