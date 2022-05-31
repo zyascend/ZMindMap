@@ -18,6 +18,8 @@
           <rect
             :x="0"
             :y="0"
+            :rx="5"
+            :ry="5"
             :width="node.cw"
             :height="node.ch"
             :style="allStyles.rectStyle(node)"

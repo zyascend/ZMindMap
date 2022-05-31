@@ -1,23 +1,56 @@
+import { linkHorizontal } from 'd3-shape'
 export class TreeTable {
   constructor (measureSvg) {
     this.measureSvg = measureSvg
-    this.defaultWidth = 150
-    this.maxWidth = 350
-    this.defaultHeight = 60
-    this.defaultRootHeight = 80
-    this.padding = 20
+    this.defaultWidth = 30
+    this.maxWidth = 250
+    this.defaultHeight = 40
+    this.defaultRootHeight = 60
+    this.padding = 10
     this.defaultMarkerHeight = 18
     this.defaultMarkerWidth = 18
     this.markerOverlap = 7
     this.textMarkersGap = 10
+
+    this.gapY = 20
+    this.gapX = 40
+
+    this.bézierCurveGenerator = linkHorizontal().x(d => d.x).y(d => d.y)
   }
 
   create (root) {
     this.measureWidthAndHeight(root)
     this.calculateXY(root)
+    const paths = this.calculatePath(root)
     return {
-      paths: undefined,
+      paths,
       nodes: root.descendants()
+    }
+  }
+
+  calculatePath (root) {
+    const links = root.links()
+    const paths = links.map(l => this.getPathData(l))
+    return paths
+  }
+
+  getPathData (link) {
+    const { source, target } = link
+    const { x: sx, y: sy, cw, ch: sh, id: sid } = source
+    const { x: tx, y: ty, ch, id: tid } = target
+    const bezierLine = this.bézierCurveGenerator({
+      source: {
+        x: sx + cw,
+        y: sy + sh / 2
+      },
+      target: {
+        x: tx,
+        y: ty + ch / 2
+      }
+    })
+    return {
+      data: bezierLine,
+      id: `path-${sid}-${tid}`
     }
   }
 
@@ -32,23 +65,6 @@ export class TreeTable {
         this.measureSelf(node)
       } else {
         this.measureWithChildren(node)
-      }
-    })
-    // 前续遍历 修正计算 用于宽度充满 子依赖于父
-    root.eachBefore(node => {
-      const { children, parent } = node
-      if (node.depth === 0) return
-      if (node.depth === 1) {
-        node.w = parent.w
-        if (!children) {
-          // 宽度充满
-          node.cw = node.w
-        }
-      } else {
-        node.w = parent.w - parent.cw
-        if (!children) {
-          node.cw = node.w
-        }
       }
     })
   }
@@ -98,36 +114,33 @@ export class TreeTable {
   }
 
   measureSelf (node) {
-    node.cw = Math.max(node.tw + node.mw + this.textMarkersGap + this.padding * 2, this.defaultWidth)
-    node.ch = Math.max(node.th + this.padding * 2, this.defaultHeight)
+    // const isRoot = node.depth === 0
+    const tmGap = node.mw ? this.textMarkersGap : 0
+    node.cw = Math.max(node.tw + node.mw + this.padding * 2 + tmGap
+      , this.defaultWidth)
+    node.ch = Math.max(node.th + this.padding * 2
+      , this.defaultHeight)
     node.w = node.cw
     node.h = node.ch
   }
 
   measureWithChildren (node) {
-    const { children, depth } = node
+    node.cw = Math.max(node.tw + node.mw + this.textMarkersGap + this.padding * 2, this.defaultWidth)
+    node.ch = Math.max(node.th + this.padding * 2, this.defaultHeight)
+
+    const { children } = node
     const maxW = Math.max(...children.map(c => c.w))
     const sumH = this.sumH(children)
-    if (depth === 0) {
-      node.cw = maxW
-      node.ch = Math.max(node.th + this.padding * 2, this.defaultRootHeight)
-      node.w = node.cw
-      node.h = node.ch + sumH
-    } else {
-      node.cw = Math.max(node.tw + node.mw + this.textMarkersGap + this.padding * 2, this.defaultWidth)
-      // TODO 假如父元素自身高度超过子元素之和 要扩充最后一个子元素的宽度
-      // TODO 但是子元素还有子元素呢？？？
-      node.ch = Math.max(node.th + this.padding * 2, sumH)
-      node.w = node.cw + maxW
-      node.h = node.ch
-    }
+
+    node.h = sumH + this.gapY * (children.length - 1)
+    node.w = node.cw + this.gapX + maxW
   }
 
   sumH (nodes) {
     return nodes.reduce((p, c) => p + c.h, 0)
   }
 
-  findRealLastNode (node) {
+  findLastBrother (node) {
     const brothers = node.parent.children
     for (const index in brothers) {
       if (node.data.id === brothers[index].data.id) {
@@ -137,55 +150,63 @@ export class TreeTable {
   }
 
   calculateInnerXY (node) {
-    const { mw, cw, tw, th, mh, ch, children } = node
-    if (children) {
-      node.mx = this.padding
-      node.my = (ch - mh) / 2
-
-      node.tx = node.mx + mw + (mw ? this.textMarkersGap : 0)
-      node.ty = (ch - th) / 2 - 5 // ? 没搞懂为啥需要-5才能看起来是垂直居中
-    } else {
-      node.ty = (ch - th) / 2 - 5
-      node.tx = cw - this.padding - tw
-
-      node.mx = node.tx - this.textMarkersGap - mw
-      node.my = (ch - mh) / 2
-    }
+    const { mw, th, mh, ch } = node
+    node.mx = this.padding
+    node.my = (ch - mh) / 2
+    node.tx = node.mx + mw + (mw ? this.textMarkersGap : 0)
+    node.ty = (ch - th) / 2 - 5 // ? 没搞懂为啥需要-5才能看起来是垂直居中
   }
 
   calculateXY (root) {
-    // 算X值-前序遍历
     let lastNode
     root.eachBefore(node => {
       this.calculateInnerXY(node)
       const { depth } = node
       if (depth === 0) {
         node.x = 10
-        node.y = 10
-      } else if (depth === 1) {
-        if (depth < lastNode.depth) {
-          const realLastNode = this.findRealLastNode(node)
-          node.x = realLastNode.x
-          node.y = realLastNode.y + realLastNode.h
-        } else {
-          node.x = lastNode.x
-          node.y = lastNode.y + lastNode.ch
-        }
+        lastNode = node
+        return
+      }
+      const { depth: lastDepth, cw, x } = lastNode
+      if (depth === lastDepth) {
+        node.x = x
+      } else if (depth > lastDepth) {
+        node.x = x + cw + this.gapX
       } else {
-        if (depth < lastNode.depth) {
-          const realLastNode = this.findRealLastNode(node)
-          node.x = realLastNode.x
-          node.y = realLastNode.y + realLastNode.h
-        } else if (depth === lastNode.depth) {
-          node.x = lastNode.x
-          node.y = lastNode.y + lastNode.h
-        } else {
-          node.x = lastNode.x + lastNode.cw
-          node.y = lastNode.y
-        }
+        const bro = this.findLastBrother(node)
+        node.x = bro.x
       }
       lastNode = node
     })
+    lastNode = undefined
+    root.eachAfter(node => {
+      const { depth } = node
+      if (!lastNode) {
+        node.y = 10
+        lastNode = node
+        return
+      }
+      const { depth: lastDepth, ch, y } = lastNode
+      if (depth === lastDepth) {
+        const bottom = this.findBottom(lastNode)
+        node.y = bottom.y + bottom.ch + this.gapY
+      } else if (depth < lastDepth) {
+        const firstChild = node.children[0]
+        node.y = firstChild.y + (y - firstChild.y + ch) / 2 - node.ch / 2
+      } else {
+        const bottom = this.findBottom(lastNode)
+        node.y = bottom.y + bottom.ch + this.gapY
+      }
+      lastNode = node
+    })
+  }
+
+  findBottom (node) {
+    let bottom = node
+    while (bottom?.children) {
+      bottom = bottom.children[bottom.children.length - 1]
+    }
+    return bottom
   }
 }
 

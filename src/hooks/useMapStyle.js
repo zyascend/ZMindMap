@@ -47,7 +47,7 @@ export function getStyleList () {
   return colorArrays.map(style => Object.values(style))
 }
 
-export default function useMapStyle (styles = { colorId: 'COLOR-Energy-2' }) {
+export default function useMapStyle (styles = { colorId: 'COLOR-Sakura-2' }) {
   const { colorId } = styles
   const allColors = websiteStore.styles.colorList
   const { style: { colors } } = allColors.find(item => item.id === colorId)
