@@ -113,8 +113,7 @@ const styles = computed(() => websiteStore.styles)
 const curStyle = computed(() => mapStore?.mapData.styles)
 
 const fitView = () => {
-  useZoomMap.registerZoom()
-  useZoomMap.fitView()
+  useZoomMap()
 }
 const addMarker = async (makerUrl) => {
   const markerList = mapStore.content[mapStore.idFocused]?.markerList

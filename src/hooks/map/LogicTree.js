@@ -15,6 +15,8 @@ export class TreeTable {
     this.gapY = 20
     this.gapX = 40
 
+    this.rectRadius = 5
+
     this.bézierCurveGenerator = linkHorizontal().x(d => d.x).y(d => d.y)
   }
 
@@ -28,44 +30,12 @@ export class TreeTable {
     }
   }
 
-  calculatePath (root) {
-    const links = root.links()
-    const paths = links.map(l => this.getPathData(l))
-    return paths
-  }
-
-  getPathData (link) {
-    const { source, target } = link
-    const { x: sx, y: sy, cw, ch: sh, id: sid } = source
-    const { x: tx, y: ty, ch, id: tid } = target
-    const bezierLine = this.bézierCurveGenerator({
-      source: {
-        x: sx + cw,
-        y: sy + sh / 2
-      },
-      target: {
-        x: tx,
-        y: ty + ch / 2
-      }
-    })
-    return {
-      data: bezierLine,
-      id: `path-${sid}-${tid}`
-    }
-  }
-
   measureWidthAndHeight (root) {
     // 后续遍历 初步计算 父依赖于子
     root.eachAfter(node => {
       this.measureTextSize(node)
       this.measureMarkers(node)
-      const { children } = node
-      if (!children) {
-        // 叶子节点 只需计算自身
-        this.measureSelf(node)
-      } else {
-        this.measureWithChildren(node)
-      }
+      this.measureWH(node)
     })
   }
 
@@ -113,31 +83,23 @@ export class TreeTable {
     node.mw = this.defaultMarkerWidth * size - this.markerOverlap * (size - 1)
   }
 
-  measureSelf (node) {
-    // const isRoot = node.depth === 0
+  measureWH (node) {
+    node.rectRadius = this.rectRadius
     const tmGap = node.mw ? this.textMarkersGap : 0
     node.cw = Math.max(node.tw + node.mw + this.padding * 2 + tmGap
       , this.defaultWidth)
     node.ch = Math.max(node.th + this.padding * 2
       , this.defaultHeight)
-    node.w = node.cw
-    node.h = node.ch
-  }
-
-  measureWithChildren (node) {
-    node.cw = Math.max(node.tw + node.mw + this.textMarkersGap + this.padding * 2, this.defaultWidth)
-    node.ch = Math.max(node.th + this.padding * 2, this.defaultHeight)
-
     const { children } = node
-    const maxW = Math.max(...children.map(c => c.w))
-    const sumH = this.sumH(children)
-
-    node.h = sumH + this.gapY * (children.length - 1)
-    node.w = node.cw + this.gapX + maxW
-  }
-
-  sumH (nodes) {
-    return nodes.reduce((p, c) => p + c.h, 0)
+    if (!children) {
+      node.w = node.cw
+      node.h = node.ch
+    } else {
+      const maxW = Math.max(...children.map(c => c.w))
+      const sumH = children.reduce((p, c) => p + c.h, 0)
+      node.h = sumH + this.gapY * (children.length - 1)
+      node.w = node.cw + this.gapX + maxW
+    }
   }
 
   findLastBrother (node) {
@@ -159,6 +121,7 @@ export class TreeTable {
 
   calculateXY (root) {
     let lastNode
+    // 前序遍历 计算X
     root.eachBefore(node => {
       this.calculateInnerXY(node)
       const { depth } = node
@@ -178,6 +141,7 @@ export class TreeTable {
       }
       lastNode = node
     })
+    // 后序遍历 计算Y
     lastNode = undefined
     root.eachAfter(node => {
       const { depth } = node
@@ -207,6 +171,33 @@ export class TreeTable {
       bottom = bottom.children[bottom.children.length - 1]
     }
     return bottom
+  }
+
+  calculatePath (root) {
+    const links = root.links()
+    const paths = links.map(l => this.getPathData(l))
+    return paths
+  }
+
+  getPathData (link) {
+    const { source, target } = link
+    const { x: sx, y: sy, cw, ch: sh, id: sid } = source
+    const { x: tx, y: ty, ch, id: tid } = target
+    // 生成从一个源点到目标点的光滑的三次贝塞尔曲线
+    const bezierLine = this.bézierCurveGenerator({
+      source: {
+        x: sx + cw,
+        y: sy + sh / 2
+      },
+      target: {
+        x: tx,
+        y: ty + ch / 2
+      }
+    })
+    return {
+      data: bezierLine,
+      id: `path-${sid}-${tid}`
+    }
   }
 }
 

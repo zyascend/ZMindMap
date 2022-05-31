@@ -52,7 +52,7 @@ export default defineComponent({
         text: '努力导出中...',
         background: 'rgba(0, 0, 0, 0.5)'
       })
-      useZoomMap.fitView()
+      useZoomMap()
       timer = setTimeout(async () => {
         await convertToImg(mapData.value?.name)
         loading.close()

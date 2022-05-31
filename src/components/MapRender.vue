@@ -3,7 +3,13 @@
     <svg :style="allStyles.svgStyle" class="main-svg" id="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
       <g class="main-g" ref="mainG">
         <g v-if="!!pathData">
-          <path :style="allStyles.pathStyle" v-for="p in pathData" :key="p.id" :d="p.data"></path>
+          <path
+            class="link"
+            :style="allStyles.pathStyle"
+            v-for="p in pathData"
+            :key="p.id"
+            :d="p.data">
+          </path>
         </g>
         <g
           v-for="(node, index) in nodeData"
@@ -16,20 +22,21 @@
           @dblclick="onEditHtml($event, node.data)"
           @keydown="onKeyDown($event, node.data)">
           <rect
-            :x="0"
-            :y="0"
-            :rx="5"
-            :ry="5"
+            x="0" y="0"
+            :rx="node.rectRadius"
+            :ry="node.rectRadius"
             :width="node.cw"
             :height="node.ch"
             :style="allStyles.rectStyle(node)"
           />
           <rect
             class="border-rect"
-            :x="2"
-            :y="2"
-            :width="node.cw-4"
-            :height="node.ch-4"
+            x="0" y="0"
+            :rx="node.rectRadius"
+            :ry="node.rectRadius"
+            :width="node.cw"
+            :height="node.ch"
+            style="fill: transparent;"
           />
           <g
             v-if="node.mw"
@@ -87,8 +94,6 @@ import { defineComponent, onMounted, ref, onUnmounted, computed } from 'vue'
 import { useMapStore } from 'store/map'
 import * as useContent from 'hooks/useContent'
 import useMapStyle from 'hooks/useMapStyle'
-// import PIC_COLLAPSE from 'assets/map/arrow-left.svg'
-// import PIC_ADD from 'assets/map/add.svg'
 
 export default defineComponent({
   name: 'MapRender',
@@ -211,7 +216,7 @@ export default defineComponent({
     .g-info {
       cursor: pointer;
       outline: none;
-      transition: .2s ease-in-out all;
+      transition: .3s ease-in-out all;
       &:focus {
         .border-rect {
           stroke: blue;
@@ -221,6 +226,18 @@ export default defineComponent({
       .border-rect {
         fill: transparent;
         stroke: none;
+      }
+    }
+    .link {
+      stroke-dasharray: 100%, 100%;
+      animation: move 5s ease forwards;
+    }
+    @keyframes move {
+      0%{
+          stroke-dashoffset: 100%;
+      }
+      100%{
+          stroke-dashoffset: 0;
       }
     }
   }

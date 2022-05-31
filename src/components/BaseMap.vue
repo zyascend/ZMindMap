@@ -40,18 +40,18 @@ export default defineComponent({
       console.log('watchEffect')
       //  watchEffect：立即执行传入的函数，并响应式追踪其依赖，在其依赖变更时重新运行该函数
       if (!store.treedData) return
-      renderData.value = useMap(store.treedData)
+      renderData.value = useMap(store.treedData, curStyle.value.mapStyleId)
       nextTick(() => {
-        useZoomMap.registerZoom()
-        useZoomMap.fitView()
+        setTimeout(() => {
+          useZoomMap()
+        }, 350)
       })
-    }, { deep: true })
+    })
     const setObserver = () => {
       // 监听侧边栏的打开/折叠 使Map适应屏幕
       sizeObserver = new MutationObserver(mutations => {
         zoomTimer = setTimeout(() => {
-          useZoomMap.registerZoom()
-          useZoomMap.fitView()
+          useZoomMap()
         }, 500)
       })
       const sideContent = document.getElementById('siderContent')
@@ -61,13 +61,9 @@ export default defineComponent({
         attributeOldValue: true
       })
     }
-    const onChangeStyle = curStyle => {
-      console.log('onChangeStyle: ', curStyle)
-    }
     return {
       curStyle,
-      renderData,
-      onChangeStyle
+      renderData
     }
   }
 })

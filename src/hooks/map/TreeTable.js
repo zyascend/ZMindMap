@@ -10,6 +10,7 @@ export class TreeTable {
     this.defaultMarkerWidth = 18
     this.markerOverlap = 7
     this.textMarkersGap = 10
+    this.rectRadius = 0
   }
 
   create (root) {
@@ -98,6 +99,7 @@ export class TreeTable {
   }
 
   measureSelf (node) {
+    node.rectRadius = this.rectRadius
     node.cw = Math.max(node.tw + node.mw + this.textMarkersGap + this.padding * 2, this.defaultWidth)
     node.ch = Math.max(node.th + this.padding * 2, this.defaultHeight)
     node.w = node.cw
@@ -105,6 +107,7 @@ export class TreeTable {
   }
 
   measureWithChildren (node) {
+    node.rectRadius = this.rectRadius
     const { children, depth } = node
     const maxW = Math.max(...children.map(c => c.w))
     const sumH = this.sumH(children)
