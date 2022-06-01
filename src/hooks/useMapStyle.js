@@ -68,7 +68,7 @@ export default function useMapStyle (styles = { colorId: 'COLOR-Sakura-2' }) {
     rectStyle: node => {
       let style = {
         stroke: colors.border,
-        strokeWidth: '1.5px'
+        strokeWidth: `${node.strokeWidth}px`
       }
       switch (node.depth) {
         case 0:

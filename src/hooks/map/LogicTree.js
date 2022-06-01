@@ -16,6 +16,7 @@ export class TreeTable {
     this.gapX = 40
 
     this.rectRadius = 5
+    this.strokeWidth = 0
 
     this.bézierCurveGenerator = linkHorizontal().x(d => d.x).y(d => d.y)
   }
@@ -33,10 +34,23 @@ export class TreeTable {
   measureWidthAndHeight (root) {
     // 后续遍历 初步计算 父依赖于子
     root.eachAfter(node => {
+      this.measureImageSize(node)
       this.measureTextSize(node)
       this.measureMarkers(node)
       this.measureWH(node)
     })
+  }
+
+  measureImageSize (node) {
+    const { imgInfo } = node.data
+    if (imgInfo) {
+      node.iw = imgInfo.width
+      node.ih = imgInfo.height
+      console.log(node.ih)
+    } else {
+      node.iw = 0
+      node.ih = 0
+    }
   }
 
   measureTextSize (node) {
@@ -85,10 +99,13 @@ export class TreeTable {
 
   measureWH (node) {
     node.rectRadius = this.rectRadius
+    node.strokeWidth = this.strokeWidth
+
     const tmGap = node.mw ? this.textMarkersGap : 0
-    node.cw = Math.max(node.tw + node.mw + this.padding * 2 + tmGap
+    const tiGap = node.ih ? this.textMarkersGap : 0
+    node.cw = Math.max(Math.max(node.tw, node.iw) + node.mw + this.padding * 2 + tmGap
       , this.defaultWidth)
-    node.ch = Math.max(node.th + this.padding * 2
+    node.ch = Math.max(this.padding * 2 + node.ih + tiGap + node.th
       , this.defaultHeight)
     const { children } = node
     if (!children) {
@@ -114,9 +131,12 @@ export class TreeTable {
   calculateInnerXY (node) {
     const { mw, th, mh, ch } = node
     node.mx = this.padding
-    node.my = (ch - mh) / 2
     node.tx = node.mx + mw + (mw ? this.textMarkersGap : 0)
-    node.ty = (ch - th) / 2 - 5 // ? 没搞懂为啥需要-5才能看起来是垂直居中
+    node.ty = ch - this.padding - th - 4
+    node.my = node.ty + th / 2 - mh / 2 + 4
+
+    node.ix = node.tx
+    node.iy = this.padding
   }
 
   calculateXY (root) {
@@ -126,7 +146,7 @@ export class TreeTable {
       this.calculateInnerXY(node)
       const { depth } = node
       if (depth === 0) {
-        node.x = 10
+        node.x = 140
         lastNode = node
         return
       }
@@ -146,20 +166,17 @@ export class TreeTable {
     root.eachAfter(node => {
       const { depth } = node
       if (!lastNode) {
-        node.y = 10
+        node.y = 100
         lastNode = node
         return
       }
       const { depth: lastDepth, ch, y } = lastNode
-      if (depth === lastDepth) {
-        const bottom = this.findBottom(lastNode)
-        node.y = bottom.y + bottom.ch + this.gapY
-      } else if (depth < lastDepth) {
+      if (depth < lastDepth) {
         const firstChild = node.children[0]
         node.y = firstChild.y + (y - firstChild.y + ch) / 2 - node.ch / 2
       } else {
         const bottom = this.findBottom(lastNode)
-        node.y = bottom.y + bottom.ch + this.gapY
+        node.y = Math.max(bottom.y + bottom.ch + this.gapY, y + ch + this.gapY)
       }
       lastNode = node
     })

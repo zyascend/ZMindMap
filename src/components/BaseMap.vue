@@ -37,12 +37,11 @@ export default defineComponent({
       clearTimeout(zoomTimer)
     })
     watchEffect(() => {
-      console.log('watchEffect')
       //  watchEffect：立即执行传入的函数，并响应式追踪其依赖，在其依赖变更时重新运行该函数
       if (!store.treedData) return
       renderData.value = useMap(store.treedData, curStyle.value.mapStyleId)
       nextTick(() => {
-        setTimeout(() => {
+        zoomTimer = setTimeout(() => {
           useZoomMap()
         }, 350)
       })

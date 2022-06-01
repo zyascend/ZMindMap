@@ -7,8 +7,9 @@ const useMap = (content, mapStyleId = 'MAPID-TreeTable') => {
   const hierarchyData = hierarchy(content)
   const store = useMapStore()
   const measureSvg = store.selections.measureSvg
+  const mainSvg = store.selections.mainSvg
   if (mapStyleId === 'MAPID-TreeTable') {
-    const treeTable = new TreeTable(measureSvg)
+    const treeTable = new TreeTable(measureSvg, mainSvg)
     return treeTable.create(hierarchyData)
   } else {
     const logicTree = new LogicTree(measureSvg)

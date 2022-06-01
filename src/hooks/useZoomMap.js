@@ -39,7 +39,6 @@ const useZoomMap = () => {
   const zoomer = registerZoom()
   if (!zoomer) return
   selections.mainSvg.transition().duration(500).call(zoomer.transform, center)
-  console.log('fitView')
 }
 
 export default useZoomMap

@@ -11,6 +11,7 @@ export class TreeTable {
     this.markerOverlap = 7
     this.textMarkersGap = 10
     this.rectRadius = 0
+    this.strokeWidth = 1.5
   }
 
   create (root) {
@@ -27,13 +28,8 @@ export class TreeTable {
     root.eachAfter(node => {
       this.measureTextSize(node)
       this.measureMarkers(node)
-      const { children } = node
-      if (!children) {
-        // 叶子节点 只需计算自身
-        this.measureSelf(node)
-      } else {
-        this.measureWithChildren(node)
-      }
+      this.measureImageSize(node)
+      this.measureWH(node)
     })
     // 前续遍历 修正计算 用于宽度充满 子依赖于父
     root.eachBefore(node => {
@@ -52,6 +48,17 @@ export class TreeTable {
         }
       }
     })
+  }
+
+  measureImageSize (node) {
+    const { imgInfo } = node.data
+    if (imgInfo) {
+      node.iw = imgInfo.width
+      node.ih = imgInfo.height
+    } else {
+      node.iw = 0
+      node.ih = 0
+    }
   }
 
   measureTextSize (node) {
@@ -98,6 +105,38 @@ export class TreeTable {
     node.mw = this.defaultMarkerWidth * size - this.markerOverlap * (size - 1)
   }
 
+  measureWH (node) {
+    node.rectRadius = this.rectRadius
+    node.strokeWidth = this.strokeWidth
+
+    const tmGap = node.mw ? this.textMarkersGap : 0
+    const tiGap = node.ih ? this.textMarkersGap : 0
+    node.cw = Math.max(Math.max(node.tw, node.iw) + node.mw + this.padding * 2 + tmGap
+      , this.defaultWidth)
+    node.ch = Math.max(this.padding * 2 + node.ih + tiGap + node.th
+      , this.defaultHeight)
+
+    const { children, depth } = node
+    if (!children) {
+      node.w = node.cw
+      node.h = node.ch
+    } else {
+      const maxW = Math.max(...children.map(c => c.w))
+      const sumH = children.reduce((p, c) => p + c.h, 0)
+      if (depth === 0) {
+        node.cw = Math.max(maxW, node.cw)
+        node.w = node.cw
+        node.h = node.ch + sumH
+      } else {
+        // TODO 假如父元素自身高度超过子元素之和 要扩充最后一个子元素的宽度
+        // TODO 但是子元素还有子元素呢？？？
+        node.ch = Math.max(node.ch, sumH)
+        node.w = node.cw + maxW
+        node.h = node.ch
+      }
+    }
+  }
+
   measureSelf (node) {
     node.rectRadius = this.rectRadius
     node.cw = Math.max(node.tw + node.mw + this.textMarkersGap + this.padding * 2, this.defaultWidth)
@@ -107,7 +146,6 @@ export class TreeTable {
   }
 
   measureWithChildren (node) {
-    node.rectRadius = this.rectRadius
     const { children, depth } = node
     const maxW = Math.max(...children.map(c => c.w))
     const sumH = this.sumH(children)
@@ -140,19 +178,23 @@ export class TreeTable {
   }
 
   calculateInnerXY (node) {
-    const { mw, cw, tw, th, mh, ch, children } = node
+    const { mw, cw, tw, th, mh, ch, iw, children } = node
     if (children) {
       node.mx = this.padding
-      node.my = (ch - mh) / 2
-
       node.tx = node.mx + mw + (mw ? this.textMarkersGap : 0)
-      node.ty = (ch - th) / 2 - 5 // ? 没搞懂为啥需要-5才能看起来是垂直居中
+      node.ty = ch - this.padding - th - 4
+      node.my = node.ty + th / 2 - mh / 2 + 4
+      node.ix = node.tx
+      node.iy = this.padding
     } else {
-      node.ty = (ch - th) / 2 - 5
+      node.ty = ch - this.padding - th - 4
       node.tx = cw - this.padding - tw
 
-      node.mx = node.tx - this.textMarkersGap - mw
-      node.my = (ch - mh) / 2
+      node.mx = node.tx - (mw ? this.textMarkersGap : 0) - mw
+      node.my = node.ty + th / 2 - mh / 2 + 4
+
+      node.ix = cw - this.padding - iw
+      node.iy = this.padding
     }
   }
 
@@ -163,8 +205,8 @@ export class TreeTable {
       this.calculateInnerXY(node)
       const { depth } = node
       if (depth === 0) {
-        node.x = 10
-        node.y = 10
+        node.x = 140
+        node.y = 100
       } else if (depth === 1) {
         if (depth < lastNode.depth) {
           const realLastNode = this.findRealLastNode(node)

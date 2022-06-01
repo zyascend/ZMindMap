@@ -51,6 +51,14 @@
               :xlink:href="marker"
             />
           </g>
+          <image
+            v-if="node.iw"
+            preserveAspectRatio="xMaxYMax meet"
+            :transform="`translate(${node.ix} ${node.iy})`"
+            :width="node.iw"
+            :height="node.ih"
+            :xlink:href="node.data.imgInfo.url"
+          />
           <text
             :transform="`translate(${node.tx},${node.ty})`"
             :width="node.tw"
@@ -118,7 +126,7 @@ export default defineComponent({
 
     const showEditDialog = ref(false)
     const nodeHtml = ref()
-    let idOnEditing = ''
+    let idFocused = ''
 
     const store = useMapStore()
 
@@ -143,13 +151,13 @@ export default defineComponent({
     }
     const onEditHtml = async (event, node) => {
       event.preventDefault()
-      idOnEditing = node.id
+      idFocused = node.id
       nodeHtml.value = node.html
       showEditDialog.value = true
     }
     const submitEdit = async () => {
       showEditDialog.value = false
-      await useContent.changeNodeHtml(idOnEditing, nodeHtml.value)
+      await useContent.changeNodeHtml(idFocused, nodeHtml.value)
     }
     const onTabNode = async (event, node) => {
       event.preventDefault()
@@ -169,6 +177,10 @@ export default defineComponent({
           // 回车键处理逻辑
           onAddNewNode(event, node)
           break
+        case 16:
+          // Shift键处理逻辑
+          onCollapse(event, { id: idFocused })
+          break
         case 9:
           // Tab键处理逻辑
           onTabNode(event, node)
@@ -182,6 +194,7 @@ export default defineComponent({
       }
     }
     const onNodeFocus = data => {
+      idFocused = data.id
       store.setIdFocused(data.id)
     }
     return {
@@ -217,9 +230,15 @@ export default defineComponent({
       cursor: pointer;
       outline: none;
       transition: .3s ease-in-out all;
+      &:hover {
+        .border-rect {
+          stroke: rgb(35 62 217 / 50%);
+          stroke-width: 2px;
+        }
+      }
       &:focus {
         .border-rect {
-          stroke: blue;
+          stroke: blue !important;
           stroke-width: 2px;
         }
       }
