@@ -47,6 +47,8 @@ export class TreeTable {
           node.cw = node.w
         }
       }
+      node.outLineW = node.cw - 2 * node.outLineOffset
+      node.outLineH = node.ch - 2 * node.outLineOffset
     })
   }
 
@@ -108,6 +110,8 @@ export class TreeTable {
   measureWH (node) {
     node.rectRadius = this.rectRadius
     node.strokeWidth = this.strokeWidth
+
+    node.outLineOffset = 2
 
     const tmGap = node.mw ? this.textMarkersGap : 0
     const tiGap = node.ih ? this.textMarkersGap : 0

@@ -31,11 +31,12 @@
           />
           <rect
             class="border-rect"
-            x="0" y="0"
+            :x="node.outLineOffset"
+            :y="node.outLineOffset"
             :rx="node.rectRadius"
             :ry="node.rectRadius"
-            :width="node.cw"
-            :height="node.ch"
+            :width="node.outLineW"
+            :height="node.outLineH"
             style="fill: transparent;"
           />
           <g

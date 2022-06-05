@@ -101,6 +101,8 @@ export class TreeTable {
     node.rectRadius = this.rectRadius
     node.strokeWidth = this.strokeWidth
 
+    node.outLineOffset = 0
+
     const tmGap = node.mw ? this.textMarkersGap : 0
     const tiGap = node.ih ? this.textMarkersGap : 0
     node.cw = Math.max(Math.max(node.tw, node.iw) + node.mw + this.padding * 2 + tmGap
@@ -117,6 +119,9 @@ export class TreeTable {
       node.h = sumH + this.gapY * (children.length - 1)
       node.w = node.cw + this.gapX + maxW
     }
+
+    node.outLineW = node.cw - node.outLineOffset * 2
+    node.outLineH = node.ch - node.outLineOffset * 2
   }
 
   findLastBrother (node) {

@@ -49,9 +49,11 @@
   ```
 ## 效果图
 
-| <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export05.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export02.png?raw=true" style="zoom:20%;" /> |
+| <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export07.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export02.png?raw=true" style="zoom:20%;" /> |
 | :------------------------------------------------------------------------------: | -------------------------------------------------------------------------------- |
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export03.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export04.png?raw=true" style="zoom:20%;" /> |
+| :------------------------------------------------------------------------------: | -------------------------------------------------------------------------------- |
+| <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export05.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export06.png?raw=true" style="zoom:20%;" /> |
 
 
 ## Features
@@ -85,13 +87,14 @@
   - [ ] 导出为其他格式
 - [x] 二维码扫码登录
   - [ ] 轮询接口查状态 => websocket
-- [ ] 大纲编辑页相关优化
+- [x] 大纲编辑页相关优化
   - [x] 防止XSS攻击
 - [x] 支持添加图片
-- [ ] 重写节点宽高计算逻辑
-- [ ] 全面重写MindMap组件
+- [x] 重写节点宽高计算逻辑
+- [x] 全面重写MindMap组件
   - 代码臃肿：分离UI渲染部分和数据部分
   - 可拓展性：提取各种样式导图的公共dom结构 方便切换导图风格
   - [color style]公共逻辑抽取 方便随时切换颜色样式
+  - [ ] 导图计算：抽取公共逻辑  + 继承封装
 - [ ] 页面的loading 和 错误处理
 - [ ] refreshToken实现无感知刷新Token
