@@ -87,7 +87,18 @@
     :width="400"
     custom-class="node-edit-dialog"
   >
-    <el-input v-model="nodeHtml" autosize type="textarea"/>
+    <div class="edit-wrapper">
+      <el-input v-model="nodeHtml" autosize type="textarea"/>
+      <h2 v-if="markersOnEdit && markersOnEdit.length">移除标记</h2>
+      <div class="markers">
+        <div class="marker-item" v-for="maker in markersOnEdit" :key="maker">
+          <img :src="maker" alt="marker" class="marker-img">
+          <div class="remove" @click="onRemoveMarkers(maker)">
+            <svg-icon icon="remove" />
+          </div>
+        </div>
+      </div>
+    </div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showEditDialog = false">取消</el-button>
@@ -102,9 +113,11 @@ import { defineComponent, onMounted, ref, onUnmounted, computed } from 'vue'
 import { useMapStore } from 'store/map'
 import * as useContent from 'hooks/useContent'
 import useMapStyle from 'hooks/useMapStyle'
+import SvgIcon from 'components/SvgIcon.vue'
 
 export default defineComponent({
   name: 'MapRender',
+  components: { SvgIcon },
   props: {
     renderData: {
       type: Object,
@@ -126,6 +139,7 @@ export default defineComponent({
 
     const showEditDialog = ref(false)
     const nodeHtml = ref()
+    const markersOnEdit = ref()
     let idFocused = ''
 
     const store = useMapStore()
@@ -153,11 +167,13 @@ export default defineComponent({
       event.preventDefault()
       idFocused = node.id
       nodeHtml.value = node.html
+      markersOnEdit.value = node.markerList
       showEditDialog.value = true
     }
     const submitEdit = async () => {
       showEditDialog.value = false
       await useContent.changeNodeHtml(idFocused, nodeHtml.value)
+      await useContent.changeNodeMarkers(idFocused, markersOnEdit.value)
     }
     const onTabNode = async (event, node) => {
       event.preventDefault()
@@ -197,16 +213,21 @@ export default defineComponent({
       idFocused = data.id
       store.setIdFocused(data.id)
     }
+    const onRemoveMarkers = marker => {
+      markersOnEdit.value = markersOnEdit.value.filter(m => m !== marker)
+    }
     return {
       pathData,
       nodeData,
       allStyles,
       showEditDialog,
       nodeHtml,
+      markersOnEdit,
       onCollapse,
       onAddClick,
       onKeyDown,
       onEditHtml,
+      onRemoveMarkers,
       submitEdit,
       isShowCollapse,
       onNodeFocus,
@@ -264,5 +285,36 @@ export default defineComponent({
 .node-edit-dialog {
   border-radius: 4px !important;
   box-shadow: rgb(0 0 0 / 16%) 0 2px 30px 0 !important;
+  .edit-wrapper {
+    @include vertFlex;
+    h2 {
+      margin: 20px 0;
+      font-size: 18px;
+    }
+    .markers {
+      @include horiFlex;
+      /* margin-top: 30px; */
+      .marker-item {
+        position: relative;
+        margin-right: 10px;
+        .maker-img {
+          width: 40px;
+          height: 40px;
+        }
+        .remove {
+          @include centerFlex;
+          position: absolute;
+          top: -9px;
+          right: -9px;
+          cursor: pointer;
+          background: #fff;
+          svg {
+            width: 18px;
+            height: 18px;
+          }
+        }
+      }
+    }
+  }
 }
 </style>

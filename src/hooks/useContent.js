@@ -131,6 +131,14 @@ export async function changeNodeHtml (id, html) {
   await store.setContent(content)
 }
 
+export async function changeNodeMarkers (id, markerList) {
+  const content = store.content
+  // ! 由于debounce 此事件可能发生在deleteNode之后 此id节点可能被删除 需要判空
+  if (!content[id]) return
+  content[id].markerList = markerList
+  await store.setContent(content)
+}
+
 export async function pasteImg (file, nodeId) {
   const { width, height } = await getImageWH(file)
   const content = store.content
