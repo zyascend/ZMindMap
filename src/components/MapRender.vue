@@ -294,7 +294,6 @@ export default defineComponent({
     }
     .markers {
       @include horiFlex;
-      /* margin-top: 30px; */
       .marker-item {
         position: relative;
         margin-right: 10px;
