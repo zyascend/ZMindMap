@@ -263,19 +263,19 @@ export default defineComponent({
   cursor: pointer;
   border-radius: 50%;
   &::before {
-    content: attr(alt);
     display: flex;
+    justify-content: center;
     width: 100%;
     height: 100%;
-    background-color: #deddf7;
-    text-transform: uppercase;
     line-height: 28px;
-    letter-spacing: 28px;
-    text-indent: 28px;
-    justify-content: center;
-    text-align: center;
-    line-break: anywhere;
     color: $color-base;
+    text-align: center;
+    text-indent: 28px;
+    text-transform: uppercase;
+    letter-spacing: 28px;
+    content: attr(alt);
+    background-color: #deddf7;
+    line-break: anywhere;
   }
 }
 .profile {
