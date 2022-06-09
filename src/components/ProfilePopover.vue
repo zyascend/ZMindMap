@@ -8,9 +8,7 @@
   >
     <template #reference>
       <div class="profile">
-        <div class="avatar">
-          <img class="avatar" :src="user?.avatar" alt="">
-        </div>
+        <img class="avatar" :src="user?.avatar" :alt="user?.name || user?.email || ''">
         <div class="nickname">
           <p>{{ user?.name || user?.email || '' }}</p>
           <svg-icon icon="triangle"/>
@@ -18,9 +16,7 @@
       </div>
     </template>
     <div class="info">
-      <div class="img">
-        <img class="avatar" :src="user?.avatar" alt="">
-      </div>
+      <img class="avatar img" :src="user?.avatar" :alt="user?.name || user?.email || ''">
       <p>{{ user?.name || user?.email || '' }}</p>
     </div>
     <div class="divider" />
@@ -62,8 +58,8 @@
         <div class="user-message">
           <h1 class="title">个人信息</h1>
           <div class="content">
-            <div class="avatar">
-              <div><img :src="user?.avatar" alt="avatar"></div>
+            <div class="avatar-wrapper">
+              <img class="avatar right-avatar" :src="user?.avatar" alt="avatar">
               <button class="avatar-edit" @click="onEditAvatar">编辑</button>
             </div>
             <div class="info">
@@ -260,18 +256,34 @@ export default defineComponent({
 
 <style lang="scss">
 @import "@/assets/css/handler";
+.avatar {
+  width: 28px;
+  height: 28px;
+  overflow: hidden;
+  cursor: pointer;
+  border-radius: 50%;
+  &::before {
+    content: attr(alt);
+    display: flex;
+    width: 100%;
+    height: 100%;
+    background-color: #deddf7;
+    text-transform: uppercase;
+    line-height: 28px;
+    letter-spacing: 28px;
+    text-indent: 28px;
+    justify-content: center;
+    text-align: center;
+    line-break: anywhere;
+    color: $color-base;
+  }
+}
 .profile {
   position: relative;
   align-items: center;
   width: 100%;
   padding: 13px 16px 5px;
   @include horiFlex;
-  .avatar {
-    width: 28px;
-    height: 28px;
-    cursor: pointer;
-    border-radius: 50%;
-  }
   .nickname {
     @include horiFlex;
     align-items: center;
@@ -320,12 +332,7 @@ export default defineComponent({
       width: 42px;
       height: 42px;
       margin-bottom: 10;
-      overflow: hidden;
-      border-radius: 50%;
-      &>img {
-        width: 42px;
-        height: 42px;
-      }
+
     }
     &>p{
       padding: 0 20px;
@@ -444,19 +451,14 @@ export default defineComponent({
           }
           .content {
             @include horiFlex;
-            .avatar {
+            .avatar-wrapper {
               @include vertFlex;
               margin-right: 40px;
-              div {
+              .right-avatar {
                 position: relative;
                 width: 80px;
                 height: 80px;
                 border-radius: 50%;
-                @include centerFlex;
-                img {
-                  @include wh100;
-                  border-radius: 50%;
-                }
               }
               button {
                 @include centerFlex;
