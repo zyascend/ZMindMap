@@ -54,6 +54,7 @@
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export03.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export04.png?raw=true" style="zoom:20%;" /> |
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export05.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export06.png?raw=true" style="zoom:20%;" /> |
 
+视频版：[click me!](https://cdn.kimjisoo.cn/videos%2Fpresentation_v1.0.mp4)
 
 ## Features
 - Vue3 CompositionApi
@@ -96,4 +97,4 @@
   - [color style]公共逻辑抽取 方便随时切换颜色样式
   - [ ] 导图计算：抽取公共逻辑  + 继承封装
 - [ ] 页面的loading 和 错误处理
-- [ ] refreshToken实现无感知刷新Token
+- [ ] 监听全局异常 error boundary

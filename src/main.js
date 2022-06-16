@@ -13,6 +13,11 @@ requireAll(req)
 
 const app = createApp(App)
 
+// TODO 待完善全局异常捕获
+app.config.errorHandler = (err, vm, info) => {
+  console.log('[全局异常]', err, vm, info)
+}
+
 const websiteCfg = JSON.parse(localStorage.getItem('zmindmap_website') || '{}')
 const isDark = websiteCfg?.isDark
 window.document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')

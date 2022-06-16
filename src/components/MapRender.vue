@@ -274,11 +274,11 @@ export default defineComponent({
       animation: move 5s ease forwards;
     }
     @keyframes move {
-      0%{
-          stroke-dashoffset: 100%;
+      0% {
+        stroke-dashoffset: 100%;
       }
-      100%{
-          stroke-dashoffset: 0;
+      100% {
+        stroke-dashoffset: 0;
       }
     }
   }
