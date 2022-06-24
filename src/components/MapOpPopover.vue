@@ -20,7 +20,6 @@
 <script>
 import { defineComponent, computed, onUnmounted } from 'vue'
 import { useMapStore } from '@/store/map'
-// import { useWebsiteStore } from '@/store/website'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { ErrorTip, convertToImg } from '@/hooks/utils'
 import useZoomMap from '@/hooks/useZoomMap'
@@ -115,10 +114,6 @@ export default defineComponent({
       margin-left: 12px;
     }
   }
-}
-.my-dialog {
-  border-radius: 4px !important;
-  box-shadow: rgb(0 0 0 / 16%) 0 2px 30px 0 !important;
 }
 .el-overlay {
   background-color: rgba(0,0,0,.2) !important;

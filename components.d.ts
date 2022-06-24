@@ -28,7 +28,6 @@ declare module '@vue/runtime-core' {
     OperatePopover: typeof import('./src/components/OperatePopover.vue')['default']
     ProfilePopover: typeof import('./src/components/ProfilePopover.vue')['default']
     Qrcode: typeof import('./src/components/Qrcode.vue')['default']
-    RectMap: typeof import('./src/components/RectMap.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Sider: typeof import('./src/components/Sider.vue')['default']

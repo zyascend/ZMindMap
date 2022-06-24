@@ -254,7 +254,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "@/assets/css/handler";
 .avatar {
   width: 28px;
@@ -575,10 +575,10 @@ export default defineComponent({
 .avatar-dialog {
   padding: 20px 20px !important;
   margin-top: 19vh !important;
-  .el-dialog__header {
+  >>> .el-dialog__header {
     padding-left: 0;
   }
-  .el-dialog__footer {
+  >>> .el-dialog__footer {
     padding: 0 0;
   }
   .footers {
@@ -633,7 +633,7 @@ export default defineComponent({
     }
   }
 }
-.el-overlay {
+>>> .el-overlay {
   background-color: rgba(0,0,0,.2) !important;
 }
 </style>

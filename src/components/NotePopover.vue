@@ -78,7 +78,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import "@/assets/css/handler";
 .bullet-wrapper {
   width: 18px;
@@ -155,7 +155,7 @@ export default defineComponent({
     }
   }
 }
-.el-overlay {
+>>> .el-overlay {
   background-color: rgba(0,0,0,.2) !important;
 }
 </style>

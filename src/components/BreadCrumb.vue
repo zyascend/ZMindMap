@@ -33,7 +33,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '../assets/css/handler';
 .bread-wrapper {
   align-items: center;

@@ -54,7 +54,8 @@
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export03.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export04.png?raw=true" style="zoom:20%;" /> |
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export05.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export06.png?raw=true" style="zoom:20%;" /> |
 
-视频版：[click me!](https://cdn.kimjisoo.cn/videos%2Fpresentation_v1.0.mp4)
+视频版：
+https://cdn.kimjisoo.cn/videos%2Fpresentation_v1.0.mp4
 
 ## Features
 - Vue3 CompositionApi
