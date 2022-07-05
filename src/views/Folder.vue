@@ -55,7 +55,7 @@ import { useWebsiteStore } from '@/store/website'
 import { useRouter, useRoute } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-import OperatePopover from '@/components/OperatePopover.vue'
+import OperatePopover from '@/components/DocPopover.vue'
 import ICON_EMPTY from '@/assets/pic/empty.png'
 
 export default defineComponent({

@@ -35,10 +35,10 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useMapStore } from '@/store/map'
-import BaseMap from '@/components/BaseMap.vue'
-import Note from '@/components/Note.vue'
+import BaseMap from '@/components/map/BaseMap.vue'
+import Note from '@/components/note/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-import MapOpPopover from '@/components/MapOpPopover.vue'
+import MapOpPopover from '@/components/map/MapOpPopover.vue'
 
 export default defineComponent({
   components: {

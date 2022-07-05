@@ -73,7 +73,7 @@ import { useWebsiteStore } from '@/store/website'
 import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-import OperatePopover from '@/components/OperatePopover.vue'
+import OperatePopover from '@/components/DocPopover.vue'
 import ProfilePopover from '@/components/ProfilePopover.vue'
 
 export default defineComponent({

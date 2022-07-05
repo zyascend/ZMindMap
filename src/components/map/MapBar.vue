@@ -22,7 +22,7 @@
           <SvgIcon class="icon" icon="marker" />
         </div>
       </template>
-      <div class="marker-container">
+      <div class="marker-container" @click="addMarkers($event)">
         <div
           class="icon-group"
           v-for="marker in styles.markerList"
@@ -33,9 +33,8 @@
             <div
               class="icon-wrapper"
               v-for="imgUrl in marker.imgs"
-              :key="imgUrl"
-              @click="addMarker(imgUrl)">
-              <img :src="imgUrl" alt="marker">
+              :key="imgUrl">
+              <img :src="imgUrl" alt="marker" :data-url="imgUrl">
             </div>
           </div>
         </div>
@@ -115,19 +114,26 @@ const curStyle = computed(() => mapStore?.mapData.styles)
 const fitView = () => {
   useZoomMap()
 }
-const addMarker = async (makerUrl) => {
-  const markerList = mapStore.content[mapStore.idFocused]?.markerList
-  console.log('addMarker', markerList)
-  if (markerList?.includes(makerUrl)) return
-  mapStore.setMarkers(markerList.concat(makerUrl))
-}
+
 const onChangeMapStyle = async (mapStyleId) => {
   if (mapStyleId === curStyle.value.mapStyleId) return
   await mapStore.setStyle({ ...curStyle.value, mapStyleId })
 }
+
 const onColorStyle = async (colorId) => {
   if (colorId === curStyle.value.colorId) return
   await mapStore.setStyle({ ...curStyle.value, colorId })
+}
+/**
+ * ! [demo] 事件委托处理
+ */
+const addMarkers = e => {
+  // const makerUrl = e.target.getAttribute('data-url')
+  const makerUrl = e.target.dataset.url
+  if (!makerUrl) return
+  const markerList = mapStore.content[mapStore.idFocused]?.markerList
+  if (markerList?.includes(makerUrl)) return
+  mapStore.setMarkers(markerList.concat(makerUrl))
 }
 </script>
 
