@@ -8,23 +8,29 @@ const instance = axios.create({
 // 设置post请求头
 instance.defaults.headers.post['Content-Type'] = 'application/json'
 
-export async function asyncHttp (url, config = { method: 'get' }, extraData = undefined) {
-  const [err, res] = await instance(url, config).then(res => [null, res]).catch(err => [err, null])
-  if (err || !res) {
+export async function asyncHttp(
+  url,
+  config = { method: 'get' },
+  extraData = undefined
+) {
+  const [error, result] = await instance(url, config)
+    .then(res => [null, res])
+    .catch(err => [err, null])
+  if (error || !result) {
     return null
   }
-  return res.data
+  return result.data
 }
 
-export function getUrlParams () {
-  const search = location.search
+export function getUrlParams() {
+  const { search } = window.location
   if (!search) return null
   const queryStr = search.split('?')[1]
   const arr = queryStr.split('&')
   const params = {}
-  for (let i = 0; i < arr.length; i++) {
-    const p = arr[i].split('=')
-    params[p[0]] = p[1]
-  }
+  arr.forEach(query => {
+    const [key, val] = query.split('=')
+    params[key] = val
+  })
   return params
 }

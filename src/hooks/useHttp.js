@@ -1,7 +1,8 @@
+/* eslint-disable no-param-reassign */
 import axios from 'axios'
-import { ErrorTip } from './utils'
-import { useUserStore } from '@/store/user'
+import useUserStore from '@/store/user'
 import router from '@/router/index'
+import { ErrorTip } from './utils'
 
 /**
  * 跳转登录页
@@ -49,7 +50,7 @@ const errorHandle = (status, other) => {
 }
 
 // 创建axios实例
-var instance = axios.create({
+const instance = axios.create({
   timeout: 1000 * 12,
   // TODO 如何动态获取域名？
   // baseURL: process.env.NODE_ENV === 'production' ? 'https://mapapi.kimjisoo.cn' : 'http://localhost:3003'
@@ -68,12 +69,13 @@ instance.interceptors.request.use(
     token && (config.headers.Authorization = `Bearer ${token}`)
     return config
   },
-  error => Promise.error(error))
+  error => Promise.error(error)
+)
 
 // 响应拦截器
 instance.interceptors.response.use(
   // 请求成功
-  res => res.status === 200 ? Promise.resolve(res.data) : Promise.reject(res),
+  res => (res.status === 200 ? Promise.resolve(res.data) : Promise.reject(res)),
   // 请求失败
   error => {
     const { response } = error
@@ -81,17 +83,10 @@ instance.interceptors.response.use(
       // 请求已发出，但是不在2xx的范围
       errorHandle(response.status, response.data)
       return Promise.reject(response)
-    } else {
-      // 处理断网的情况
-      // eg:请求超时或断网时，更新state的network状态
-      // network状态在app.vue中控制着一个全局的断网提示组件的显示隐藏
-      // 关于断网组件中的刷新重新获取数据，会在断网组件中说明
-      if (!window.navigator.onLine) {
-        //  store.commit('changeNetwork', false)
-      } else {
-        return Promise.reject(error)
-      }
     }
-  })
+    // TODO 处理断网的情况
+    return Promise.reject(error)
+  }
+)
 
 export default instance

@@ -4,30 +4,34 @@
 import { deepClone } from './utils'
 
 export default class Snapshot {
-  constructor (length = 20) {
+  constructor(length = 20) {
     this.length = length
     this.snapshots = []
     this.cursor = -1
   }
 
-  get hasPrev () {
+  get hasPrev() {
     return this.cursor > 0
   }
 
-  snap (data) {
+  snap(data) {
     // 记录数据快照
     const snapshot = deepClone(data)
     // 去除旧分支
-    while (this.cursor < this.snapshots.length - 1) { this.snapshots.pop() }
+    while (this.cursor < this.snapshots.length - 1) {
+      this.snapshots.pop()
+    }
     this.snapshots.push(snapshot)
     // 确保历史记录条数限制
-    if (this.snapshots.length > this.length) { this.snapshots.shift() }
+    if (this.snapshots.length > this.length) {
+      this.snapshots.shift()
+    }
     this.cursor = this.snapshots.length - 1
   }
 
-  prev () {
+  prev() {
     if (this.hasPrev) {
-      this.cursor = this.cursor - 1
+      this.cursor -= 1
       return deepClone(this.snapshots[this.cursor])
     }
     return null

@@ -1,8 +1,9 @@
 import Worker from './map.worker'
+
 const myWorker = new Worker()
 const callbackMap = new WeakMap()
 
-myWorker.onmessage = function (e) {
+myWorker.onmessage = e => {
   const { result, type } = e.data
   const callback = callbackMap?.get(type)
   if (callback) {
@@ -14,7 +15,7 @@ myWorker.onmessage = function (e) {
  * @param {*} source
  * @param {*} callback
  */
-export function getMd5 (source, callback) {
+export default function getMd5(source, callback) {
   callbackMap.set('MD5', callback)
   myWorker.postMessage({ source, type: 'MD5' })
 }

@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable no-restricted-syntax */
 import axios from '@/hooks/useHttp'
 /**
  * 侧边树形列表的预处理
@@ -22,7 +24,7 @@ export const handleSiderData = data => {
       folderMap.set(folderId, [doc])
     }
   }
-  const appendChildren = (parent) => {
+  const appendChildren = parent => {
     if (!parent) return
     const children = folderMap.get(parent.id)
     if (!children) return
@@ -72,10 +74,16 @@ export const findNavigationPaths = (id, data) => {
   return paths.reverse()
 }
 
-export const asyncHttp = async (url, config = { method: 'get' }, extraData = undefined) => {
-  const [err, res] = await axios(url, config).then(res => [null, res]).catch(err => [err, null])
-  if (err || !res) {
+export const asyncHttp = async (
+  url,
+  config = { method: 'get' },
+  extraData = undefined
+) => {
+  const [error, result] = await axios(url, config)
+    .then(res => [null, res])
+    .catch(err => [err, null])
+  if (error || !result) {
     return null
   }
-  return res.data
+  return result.data
 }

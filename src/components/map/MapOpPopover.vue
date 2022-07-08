@@ -19,7 +19,7 @@
 
 <script>
 import { defineComponent, computed, onUnmounted } from 'vue'
-import { useMapStore } from '@/store/map'
+import useMapStore from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { ErrorTip, convertToImg } from '@/hooks/utils'
 import useZoomMap from '@/hooks/useZoomMap'
@@ -36,7 +36,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup (props) {
+  setup(props) {
     const store = useMapStore()
     const mapData = computed(() => store.mapData)
     let loading
@@ -69,7 +69,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/handler";
+@import '@/assets/css/handler';
 .map-op-more {
   @include centerFlex;
   height: 26px;
@@ -80,7 +80,7 @@ export default defineComponent({
   &:hover {
     background: #0000000d;
   }
-  &>svg {
+  & > svg {
     @include fill_color(fc_nickname);
     width: 20px;
     height: 20px;
@@ -116,6 +116,6 @@ export default defineComponent({
   }
 }
 .el-overlay {
-  background-color: rgba(0,0,0,.2) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
 }
 </style>

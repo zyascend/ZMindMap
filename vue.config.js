@@ -17,7 +17,13 @@ module.exports = {
       entry: './src/main.js',
       template: './public/index.html',
       title: 'ZMind思维导图',
-      chunks: ['chunk-vendors', 'chunk-vendors-2', 'chunk-common', 'chunk-ele', 'index']
+      chunks: [
+        'chunk-vendors',
+        'chunk-vendors-2',
+        'chunk-common',
+        'chunk-ele',
+        'index'
+      ]
     },
     mlogin: {
       entry: './src/mlogin/main.js',
@@ -121,7 +127,8 @@ module.exports = {
     },
     plugins: [
       new webpack.DefinePlugin({
-        BASE_API_URL: IS_PROD ? JSON.stringify('https://mapapi.kimjisoo.cn')
+        BASE_API_URL: IS_PROD
+          ? JSON.stringify('https://mapapi.kimjisoo.cn')
           : JSON.stringify('http://localhost:3003')
       }),
       AutoImport({

@@ -42,7 +42,9 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showDeleteDialog = false">取消</el-button>
-        <el-button type="danger" @click="submitRemove"  native-type="submit">确认</el-button>
+        <el-button type="danger" @click="submitRemove" native-type="submit"
+          >确认</el-button
+        >
       </span>
     </template>
   </el-dialog>
@@ -53,7 +55,11 @@
     title="重命名"
     custom-class="my-dialog"
   >
-    <el-input v-model="newName" placeholder="输入新的名字" @keyup.enter="submitRename"/>
+    <el-input
+      v-model="newName"
+      placeholder="输入新的名字"
+      @keyup.enter="submitRename"
+    />
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showRenameDialog = false">取消</el-button>
@@ -65,8 +71,8 @@
 
 <script>
 import { defineComponent, ref } from 'vue'
-import { useDocStore } from '@/store/doc'
-import { useUserStore } from '@/store/user'
+import useDocStore from '@/store/doc'
+import useUserStore from '@/store/user'
 import SvgIcon from '@/components/SvgIcon.vue'
 
 export default defineComponent({
@@ -80,7 +86,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup () {
+  setup() {
     const store = useDocStore()
     const userStore = useUserStore()
     const showDeleteDialog = ref(false)
@@ -148,7 +154,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/assets/css/handler";
+@import '@/assets/css/handler';
 .more {
   padding: 0 4px;
   margin-right: 4px;
@@ -159,7 +165,7 @@ export default defineComponent({
   &:hover {
     background: #0000000d;
   }
-  &>svg {
+  & > svg {
     @include fill_color(fc_nickname);
     width: 20px;
     height: 20px;
@@ -199,6 +205,6 @@ export default defineComponent({
   box-shadow: rgb(0 0 0 / 16%) 0 2px 30px 0 !important;
 }
 .el-overlay {
-  background-color: rgba(0,0,0,.2) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
 }
 </style>

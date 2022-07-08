@@ -1,22 +1,32 @@
 <template>
   <div class="note-container">
     <div class="doc-main">
-      <div class="name"
+      <div
+        class="name"
         @input="onNameInput($event, rootNode)"
-        contenteditable="true">
+        contenteditable="true"
+      >
         {{ rootNode?.html }}
       </div>
       <div class="content">
         <div class="note-node" v-for="node in childNodes" :key="node.id">
-          <div class="indent" v-for="i in node.level" :key="`ident-${node.id}-${i}`" />
+          <div
+            class="indent"
+            v-for="i in node.level"
+            :key="`ident-${node.id}-${i}`"
+          />
           <div class="node-content" :id="`node-${node.id}`">
             <div
               class="action-wrapper"
               @click="onCollapse(node.id)"
-              v-if="node.children.length || node._children.length">
-              <svg-icon icon="triangle" :class="`${node.collapsed ? 'icon-collapsed' : ''}`"/>
+              v-if="node.children.length || node._children.length"
+            >
+              <svg-icon
+                icon="triangle"
+                :class="`${node.collapsed ? 'icon-collapsed' : ''}`"
+              />
             </div>
-            <note-popover :node="node" @onColorSelect="onChangeFontColor"/>
+            <note-popover :node="node" @onColorSelect="onChangeFontColor" />
             <div class="content-wrapper">
               <div
                 :id="`note-node-${node.id}`"
@@ -25,13 +35,13 @@
                 v-html="node.html"
                 @paste="onPaste($event, node)"
                 @input="onNodeInput($event, node)"
-                @keydown="onKeyDown($event, node)">
-              </div>
+                @keydown="onKeyDown($event, node)"
+              ></div>
               <div
                 class="image-wrapper"
                 v-if="node?.imgInfo?.url"
                 :style="`width: ${node.imgInfo.width}px; height: ${node.imgInfo.height}px`"
-                >
+              >
                 <el-image
                   title="点击查看"
                   class="image-node"
@@ -39,15 +49,20 @@
                   lazy
                   :src="node.imgInfo.url"
                   :preview-src-list="imgSrcList"
-                  :initial-index="imgSrcList.indexOf(node.imgInfo.url)">
+                  :initial-index="imgSrcList.indexOf(node.imgInfo.url)"
+                >
                   <template #placeholder>
                     <div class="image-loading">
-                      <svg-icon icon="loading"/>
+                      <svg-icon icon="loading" />
                     </div>
                   </template>
                 </el-image>
-                <div class="delete-pic" title="删除图片" @click="onDeleteImg(node)">
-                  <svg-icon icon="delete"/>
+                <div
+                  class="delete-pic"
+                  title="删除图片"
+                  @click="onDeleteImg(node)"
+                >
+                  <svg-icon icon="delete" />
                 </div>
               </div>
             </div>
@@ -59,10 +74,18 @@
 </template>
 
 <script>
-import { defineComponent, onUnmounted, nextTick, computed, watch } from 'vue'
-import { useMapStore } from '@/store/map'
+import {
+  defineComponent,
+  onUnmounted,
+  nextTick,
+  computed,
+  watch,
+  onActivated,
+  onDeactivated
+} from 'vue'
+import useMapStore from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
-import NotePopover from '@/components/NotePopover.vue'
+import NotePopover from '@/components/note/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
 import Snapshot from '@/hooks/useSnapshot'
 import * as useContent from '@/hooks/useContent'
@@ -73,18 +96,18 @@ export default defineComponent({
     SvgIcon,
     NotePopover
   },
-  setup () {
+  setup() {
     const store = useMapStore()
     const rootNode = computed(() => store.getRootNode)
     const childNodes = computed(() => store.getChildNode)
     const imgSrcList = computed(() => {
-      if (!childNodes.value) return
+      if (!childNodes.value) return []
       const srcList = []
-      for (const node of childNodes.value) {
+      childNodes.value.forEach(node => {
         if (node.imgInfo) {
           srcList.push(node.imgInfo.url)
         }
-      }
+      })
       return srcList
     })
     const snapshot = new Snapshot()
@@ -94,6 +117,12 @@ export default defineComponent({
     const snap = () => {
       snapshot.snap({ content: store.content })
     }
+    onActivated(() => {
+      console.log('onActivated')
+    })
+    onDeactivated(() => {
+      console.log('onDeactivated')
+    })
     watch(rootNode, (newVal, oldVal) => {
       if (!oldVal) {
         // 首次进入页面 需要将初始值存入快照
@@ -101,7 +130,7 @@ export default defineComponent({
       }
     })
     // 折叠or打开节点
-    const onCollapse = async (_id) => {
+    const onCollapse = async _id => {
       await useContent.collapse(_id)
       snap()
     }
@@ -124,10 +153,11 @@ export default defineComponent({
     const onTabNode = async (node, event) => {
       event.preventDefault()
       const newId = await useContent.tabNode(node.id, childNodes.value)
-      newId && nextTick(() => {
-        // 将光标移动到最后的位置
-        useContent.moveToLastFocus(`note-node-${newId}`)
-      })
+      newId &&
+        nextTick(() => {
+          // 将光标移动到最后的位置
+          useContent.moveToLastFocus(`note-node-${newId}`)
+        })
       snap()
     }
     const onAddNewNode = async (event, node) => {
@@ -149,6 +179,7 @@ export default defineComponent({
       event.preventDefault()
       let target = -1
       const code = event.keyCode
+      // eslint-disable-next-line no-restricted-syntax
       for (const index in childNodes.value) {
         if (childNodes.value[index].id === node.id) {
           target = Number(index)
@@ -157,17 +188,21 @@ export default defineComponent({
       }
       // 光标向上移动
       if (code === 38 && target !== 0) {
-        useContent.moveToLastFocus(`note-node-${childNodes.value[target - 1].id}`)
+        useContent.moveToLastFocus(
+          `note-node-${childNodes.value[target - 1].id}`
+        )
       }
       // 光标向下移动
       if (code === 40 && target !== childNodes.value.length - 1) {
-        useContent.moveToLastFocus(`note-node-${childNodes.value[target + 1].id}`)
+        useContent.moveToLastFocus(
+          `note-node-${childNodes.value[target + 1].id}`
+        )
       }
     }
     /**
      * ctrl+z 撤回操作
      */
-    const onSnapBack = async (event) => {
+    const onSnapBack = async event => {
       event.preventDefault()
       if (snapshot.hasPrev) {
         await store.setContent(snapshot.prev().content)
@@ -202,7 +237,7 @@ export default defineComponent({
           break
       }
     }
-    const onChangeFontColor = async (prams) => {
+    const onChangeFontColor = async prams => {
       // const { color, node } = prams
       // TODOd
       await useContent.changeNodeHtml('new html')
@@ -247,7 +282,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/css/handler';
+@import '@/assets/css/handler';
 .note-container {
   @include wh100;
   overflow-y: auto;
@@ -256,7 +291,7 @@ export default defineComponent({
     min-height: calc(100vh - 252px);
     padding: 0 55px 140px;
     margin: 0 auto;
-     @include font_color(fc_normal);
+    @include font_color(fc_normal);
     .name {
       box-sizing: content-box;
       min-height: 42px;
@@ -279,7 +314,7 @@ export default defineComponent({
       .note-node {
         align-items: center;
         width: 100%;
-        transition: .1s all;
+        transition: 0.1s all;
         transition-timing-function: cubic-bezier(0.3, 1.02, 0.68, 1.01);
         @include horiFlex;
         .indent {
@@ -305,7 +340,7 @@ export default defineComponent({
           flex: 1;
           align-items: flex-start;
           @include horiFlex;
-          ::selection{
+          ::selection {
             background-color: #bacefd;
           }
           .action-wrapper {
@@ -324,7 +359,7 @@ export default defineComponent({
             svg {
               width: 12px;
               height: 12px;
-              transition: .2s ease all;
+              transition: 0.2s ease all;
             }
           }
           .content-wrapper {

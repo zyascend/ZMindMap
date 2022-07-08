@@ -1,57 +1,54 @@
+/* eslint-disable no-restricted-syntax */
 /**
  * 导图和大纲笔记页面相关状态
  */
 import { defineStore } from 'pinia'
 import API from '@/hooks/api'
 import { deepClone, ErrorTip } from '@/hooks/utils'
-import { useUserStore } from './user'
-import * as handler from './handler'
 import { select } from 'd3-selection'
+import useUserStore from './user'
+import * as handler from './handler'
 
-export const useMapStore = defineStore('map', {
-  state: () => {
-    return {
-      refs: {
-        mainSvg: undefined,
-        mainG: undefined,
-        measureSvg: undefined
-      },
-      selections: {
-        mainSvg: undefined,
-        mainG: undefined,
-        measureSvg: undefined
-      },
-      mapData: undefined,
-      content: undefined,
-      noteList: undefined,
-      treedData: undefined,
-
-      // 设置Edit页面的数据的加载状态
-      isSaving: false,
-      idFocused: undefined
-    }
-  },
-  getters: {
-    getRootNode: state => {
-      return state.noteList ? state.noteList[0] : undefined
+const useMapStore = defineStore('map', {
+  state: () => ({
+    refs: {
+      mainSvg: undefined,
+      mainG: undefined,
+      measureSvg: undefined
     },
-    getChildNode: state => {
-      return state.noteList ? state.noteList.splice(1) : undefined
-    }
+    selections: {
+      mainSvg: undefined,
+      mainG: undefined,
+      measureSvg: undefined
+    },
+    mapData: undefined,
+    content: undefined,
+    noteList: undefined,
+    treedData: undefined,
+
+    // 设置Edit页面的数据的加载状态
+    isSaving: false,
+    idFocused: undefined
+  }),
+  getters: {
+    getRootNode: state => (state.noteList ? state.noteList[0] : null),
+    getChildNode: state =>
+      state.noteList ? state.noteList.splice(1) : undefined
   },
   actions: {
-    setRefs (refs) {
+    setRefs(refs) {
       this.refs = refs
-      for (const key in refs) {
+      Object.keys(refs).forEach(key => {
         this.selections[key] = select(refs[key])
-      }
+      })
     },
-    setIdFocused (id) {
+    setIdFocused(id) {
       this.idFocused = id
     },
     // ! 是否该把此逻辑抽取到hooks/useContent中 store逻辑应该单一化
-    transform (content, id = 'map-root', level = 0, list = []) {
+    transform(content, id = 'map-root', level = 0, list = []) {
       if (typeof id === 'object') {
+        // eslint-disable-next-line no-param-reassign
         id = id.id
       }
       const d = content[id]
@@ -72,7 +69,8 @@ export const useMapStore = defineStore('map', {
       }
       return [d, list]
     },
-    async setContent (content, isLocal = false) {
+    // eslint-disable-next-line space-before-function-paren
+    async setContent(content, isLocal = false) {
       if (this.isSaving) {
         ErrorTip('操作过于频繁！')
         return
@@ -93,7 +91,7 @@ export const useMapStore = defineStore('map', {
       }
       await this.remoteUpdateMap(data)
     },
-    async setStyle (newStyle) {
+    async setStyle(newStyle) {
       if (this.isSaving) {
         ErrorTip('操作过于频繁！')
         return
@@ -105,7 +103,7 @@ export const useMapStore = defineStore('map', {
       }
       await this.remoteUpdateMap(data)
     },
-    async setMarkers (markerList) {
+    async setMarkers(markerList) {
       if (this.isSaving) {
         ErrorTip('操作过于频繁！')
         return
@@ -120,7 +118,7 @@ export const useMapStore = defineStore('map', {
       }
       await this.remoteUpdateMap(data)
     },
-    setData (data) {
+    setData(data) {
       if (data && data.definition) {
         this.mapData = data
         this.content = JSON.parse(data.definition)
@@ -128,22 +126,23 @@ export const useMapStore = defineStore('map', {
         ErrorTip('保存失败')
       }
     },
-    async fetchMap (docId) {
-      const user = useUserStore().user
+    async fetchMap(docId) {
+      const { user } = useUserStore()
       const url = `${API.getDocContent}/${user._id}/${docId}`
       const res = await handler.asyncHttp(url)
       this.setData(res)
+      // eslint-disable-next-line semi-style
       ;[this.treedData, this.noteList] = this.transform(deepClone(this.content))
     },
-    async remoteUpdateMap (data) {
-      const user = useUserStore().user
+    async remoteUpdateMap(data) {
+      const { user } = useUserStore()
       const url = `${API.setDocContent}/${user._id}`
       const res = await handler.asyncHttp(url, { method: 'post', data })
       this.isSaving = false
       this.setData(res)
     },
-    async pasteImg ({ file, nodeId, width, height }) {
-      const user = useUserStore().user
+    async pasteImg({ file, nodeId, width, height }) {
+      const { user } = useUserStore()
       const url = `${API.uploadImg}/${user._id}`
       const formData = new FormData()
       if (file) {
@@ -162,7 +161,7 @@ export const useMapStore = defineStore('map', {
       this.content[nodeId].imgInfo = {
         url: imgUrl,
         width: 250,
-        height: 250 * height / width
+        height: (250 * height) / width
       }
       await this.setContent(this.content)
     }
@@ -171,3 +170,5 @@ export const useMapStore = defineStore('map', {
     enabled: false
   }
 })
+
+export default useMapStore

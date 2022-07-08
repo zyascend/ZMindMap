@@ -20,17 +20,29 @@
             :rules="[{ required: true, message: '请填写密码' }]"
           />
         </CellGroup>
-        <Button size="large" color="#5856d5" type="primary" class="login-btn" native-type="submit">
+        <Button
+          size="large"
+          color="#5856d5"
+          type="primary"
+          class="login-btn"
+          native-type="submit"
+        >
           登录
         </Button>
       </Form>
     </template>
     <template v-else>
       <div class="info" v-if="currentUser">
-        <img alt="用户头像" :src="currentUser.avatar">
+        <img alt="用户头像" :src="currentUser.avatar" />
         <p>{{ currentUser.name }}</p>
       </div>
-      <Button color="#5856d5" class="btn" size="large" type="primary" @click="confirmLogin">
+      <Button
+        color="#5856d5"
+        class="btn"
+        size="large"
+        type="primary"
+        @click="confirmLogin"
+      >
         确认登录
       </Button>
     </template>
@@ -90,7 +102,10 @@ const onSubmit = async values => {
     ...values,
     pwd: md5(values.pwd)
   }
-  const user = await asyncHttp(`/users/login?qid=${qid}`, { method: 'post', data: loginForm })
+  const user = await asyncHttp(`/users/login?qid=${qid}`, {
+    method: 'post',
+    data: loginForm
+  })
   if (user && user?.code === 0) {
     Toast.clear()
     const info = {

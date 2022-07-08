@@ -1,6 +1,9 @@
 <template>
   <div class="qrcode">
-    <div class="img" v-show="codeStatus === 'EXPIRED' || codeStatus === 'UNUSED'">
+    <div
+      class="img"
+      v-show="codeStatus === 'EXPIRED' || codeStatus === 'UNUSED'"
+    >
       <vue-qr
         :size="150"
         :margin="0"
@@ -14,7 +17,7 @@
       <i class="refresh_icon" @click.stop="generateCode" title="点击刷新"></i>
     </div>
     <div class="result" v-show="codeStatus === 'CONFIRMING'">
-      <img class="u_avatar" :src="avatar" alt="用户头像"/>
+      <img class="u_avatar" :src="avatar" alt="用户头像" />
       <p class="u_name">{{ username }}</p>
     </div>
     <div>
@@ -29,7 +32,7 @@ import { ref, onUnmounted } from 'vue'
 import vueQr from 'vue-qr/src/packages/vue-qr.vue'
 import axios from '@/hooks/useHttp'
 import api from '@/hooks/api'
-import { useUserStore } from '@/store/user'
+import useUserStore from '@/store/user'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()

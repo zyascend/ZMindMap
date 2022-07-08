@@ -4,7 +4,7 @@
       <bread-crumb :list="navigationList" />
       <div class="btn-wrapper">
         <div class="btn-show" @click="onToggleStyle">
-          <SvgIcon class="icon" :icon="showTable ? 'table':'grid'" />
+          <SvgIcon class="icon" :icon="showTable ? 'table' : 'grid'" />
         </div>
       </div>
     </div>
@@ -13,45 +13,61 @@
       :data="docTableData"
       style="width: 100%"
       row-class-name="table-row"
-      @row-click="onRowClick">
+      @row-click="onRowClick"
+    >
       <el-table-column label="文件名" min-width="40%">
         <template #default="scope">
           <div class="row">
-            <SvgIcon class="icon" :icon="isFolder(scope.row)?'folder':'file-small'" />
+            <SvgIcon
+              class="icon"
+              :icon="isFolder(scope.row) ? 'folder' : 'file-small'"
+            />
             <p class="">{{ scope.row.name }}</p>
           </div>
         </template>
       </el-table-column>
-      <el-table-column prop="itemCount" label="" min-width="20%"/>
-      <el-table-column prop="formatedUpdateTime" label="最近编辑" min-width="20%"/>
+      <el-table-column prop="itemCount" label="" min-width="20%" />
+      <el-table-column
+        prop="formatedUpdateTime"
+        label="最近编辑"
+        min-width="20%"
+      />
       <el-table-column label="创建时间" min-width="20%">
         <template #default="scope">
           <div class="end-col">
             <p class="">{{ scope.row.formatedCreateTime }}</p>
-            <operate-popover :data="scope.row"/>
+            <operate-popover :data="scope.row" />
           </div>
         </template>
       </el-table-column>
     </el-table>
     <div class="grid" v-if="hasData && !showTable">
-      <div class="grid-item" v-for="row in docTableData" :key="row.id" @click="onRowClick(row)">
-        <SvgIcon class="icon" :icon="isFolder(row)?'folder-large':'file-large'" />
+      <div
+        class="grid-item"
+        v-for="row in docTableData"
+        :key="row.id"
+        @click="onRowClick(row)"
+      >
+        <SvgIcon
+          class="icon"
+          :icon="isFolder(row) ? 'folder-large' : 'file-large'"
+        />
         <span>{{ row.name }}</span>
         <div class="popover">
-          <operate-popover :data="row"/>
+          <operate-popover :data="row" />
         </div>
       </div>
     </div>
     <div class="empty" v-show="!hasData">
-      <img :src="ICON_EMPTY" alt="">
+      <img :src="ICON_EMPTY" alt="" />
       <p class="empty-info">暂无文件，点击左上角"+"新建文件</p>
     </div>
   </div>
 </template>
 <script>
 import { defineComponent, computed } from 'vue'
-import { useDocStore } from '@/store/doc'
-import { useWebsiteStore } from '@/store/website'
+import useDocStore from '@/store/doc'
+import useWebsiteStore from '@/store/website'
 import { useRouter, useRoute } from 'vue-router'
 import BreadCrumb from '@/components/BreadCrumb.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -64,7 +80,7 @@ export default defineComponent({
     SvgIcon,
     OperatePopover
   },
-  setup () {
+  setup() {
     const docStore = useDocStore()
     const websiteStore = useWebsiteStore()
     const router = useRouter()
@@ -241,7 +257,8 @@ export default defineComponent({
     th.is-leaf {
       @include border_color(bdc_table_divider);
     }
-    tr,th {
+    tr,
+    th {
       background-color: transparent;
       &:hover {
         td {
@@ -257,7 +274,7 @@ export default defineComponent({
     font-size: 14px;
     line-height: 1.45;
     color: #92929c;
-    transition: .2s all ease;
+    transition: 0.2s all ease;
     transform: translate(-50%, -50%);
   }
 }

@@ -6,7 +6,7 @@
         <div class="inputer">
           <div class="input-wrapper">
             <SvgIcon icon="search" />
-            <input type="text" class="" placeholder="全局搜索" value="">
+            <input type="text" class="" placeholder="全局搜索" value="" />
           </div>
           <div class="adder">
             <el-popover
@@ -30,7 +30,11 @@
           </div>
         </div>
         <div class="divider" />
-        <router-link class="folders" to="/app/folder" active-class="folder-active">
+        <router-link
+          class="folders"
+          to="/app/folder"
+          active-class="folder-active"
+        >
           <SvgIcon class="icon" icon="home" />
           <span>我的文档</span>
         </router-link>
@@ -42,18 +46,29 @@
           <template #default="scope">
             <div class="node">
               <router-link :to="getUrl(scope.data)" class="link">
-                <SvgIcon class="icon" :icon="isFolder(scope.data)?'folder':'file-small'" />
+                <SvgIcon
+                  class="icon"
+                  :icon="isFolder(scope.data) ? 'folder' : 'file-small'"
+                />
                 <span>{{ scope.data.name }}</span>
               </router-link>
-              <operate-popover :data="scope.data"/>
+              <operate-popover :data="scope.data" />
             </div>
           </template>
         </el-tree>
-        <router-link class="folders" to="/app/folder/quick" active-class="folder-active">
+        <router-link
+          class="folders"
+          to="/app/folder/quick"
+          active-class="folder-active"
+        >
           <SvgIcon class="icon" icon="quick" />
           <span>快速访问</span>
         </router-link>
-        <router-link class="folders" to="/app/folder/latest" active-class="folder-active">
+        <router-link
+          class="folders"
+          to="/app/folder/latest"
+          active-class="folder-active"
+        >
           <SvgIcon class="icon" icon="latest" />
           <span>最近编辑</span>
         </router-link>
@@ -67,9 +82,9 @@
 
 <script>
 import { defineComponent, computed, ref } from 'vue'
-import { useDocStore } from '@/store/doc'
-import { useUserStore } from '@/store/user'
-import { useWebsiteStore } from '@/store/website'
+import useDocStore from '@/store/doc'
+import useUserStore from '@/store/user'
+import useWebsiteStore from '@/store/website'
 import { useRoute } from 'vue-router'
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -84,7 +99,7 @@ export default defineComponent({
     OperatePopover,
     ProfilePopover
   },
-  setup () {
+  setup() {
     const store = useDocStore()
     const userStore = useUserStore()
     const websiteStore = useWebsiteStore()
@@ -98,21 +113,19 @@ export default defineComponent({
     store.fetchAllDocuments()
     websiteStore.fetchMapStyles()
 
-    const getUrl = (row) => {
+    const getUrl = row => {
       const isFolder = 'folderType' in row
       if (isFolder) {
         return `/app/folder/${row.id}`
-      } else {
-        return `/app/edit/${row.id}`
       }
+      return `/app/edit/${row.id}`
     }
-    const isFolder = row => {
-      return 'folderType' in row
-    }
+    const isFolder = row => 'folderType' in row
     const addNew = addFolder => {
       const newData = {
         name: `${addFolder ? '新文件夹' : '无标题'}`,
         folderId: '0',
+        // eslint-disable-next-line no-underscore-dangle
         userId: userStore.user._id
       }
       if (addFolder) {
@@ -137,7 +150,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "@/assets/css/handler";
+@import '@/assets/css/handler';
 .main {
   position: relative;
   @include wh100;
@@ -154,10 +167,10 @@ export default defineComponent({
       border: 1px solid transparent;
       @include background_color(bc_input);
       border-radius: 4px;
-      &:hover{
+      &:hover {
         border: 1px solid #8a89e2;
       }
-      &>input {
+      & > input {
         width: 100%;
         height: 20px;
         padding: 1px;
@@ -187,10 +200,10 @@ export default defineComponent({
       cursor: pointer;
       @include background_color(bc_adder);
       border-radius: 16px;
-      &>svg {
+      & > svg {
         width: 15px;
         height: 15px;
-        fill: #F5F7FA;
+        fill: #f5f7fa;
       }
     }
     .icon {
@@ -242,7 +255,7 @@ export default defineComponent({
   }
   .el-tree {
     background-color: transparent;
-    .el-tree-node:focus>.el-tree-node__content {
+    .el-tree-node:focus > .el-tree-node__content {
       background-color: transparent !important;
     }
     .el-tree-node__content {
@@ -256,7 +269,7 @@ export default defineComponent({
           visibility: visible;
         }
       }
-  }
+    }
   }
   .node {
     position: relative;
@@ -287,7 +300,7 @@ export default defineComponent({
       &:hover {
         background: #0000000d;
       }
-      &>svg {
+      & > svg {
         width: 20px;
         height: 20px;
       }

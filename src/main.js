@@ -20,7 +20,10 @@ const app = createApp(App)
 
 const websiteCfg = JSON.parse(localStorage.getItem('zmindmap_website') || '{}')
 const isDark = websiteCfg?.isDark
-window.document.documentElement.setAttribute('data-theme', isDark ? 'dark' : 'light')
+window.document.documentElement.setAttribute(
+  'data-theme',
+  isDark ? 'dark' : 'light'
+)
 
 Sentry.init({
   app,

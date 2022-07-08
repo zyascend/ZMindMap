@@ -105,7 +105,6 @@ section {
   display: block;
 }
 
-
 ol,
 ul {
   list-style: none;
@@ -120,7 +119,7 @@ blockquote::before,
 blockquote::after,
 q::before,
 q::after {
-  content: "";
+  content: '';
   content: none;
 }
 
@@ -132,14 +131,14 @@ table {
 body {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
   line-height: 1;
 }
 
 html {
   width: 100%;
   height: 100%;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 a,
@@ -148,4 +147,4 @@ button {
   cursor: pointer;
 }
 
-div::-webkit-scrollbar { width: 0 !important }
+/* div::-webkit-scrollbar { width: 0 !important } */

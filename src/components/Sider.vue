@@ -10,10 +10,7 @@
   <div class="content" :style="contentStyle" id="siderContent">
     <slot name="sideContent" />
   </div>
-  <el-tooltip
-    effect="light"
-    content="打开侧边栏"
-    placement="right">
+  <el-tooltip effect="light" content="打开侧边栏" placement="right">
     <div class="open" @click="open" v-show="isSiderCollapse">
       <SvgIcon class="icon" icon="hamberger" />
     </div>
@@ -23,6 +20,7 @@
 <script>
 import { defineComponent, reactive, ref } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+
 export default defineComponent({
   name: 'Sider',
   components: {
@@ -34,7 +32,7 @@ export default defineComponent({
       required: false
     }
   },
-  setup (props) {
+  setup(props) {
     const siderStyle = reactive({
       width: `${props.width}px`,
       transform: 'translateX(0)',
@@ -87,13 +85,13 @@ export default defineComponent({
     height: 100%;
     cursor: col-resize;
     opacity: 0;
-    transition: .2s ease-in-out all;
+    transition: 0.2s ease-in-out all;
     &::before {
       position: absolute;
       left: 3px;
       width: 1px;
       height: 100%;
-      content: "";
+      content: '';
       background-color: #5856d5;
     }
     &:hover {
@@ -111,7 +109,7 @@ export default defineComponent({
       cursor: pointer;
       border: 1px solid #5856d5;
       border-radius: 100%;
-      transition: all .2s ease-in-out;
+      transition: all 0.2s ease-in-out;
       transform: translateX(-50%) translateY(-50%) rotateY(0deg);
       @include background_color(bc_collapser);
       .icon {
@@ -125,7 +123,7 @@ export default defineComponent({
   @include wh100;
   @include background_color(bc_content);
   position: relative;
-  transition: all .2s ease-in-out;
+  transition: all 0.2s ease-in-out;
 }
 .open {
   position: fixed;

@@ -4,8 +4,11 @@ module.exports = {
     node: true
   },
   extends: [
+    'airbnb-base',
     'plugin:vue/vue3-essential',
-    '@vue/standard'
+    '@vue/standard',
+    'prettier',
+    'plugin:prettier/recommended'
   ],
   parserOptions: {
     parser: 'babel-eslint'
@@ -13,6 +16,11 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'vue/multi-word-component-names': 0
+    'vue/multi-word-component-names': 0,
+    'import/extensions': 'off',
+    'arrow-parens': 'off',
+    'import/no-cycle': 'warn',
+    'no-underscore-dangle': 'off',
+    'class-methods-use-this': 'off'
   }
 }

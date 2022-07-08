@@ -1,10 +1,6 @@
 <template>
   <div class="map-bar">
-    <el-tooltip
-      effect="light"
-      content="适应屏幕"
-      :offset="20"
-      placement="left">
+    <el-tooltip effect="light" content="适应屏幕" :offset="20" placement="left">
       <div class="btn" @click="fitView">
         <SvgIcon class="icon fit-view" icon="fit-view" />
       </div>
@@ -27,14 +23,15 @@
           class="icon-group"
           v-for="marker in styles.markerList"
           :key="marker.category"
-          >
+        >
           <h5>{{ marker.category }}</h5>
           <div class="icons">
             <div
               class="icon-wrapper"
               v-for="imgUrl in marker.imgs"
-              :key="imgUrl">
-              <img :src="imgUrl" alt="marker" :data-url="imgUrl">
+              :key="imgUrl"
+            >
+              <img :src="imgUrl" alt="marker" :data-url="imgUrl" />
             </div>
           </div>
         </div>
@@ -57,13 +54,13 @@
         <div
           class="color-item"
           v-for="(color, index) in styles.colorList"
-          :class="{selected: color.id === curStyle.colorId}"
+          :class="{ selected: color.id === curStyle.colorId }"
           :key="color.id"
           :tabindex="index"
           :title="color.id"
           @click="onColorStyle(color.id)"
-          >
-          <img :src="color.imgUrl" alt="color">
+        >
+          <img :src="color.imgUrl" alt="color" />
         </div>
       </div>
     </el-popover>
@@ -84,13 +81,13 @@
         <div
           class="map-item"
           v-for="(map, index) in styles.mapList"
-          :class="{selected: map.id === curStyle.mapStyleId}"
+          :class="{ selected: map.id === curStyle.mapStyleId }"
           :key="map.id"
           :tabindex="index"
           :title="map.name"
           @click="onChangeMapStyle(map.id)"
-          >
-          <img :src="map.imgUrl" alt="map">
+        >
+          <img :src="map.imgUrl" alt="map" />
         </div>
       </div>
     </el-popover>
@@ -99,8 +96,8 @@
 
 <script setup>
 import { computed } from 'vue'
-import { useWebsiteStore } from '@/store/website'
-import { useMapStore } from '@/store/map'
+import useWebsiteStore from '@/store/website'
+import useMapStore from '@/store/map'
 import useZoomMap from 'hooks/useZoomMap'
 import SvgIcon from 'components/SvgIcon.vue'
 
@@ -115,12 +112,12 @@ const fitView = () => {
   useZoomMap()
 }
 
-const onChangeMapStyle = async (mapStyleId) => {
+const onChangeMapStyle = async mapStyleId => {
   if (mapStyleId === curStyle.value.mapStyleId) return
   await mapStore.setStyle({ ...curStyle.value, mapStyleId })
 }
 
-const onColorStyle = async (colorId) => {
+const onColorStyle = async colorId => {
   if (colorId === curStyle.value.colorId) return
   await mapStore.setStyle({ ...curStyle.value, colorId })
 }
@@ -138,7 +135,7 @@ const addMarkers = e => {
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/css/handler';
+@import '@/assets/css/handler';
 .map-bar {
   position: absolute;
   top: 70px;
@@ -230,7 +227,8 @@ const addMarkers = e => {
   }
   .selected {
     border-color: rgba(0, 0, 0, 0.05);
-    box-shadow: 0 0 0 3px #0f66de, 0 1px 2px rgb(0 0 0 / 10%), 0 1px 6px rgb(0 0 0 / 10%);
+    box-shadow: 0 0 0 3px #0f66de, 0 1px 2px rgb(0 0 0 / 10%),
+      0 1px 6px rgb(0 0 0 / 10%);
   }
 }
 .color-container {
@@ -254,7 +252,8 @@ const addMarkers = e => {
   }
   .selected {
     border-color: rgba(0, 0, 0, 0.05);
-    box-shadow: 0 0 0 3px #0f66de, 0 1px 2px rgb(0 0 0 / 10%), 0 1px 6px rgb(0 0 0 / 10%);
+    box-shadow: 0 0 0 3px #0f66de, 0 1px 2px rgb(0 0 0 / 10%),
+      0 1px 6px rgb(0 0 0 / 10%);
   }
 }
 </style>

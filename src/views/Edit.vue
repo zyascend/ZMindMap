@@ -3,7 +3,7 @@
     <header class="map-header">
       <div class="info">
         <a :href="`/app/folder/${mapData?.directory[0]?.id}`" class="name">
-          <svg-icon icon="folder"/>
+          <svg-icon icon="folder" />
           <span>{{ mapData?.directory[0]?.name }}</span>
         </a>
         <span>&nbsp;|&nbsp;&nbsp;{{ mapData?.name || '' }}</span>
@@ -12,29 +12,36 @@
       <div v-show="isSaving" class="loader" />
       <div class="show-map" @click="toggleShowMap">
         <template v-if="!showMap">
-          <svg-icon icon="tree"/>
+          <svg-icon icon="tree" />
           <span>思维导图</span>
         </template>
         <template v-else>
-          <svg-icon icon="note"/>
+          <svg-icon icon="note" />
           <span>大纲笔记</span>
         </template>
       </div>
-      <map-op-popover :isMap="showMap"/>
+      <map-op-popover :isMap="showMap" />
     </header>
     <!-- v-show导致缩放的bug 暂时未解决 先用v-if -->
-    <template v-if="!showMap">
+    <!-- <template v-if="!showMap">
       <note />
     </template>
     <template v-if="showMap">
       <base-map />
-    </template>
+    </template> -->
+    <!-- <keep-alive>
+      <note v-if="!showMap"/>
+      <base-map v-else/>
+    </keep-alive> -->
+    <keep-alive>
+      <component :is="curComponent"></component>
+    </keep-alive>
   </div>
 </template>
 <script>
 import { computed, defineComponent, ref } from 'vue'
 import { useRoute } from 'vue-router'
-import { useMapStore } from '@/store/map'
+import useMapStore from '@/store/map'
 import BaseMap from '@/components/map/BaseMap.vue'
 import Note from '@/components/note/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -47,24 +54,31 @@ export default defineComponent({
     Note,
     MapOpPopover
   },
-  setup () {
+  setup() {
     const store = useMapStore()
     const route = useRoute()
     const docId = route.params?.id
     const mapData = computed(() => store.mapData)
     const showMap = ref(true)
+    const curComponent = ref('BaseMap')
     const isSaving = computed(() => store.isSaving)
 
     store.fetchMap(docId)
 
     const toggleShowMap = () => {
       showMap.value = !showMap.value
+      if (curComponent.value === 'BaseMap') {
+        curComponent.value = 'Note'
+      } else {
+        curComponent.value = 'BaseMap'
+      }
     }
     return {
       docId,
       isSaving,
       showMap,
       mapData,
+      curComponent,
       toggleShowMap
     }
   }
@@ -96,7 +110,8 @@ export default defineComponent({
       margin-right: 10px;
       background-color: #f4f4f5;
       border-radius: 6px;
-      transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
+      transition: background-color 0.2s ease 0s, color 0.2s ease 0s,
+        box-shadow 0.2s ease 0s, border 0.2s ease 0s;
       svg {
         width: 20px;
         height: 20px;
@@ -165,12 +180,20 @@ export default defineComponent({
       animation: spin 1s linear infinite;
     }
     @-webkit-keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
     }
     @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
+      0% {
+        transform: rotate(0deg);
+      }
+      100% {
+        transform: rotate(360deg);
+      }
     }
   }
 }

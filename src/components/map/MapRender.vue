@@ -1,6 +1,11 @@
 <template>
   <div class="map-container" id="mapContainer">
-    <svg :style="allStyles.svgStyle" class="main-svg" id="main-svg" ref="mainSvg" xmlns:xlink=http://www.w3.org/1999/xlink>
+    <svg
+      id="main-svg"
+      ref="mainSvg"
+      class="main-svg"
+      :style="allStyles.svgStyle"
+    >
       <g class="main-g" ref="mainG">
         <g v-if="!!pathData">
           <path
@@ -8,8 +13,8 @@
             :style="allStyles.pathStyle"
             v-for="p in pathData"
             :key="p.id"
-            :d="p.data">
-          </path>
+            :d="p.data"
+          ></path>
         </g>
         <g
           v-for="(node, index) in nodeData"
@@ -20,9 +25,11 @@
           :tabindex="index"
           @focus="onNodeFocus(node.data)"
           @dblclick="onEditHtml($event, node.data)"
-          @keydown="onKeyDown($event, node.data)">
+          @keydown="onKeyDown($event, node.data)"
+        >
           <rect
-            x="0" y="0"
+            x="0"
+            y="0"
             :rx="node.rectRadius"
             :ry="node.rectRadius"
             :width="node.cw"
@@ -37,12 +44,9 @@
             :ry="node.rectRadius"
             :width="node.outLineW"
             :height="node.outLineH"
-            style="fill: transparent;"
+            style="fill: transparent"
           />
-          <g
-            v-if="node.mw"
-            :transform="`translate(${node.mx},${node.my})`"
-           >
+          <g v-if="node.mw" :transform="`translate(${node.mx},${node.my})`">
             <image
               v-for="(marker, index) in node.data.markerList"
               :key="marker"
@@ -65,14 +69,14 @@
             :width="node.tw"
             :height="node.th"
             :style="allStyles.textStyle(node)"
-            >
+          >
             <tspan
               v-for="line in node.multiline"
               :key="line"
               :x="0"
               :dy="node.tspanDy"
               :fill="allStyles.textStyle(node).color"
-              >
+            >
               {{ line }}
             </tspan>
           </text>
@@ -89,11 +93,11 @@
     custom-class="node-edit-dialog"
   >
     <div class="edit-wrapper">
-      <el-input v-model="nodeHtml" autosize type="textarea"/>
+      <el-input v-model="nodeHtml" autosize type="textarea" />
       <h2 v-if="markersOnEdit && markersOnEdit.length">移除标记</h2>
       <div class="markers">
         <div class="marker-item" v-for="maker in markersOnEdit" :key="maker">
-          <img :src="maker" alt="marker" class="marker-img">
+          <img :src="maker" alt="marker" class="marker-img" />
           <div class="remove" @click="onRemoveMarkers(maker)">
             <svg-icon icon="remove" />
           </div>
@@ -103,7 +107,9 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="showEditDialog = false">取消</el-button>
-        <el-button type="primary" @click="submitEdit"  native-type="submit">确认</el-button>
+        <el-button type="primary" @click="submitEdit" native-type="submit"
+          >确认</el-button
+        >
       </span>
     </template>
   </el-dialog>
@@ -111,7 +117,7 @@
 
 <script>
 import { defineComponent, onMounted, ref, onUnmounted, computed } from 'vue'
-import { useMapStore } from 'store/map'
+import useMapStore from 'store/map'
 import * as useContent from 'hooks/useContent'
 import useMapStyle from 'hooks/useMapStyle'
 import SvgIcon from 'components/SvgIcon.vue'
@@ -129,7 +135,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup (props) {
+  setup(props) {
     const mainSvg = ref()
     const mainG = ref()
     const measureSvg = ref()
@@ -241,17 +247,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/css/handler';
+@import '@/assets/css/handler';
 .map-container {
   width: 100%;
   height: calc(100% - 46px);
-  .main-svg{
+  .main-svg {
     width: 100%;
     height: 100%;
     .g-info {
       cursor: pointer;
       outline: none;
-      transition: .3s ease-in-out all;
+      transition: 0.3s ease-in-out all;
       &:hover {
         .border-rect {
           stroke: rgb(35 62 217 / 50%);

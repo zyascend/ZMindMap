@@ -46,23 +46,22 @@ export const dateFormatter = timestamp => {
     year = ''
   }
   if (month < 10) {
-    month = '0' + month
+    month = `0${month}`
   }
   if (day < 10) {
-    day = '0' + day
+    day = `0${day}`
   }
   if (minutes < 10) {
-    minutes = '0' + minutes
+    minutes = `0${minutes}`
   }
   return `${year ? `${year}年` : ''}${month}月${day}日 ${hour}:${minutes}`
 }
 
 // 防抖：动作绑定事件，动作发生后一定时间后触发事件，在这段时间内，如果该动作又发生，则重新等待一定时间再触发事件。
-export function debounce (fn, wait) {
+export function debounce(fn, wait) {
   let timer
-  return function () {
+  return function (...args) {
     const _this = this
-    const args = arguments
     if (timer) {
       clearTimeout(timer)
     }
@@ -73,11 +72,10 @@ export function debounce (fn, wait) {
 }
 
 // 节流： 动作绑定事件，动作发生后一段时间后触发事件，在这段时间内，如果动作又发生，则无视该动作，直到事件执行完后，才能重新触发。
-export function throttle (fn, wait) {
+export function throttle(fn, wait) {
   let timer
-  return function () {
+  return function (...args) {
     const _this = this
-    const args = arguments
     if (!timer) {
       timer = setTimeout(function () {
         timer = null
@@ -87,7 +85,7 @@ export function throttle (fn, wait) {
   }
 }
 
-export async function convertToImg (name) {
+export async function convertToImg(name) {
   const _svg = document.getElementById('main-svg')
   const _clone = _svg.cloneNode(true)
   // clone的Node无法获取到正常的宽高 需额外设置
@@ -95,13 +93,16 @@ export async function convertToImg (name) {
   _clone.viewBox.baseVal.width = _rect.width
   _clone.viewBox.baseVal.height = _rect.height
   // 添加水印
-  const _waterPrint = document.createElementNS('http://www.w3.org/2000/svg', 'text')
+  const _waterPrint = document.createElementNS(
+    'http://www.w3.org/2000/svg',
+    'text'
+  )
   _waterPrint.setAttribute('x', _rect.width - 150)
   _waterPrint.setAttribute('y', _rect.height - 10)
   _waterPrint.setAttribute('style', 'color:#000;opacity:0.2;font-size:16px;')
   _waterPrint.innerHTML = '@map.kimjisoo.cn'
   _clone.appendChild(_waterPrint)
-  await saveSvg.saveSvgAsPng(_clone, name + '.png')
+  await saveSvg.saveSvgAsPng(_clone, `${name}.png`)
 }
 
 const xssFilterOptions = {
@@ -142,15 +143,7 @@ const xssFilterOptions = {
     footer: ['style'],
     blockquote: ['style'],
     audio: ['autoplay', 'controls', 'loop', 'preload', 'src'],
-    video: [
-      'autoplay',
-      'controls',
-      'loop',
-      'preload',
-      'src',
-      'height',
-      'width'
-    ]
+    video: ['autoplay', 'controls', 'loop', 'preload', 'src', 'height', 'width']
   },
   css: {
     whiteList: {
@@ -166,7 +159,7 @@ const xssFilterOptions = {
     }
   }
 }
-export function xss (content) {
+export function xss(content) {
   return filterXSS(content, xssFilterOptions)
 }
 /**
@@ -175,8 +168,8 @@ export function xss (content) {
  * @param {*} url 可能是文件或者string
  * @returns
  */
-export async function getImageWH (url) {
-  return await new Promise((resolve, reject) => {
+export function getImageWH(url) {
+  return new Promise(resolve => {
     if (url instanceof File) {
       const reader = new FileReader()
       reader.onload = e => {
@@ -187,15 +180,15 @@ export async function getImageWH (url) {
     } else {
       resolve(url)
     }
-  }).then(url => {
-    return new Promise((resolve, reject) => {
+  }).then(res => {
+    return new Promise(resolve => {
       const img = new Image()
-      img.onload = function () {
+      img.onload = () => {
         const width = img.naturalWidth
         const height = img.naturalHeight
         resolve({ width, height })
       }
-      img.src = url
+      img.src = res
     })
   })
 }

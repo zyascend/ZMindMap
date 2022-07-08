@@ -8,15 +8,23 @@
   >
     <template #reference>
       <div class="profile">
-        <img class="avatar" :src="user?.avatar" :alt="user?.name || user?.email || ''">
+        <img
+          class="avatar"
+          :src="user?.avatar"
+          :alt="user?.name || user?.email || ''"
+        />
         <div class="nickname">
           <p>{{ user?.name || user?.email || '' }}</p>
-          <svg-icon icon="triangle"/>
+          <svg-icon icon="triangle" />
         </div>
       </div>
     </template>
     <div class="info">
-      <img class="avatar img" :src="user?.avatar" :alt="user?.name || user?.email || ''">
+      <img
+        class="avatar img"
+        :src="user?.avatar"
+        :alt="user?.name || user?.email || ''"
+      />
       <p>{{ user?.name || user?.email || '' }}</p>
     </div>
     <div class="divider" />
@@ -34,7 +42,8 @@
         v-model="isDarkMode"
         class="ml-2"
         active-color="#5856d5"
-        inactive-color="#b3b3ba"/>
+        inactive-color="#b3b3ba"
+      />
     </div>
     <div class="divider" />
     <div class="pop-item" @click="logout">
@@ -59,14 +68,20 @@
           <h1 class="title">个人信息</h1>
           <div class="content">
             <div class="avatar-wrapper">
-              <img class="avatar right-avatar" :src="user?.avatar" alt="avatar">
+              <img
+                class="avatar right-avatar"
+                :src="user?.avatar"
+                alt="avatar"
+              />
               <button class="avatar-edit" @click="onEditAvatar">编辑</button>
             </div>
             <div class="info">
               <p class="label">昵称</p>
               <div class="editer">
-                <p class="name" v-if="!isEditName">{{ user?.name || user?.email || '' }}</p>
-                <el-input v-else v-model="editedName" autofocus/>
+                <p class="name" v-if="!isEditName">
+                  {{ user?.name || user?.email || '' }}
+                </p>
+                <el-input v-else v-model="editedName" autofocus />
                 <button class="info-edit" @click="toggleEditName">
                   {{ isEditName ? '保存' : '修改' }}
                 </button>
@@ -91,35 +106,49 @@
   >
     <div class="avatar-wrapper">
       <div class="main-img">
-        <img :src="user.avatar" alt="avatar-edit" ref="mainImg">
+        <img :src="user.avatar" alt="avatar-edit" ref="mainImg" />
       </div>
       <div class="right-imgs" ref="rightImg">
-        <div class="img-large"/>
-        <div class="img-medium"/>
-        <div class="img-small"/>
+        <div class="img-large" />
+        <div class="img-medium" />
+        <div class="img-small" />
       </div>
     </div>
     <template #footer>
       <div class="footers">
         <div class="upload-btn">
-          <input type="file" accept=".png,.jpg,.gif" @change="fileChange($event)">
+          <input
+            type="file"
+            accept=".png,.jpg,.gif"
+            @change="fileChange($event)"
+          />
           <div class="upload-content">
             <svg-icon icon="upload" />
             <span>选择图片</span>
           </div>
         </div>
         <el-button>取消</el-button>
-        <el-button @click="submit" type="primary" :loading="isSaving">{{ isSaving ? '正在保存':'保存头像' }}</el-button>
+        <el-button @click="submit" type="primary" :loading="isSaving">{{
+          isSaving ? '正在保存' : '保存头像'
+        }}</el-button>
       </div>
     </template>
   </el-dialog>
 </template>
 
 <script>
-import { computed, defineComponent, ref, watch, nextTick, reactive, toRefs } from 'vue'
+import {
+  computed,
+  defineComponent,
+  ref,
+  watch,
+  nextTick,
+  reactive,
+  toRefs
+} from 'vue'
 import Cropper from 'cropperjs'
-import { useWebsiteStore } from '@/store/website'
-import { useUserStore } from '@/store/user'
+import useWebsiteStore from '@/store/website'
+import useUserStore from '@/store/user'
 import { useRouter } from 'vue-router'
 import SvgIcon from '@/components/SvgIcon.vue'
 import 'cropperjs/dist/cropper.css'
@@ -129,7 +158,7 @@ export default defineComponent({
   components: {
     SvgIcon
   },
-  setup () {
+  setup() {
     const websiteStore = useWebsiteStore()
     const userStore = useUserStore()
     const router = useRouter()
@@ -156,20 +185,22 @@ export default defineComponent({
 
     const submit = () => {
       editStatus.isSaving = true
-      myCropper.getCroppedCanvas({
-        imageSmoothingQuality: 'high'
-      }).toBlob(async (blob) => {
-        const file = new File([blob], curFileName)
-        await userStore.updateUser({
-          user: {
-            ...user.value,
-            name: editStatus.editedName
-          },
-          file
+      myCropper
+        .getCroppedCanvas({
+          imageSmoothingQuality: 'high'
         })
-        editStatus.isSaving = false
-        editStatus.showEditAvatar = !editStatus.showEditAvatar
-      })
+        .toBlob(async blob => {
+          const file = new File([blob], curFileName)
+          await userStore.updateUser({
+            user: {
+              ...user.value,
+              name: editStatus.editedName
+            },
+            file
+          })
+          editStatus.isSaving = false
+          editStatus.showEditAvatar = !editStatus.showEditAvatar
+        })
     }
 
     const logout = () => {
@@ -255,7 +286,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/handler";
+@import '@/assets/css/handler';
 .avatar {
   width: 28px;
   height: 28px;
@@ -295,7 +326,7 @@ export default defineComponent({
     &:hover {
       @include background_color(bc_hover_nickname);
     }
-    &>p {
+    & > p {
       max-width: 140px;
       margin: 0 2px 0 0;
       overflow: hidden;
@@ -305,7 +336,7 @@ export default defineComponent({
       text-overflow: ellipsis;
       white-space: nowrap;
     }
-    &>svg {
+    & > svg {
       @include fill_color(fc_nickname);
       width: 10px;
       height: 10px;
@@ -332,9 +363,8 @@ export default defineComponent({
       width: 42px;
       height: 42px;
       margin-bottom: 10;
-
     }
-    &>p{
+    & > p {
       padding: 0 20px;
       margin-top: 10px;
       overflow: hidden;
@@ -425,7 +455,7 @@ export default defineComponent({
             width: 3px;
             height: 100%;
             color: #5856d5;
-            content: "";
+            content: '';
             background: #5856d5;
           }
         }
@@ -476,7 +506,8 @@ export default defineComponent({
                 border: none;
                 border-radius: 5px;
                 outline: none;
-                transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
+                transition: background-color 0.2s ease 0s, color 0.2s ease 0s,
+                  box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                 &:hover {
                   @include background_color(bc_avatar_btn_hover);
                 }
@@ -518,7 +549,8 @@ export default defineComponent({
                   border: none;
                   border-radius: 4px;
                   outline: none;
-                  transition: background-color 0.2s ease 0s, color 0.2s ease 0s, box-shadow 0.2s ease 0s, border 0.2s ease 0s;
+                  transition: background-color 0.2s ease 0s, color 0.2s ease 0s,
+                    box-shadow 0.2s ease 0s, border 0.2s ease 0s;
                   @include centerFlex;
                   &:hover {
                     @include background_color(bc_avatar_btn_hover);
@@ -599,15 +631,15 @@ export default defineComponent({
       color: #606266;
       text-align: center;
       cursor: pointer;
-      border: 1px solid #DCDFE6;
+      border: 1px solid #dcdfe6;
       border-radius: 4px;
       &:hover {
-        color: #409EFF;
+        color: #409eff;
         background-color: #ecf5ff;
         border-color: #c6e2ff;
         .upload-content {
           svg {
-            fill: #409EFF;
+            fill: #409eff;
           }
         }
       }
@@ -634,6 +666,6 @@ export default defineComponent({
   }
 }
 >>> .el-overlay {
-  background-color: rgba(0,0,0,.2) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
 }
 </style>

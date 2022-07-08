@@ -29,7 +29,8 @@
         v-for="color in colorList"
         :key="color"
         @click="onColorSelect(color)"
-        :style="`color:${color}`">
+        :style="`color:${color}`"
+      >
         A
       </span>
     </div>
@@ -57,13 +58,24 @@ export default defineComponent({
       required: true
     }
   },
-  setup (props, context) {
-    const colorList = ref(['#66666d', '#eab363', '#bd4a37', '#79c466', '#6ba6e9', '#7a81bf'])
+  setup(props, context) {
+    const colorList = ref([
+      '#66666d',
+      '#eab363',
+      '#bd4a37',
+      '#79c466',
+      '#6ba6e9',
+      '#7a81bf'
+    ])
     const onLeave = () => {
-      document.getElementById(`node-${props.node.id}`).classList.remove('node-hover')
+      document
+        .getElementById(`node-${props.node.id}`)
+        .classList.remove('node-hover')
     }
     const onEnter = () => {
-      document.getElementById(`node-${props.node.id}`).classList.add('node-hover')
+      document
+        .getElementById(`node-${props.node.id}`)
+        .classList.add('node-hover')
     }
     const onColorSelect = color => {
       context.emit('onColorSelect', { color, node: props.node })
@@ -79,7 +91,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "@/assets/css/handler";
+@import '@/assets/css/handler';
 .bullet-wrapper {
   width: 18px;
   height: 18px;
@@ -156,6 +168,6 @@ export default defineComponent({
   }
 }
 >>> .el-overlay {
-  background-color: rgba(0,0,0,.2) !important;
+  background-color: rgba(0, 0, 0, 0.2) !important;
 }
 </style>

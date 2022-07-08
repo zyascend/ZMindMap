@@ -1,7 +1,11 @@
 <template>
   <div class="bread-wrapper">
     <template v-for="item in list" :key="item.id">
-      <router-link :to="`/app/folder/${ item.id }`" active-class="link-active" class="link">
+      <router-link
+        :to="`/app/folder/${item.id}`"
+        active-class="link-active"
+        class="link"
+      >
         <span>{{ item.name }}</span>
       </router-link>
       <SvgIcon class="icon" icon="arrow-right" />
@@ -24,8 +28,10 @@ export default defineComponent({
       required: true
     }
   },
-  setup (props) {
-    const showSeparator = computed(() => index => index !== props.list.length - 1)
+  setup(props) {
+    const showSeparator = computed(
+      () => index => index !== props.list.length - 1
+    )
     return {
       showSeparator
     }

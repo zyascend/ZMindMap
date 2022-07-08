@@ -1,6 +1,8 @@
+/* eslint-disable no-param-reassign */
 import { linkHorizontal } from 'd3-shape'
-export class TreeTable {
-  constructor (measureSvg) {
+
+export default class LogicTree {
+  constructor(measureSvg) {
     this.measureSvg = measureSvg
     this.defaultWidth = 30
     this.maxWidth = 250
@@ -18,10 +20,12 @@ export class TreeTable {
     this.rectRadius = 5
     this.strokeWidth = 0
 
-    this.bézierCurveGenerator = linkHorizontal().x(d => d.x).y(d => d.y)
+    this.bézierCurveGenerator = linkHorizontal()
+      .x(d => d.x)
+      .y(d => d.y)
   }
 
-  create (root) {
+  create(root) {
     this.measureWidthAndHeight(root)
     this.calculateXY(root)
     const paths = this.calculatePath(root)
@@ -31,7 +35,7 @@ export class TreeTable {
     }
   }
 
-  measureWidthAndHeight (root) {
+  measureWidthAndHeight(root) {
     // 后续遍历 初步计算 父依赖于子
     root.eachAfter(node => {
       this.measureImageSize(node)
@@ -41,7 +45,7 @@ export class TreeTable {
     })
   }
 
-  measureImageSize (node) {
+  measureImageSize(node) {
     const { imgInfo } = node.data
     if (imgInfo) {
       node.iw = imgInfo.width
@@ -53,15 +57,25 @@ export class TreeTable {
     }
   }
 
-  measureTextSize (node) {
-    if (!this.measureSvg) { throw new Error('measureSvg undefined') }
-    const { depth, data: { html } } = node
+  measureTextSize(node) {
+    if (!this.measureSvg) {
+      throw new Error('measureSvg undefined')
+    }
+    const {
+      depth,
+      data: { html }
+    } = node
     // 根节点字大一点
     const fontSize = depth === 0 ? 16 : 14
     const lineHeight = fontSize + 2
     const t = this.measureSvg.append('text')
-    t.selectAll('tspan').data([html]).enter().append('tspan')
-      .text((d) => d).attr('x', 0).attr('style', `font-size:${fontSize}px;line-height:${lineHeight}px;`)
+    t.selectAll('tspan')
+      .data([html])
+      .enter()
+      .append('tspan')
+      .text(d => d)
+      .attr('x', 0)
+      .attr('style', `font-size:${fontSize}px;line-height:${lineHeight}px;`)
     const { width, height } = t.node().getBBox()
     t.remove()
 
@@ -73,10 +87,11 @@ export class TreeTable {
       return
     }
 
-    const lines = Math.floor(width / this.maxWidth) + (width % this.maxWidth ? 1 : 0)
+    const lines =
+      Math.floor(width / this.maxWidth) + (width % this.maxWidth ? 1 : 0)
     const multiline = []
-    const lineLength = Math.floor(html.length * this.maxWidth / width)
-    for (let i = 0; i < html.length; i = i + lineLength) {
+    const lineLength = Math.floor((html.length * this.maxWidth) / width)
+    for (let i = 0; i < html.length; i += lineLength) {
       multiline.push(html.substr(i, lineLength))
     }
     node.multiline = multiline
@@ -85,8 +100,10 @@ export class TreeTable {
     node.tspanDy = height
   }
 
-  measureMarkers (node) {
-    const { data: { markerList } } = node
+  measureMarkers(node) {
+    const {
+      data: { markerList }
+    } = node
     if (!markerList?.length) {
       node.mw = 0
       node.mh = 0
@@ -97,7 +114,7 @@ export class TreeTable {
     node.mw = this.defaultMarkerWidth * size - this.markerOverlap * (size - 1)
   }
 
-  measureWH (node) {
+  measureWH(node) {
     node.rectRadius = this.rectRadius
     node.strokeWidth = this.strokeWidth
 
@@ -105,10 +122,14 @@ export class TreeTable {
 
     const tmGap = node.mw ? this.textMarkersGap : 0
     const tiGap = node.ih ? this.textMarkersGap : 0
-    node.cw = Math.max(Math.max(node.tw, node.iw) + node.mw + this.padding * 2 + tmGap
-      , this.defaultWidth)
-    node.ch = Math.max(this.padding * 2 + node.ih + tiGap + node.th
-      , this.defaultHeight)
+    node.cw = Math.max(
+      Math.max(node.tw, node.iw) + node.mw + this.padding * 2 + tmGap,
+      this.defaultWidth
+    )
+    node.ch = Math.max(
+      this.padding * 2 + node.ih + tiGap + node.th,
+      this.defaultHeight
+    )
     const { children } = node
     if (!children) {
       node.w = node.cw
@@ -124,16 +145,20 @@ export class TreeTable {
     node.outLineH = node.ch - node.outLineOffset * 2
   }
 
-  findLastBrother (node) {
+  findRealLastNode(node) {
     const brothers = node.parent.children
+    let bro
+    // eslint-disable-next-line no-restricted-syntax
     for (const index in brothers) {
       if (node.data.id === brothers[index].data.id) {
-        return brothers[index - 1]
+        bro = brothers[index - 1]
+        break
       }
     }
+    return bro
   }
 
-  calculateInnerXY (node) {
+  calculateInnerXY(node) {
     const { mw, th, mh, ch } = node
     node.mx = this.padding
     node.tx = node.mx + mw + (mw ? this.textMarkersGap : 0)
@@ -144,7 +169,7 @@ export class TreeTable {
     node.iy = this.padding
   }
 
-  calculateXY (root) {
+  calculateXY(root) {
     let lastNode
     // 前序遍历 计算X
     root.eachBefore(node => {
@@ -187,7 +212,7 @@ export class TreeTable {
     })
   }
 
-  findBottom (node) {
+  findBottom(node) {
     let bottom = node
     while (bottom?.children) {
       bottom = bottom.children[bottom.children.length - 1]
@@ -195,13 +220,13 @@ export class TreeTable {
     return bottom
   }
 
-  calculatePath (root) {
+  calculatePath(root) {
     const links = root.links()
     const paths = links.map(l => this.getPathData(l))
     return paths
   }
 
-  getPathData (link) {
+  getPathData(link) {
     const { source, target } = link
     const { x: sx, y: sy, cw, ch: sh, id: sid } = source
     const { x: tx, y: ty, ch, id: tid } = target
@@ -222,5 +247,3 @@ export class TreeTable {
     }
   }
 }
-
-export default TreeTable

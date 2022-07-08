@@ -1,5 +1,6 @@
 <script>
 import { defineComponent, computed } from 'vue'
+
 export default defineComponent({
   name: 'SvgIcon',
   props: {
@@ -7,19 +8,18 @@ export default defineComponent({
     class: { type: String },
     icon: { type: String, required: true }
   },
-  setup (props) {
+  setup(props) {
     const className = computed(() => {
       if (props.class) {
         return `svg-icon ${props.class}`
-      } else {
-        return 'svg-icon'
       }
+      return 'svg-icon'
     })
     const icon = computed(() => {
       return `#icon-${props.icon}`
     })
     return () => (
-      <svg class={className.value} aria-hidden='true'>
+      <svg class={className.value} aria-hidden="true">
         <use xlinkHref={icon.value} />
       </svg>
     )
@@ -28,8 +28,8 @@ export default defineComponent({
 </script>
 
 <style scoped>
-  .svg-icon {
-    overflow: hidden;
-    fill: currentColor;
-  }
+.svg-icon {
+  overflow: hidden;
+  fill: currentColor;
+}
 </style>

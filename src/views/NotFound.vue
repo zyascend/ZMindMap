@@ -1,16 +1,13 @@
 <template>
   <div class="container">
-    <svg-icon icon="404"/>
+    <svg-icon icon="404" />
     <h1>页面走丢了</h1>
-    <el-button
-      type="primary"
-      @click="toIndex">
-      回到主页
-    </el-button>
+    <el-button type="primary" @click="toIndex"> 回到主页 </el-button>
   </div>
 </template>
 <script setup>
 import SvgIcon from '@/components/SvgIcon.vue'
+
 const toIndex = () => {
   window.location.replace('/')
 }

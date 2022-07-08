@@ -1,4 +1,5 @@
-import { useWebsiteStore } from '@/store/website'
+import useWebsiteStore from '@/store/website'
+
 const websiteStore = useWebsiteStore()
 const colorArrays = [
   {
@@ -43,14 +44,16 @@ const colorArrays = [
   }
 ]
 
-export function getStyleList () {
+export function getStyleList() {
   return colorArrays.map(style => Object.values(style))
 }
 
-export default function useMapStyle (styles = { colorId: 'COLOR-Sakura-2' }) {
+export default function useMapStyle(styles = { colorId: 'COLOR-Sakura-2' }) {
   const { colorId } = styles
   const allColors = websiteStore.styles.colorList
-  const { style: { colors } } = allColors.find(item => item.id === colorId)
+  const {
+    style: { colors }
+  } = allColors.find(item => item.id === colorId)
   return {
     svgStyle: {
       width: '100%',
