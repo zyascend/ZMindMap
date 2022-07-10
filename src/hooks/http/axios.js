@@ -1,21 +1,21 @@
 /* eslint-disable no-param-reassign */
 import axios from 'axios'
-import useUserStore from '@/store/user'
-import router from '@/router/index'
-import { ErrorTip } from './utils'
+import { ErrorTip } from '@/hooks/utils'
 
 /**
  * 跳转登录页
  * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
  */
 const toLogin = () => {
-  console.log(router)
-  router.replace({
-    path: '/login',
-    query: {
-      redirect: router.currentRoute.fullPath
-    }
-  })
+  // console.log(router)
+  // router.replace({
+  //   path: '/login',
+  //   query: {
+  //     redirect: router.currentRoute.fullPath
+  //   }
+  // })
+  console.log(window.location.href)
+  window.location.replace(`/login?redirect=${window.location.href}`)
 }
 
 /**
@@ -65,7 +65,7 @@ instance.defaults.headers.post['Content-Type'] = 'application/json'
  */
 instance.interceptors.request.use(
   config => {
-    const token = useUserStore().getToken
+    const token = localStorage.getItem('token')
     token && (config.headers.Authorization = `Bearer ${token}`)
     return config
   },

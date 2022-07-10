@@ -2,8 +2,7 @@
  * 用户相关状态
  */
 import { defineStore } from 'pinia'
-import API from '@/hooks/api'
-import { asyncHttp } from './handler'
+import { userApi } from '@/hooks/http'
 
 const useUserStore = defineStore('user', {
   state: () => ({
@@ -17,10 +16,12 @@ const useUserStore = defineStore('user', {
   actions: {
     async login(payload) {
       const { isLogin, loginForm } = payload
-      const data = await asyncHttp(isLogin ? API.login : API.register, {
-        method: 'post',
-        data: loginForm
-      })
+      let data
+      if (isLogin) {
+        data = await userApi.login(loginForm)
+      } else {
+        data = await userApi.register(loginForm)
+      }
       this.setUser(data)
     },
     setUser(data) {
@@ -35,14 +36,12 @@ const useUserStore = defineStore('user', {
       localStorage.clear()
     },
     async updateUser(data) {
-      const url = `${API.editProfile}/${this.user._id}`
       const formData = new FormData()
       formData.append('user', encodeURIComponent(JSON.stringify(data.user)))
       if (data.file) {
         formData.append('file', data.file)
       }
-      const res = await asyncHttp(url, {
-        method: 'post',
+      const res = await userApi.updateUser({
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data;'

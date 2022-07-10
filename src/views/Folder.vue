@@ -85,7 +85,7 @@ export default defineComponent({
     const websiteStore = useWebsiteStore()
     const router = useRouter()
     const route = useRoute()
-    const folderId = route.params?.id
+    const folderId = route.params?.id || '0'
     const navigationList = computed(() => docStore.getNavigationLists(folderId))
     const docTableData = computed(() => docStore.getAllDocuments(folderId))
     const hasData = computed(() => docTableData.value?.length)

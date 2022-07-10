@@ -3,11 +3,9 @@
  * 导图和大纲笔记页面相关状态
  */
 import { defineStore } from 'pinia'
-import API from '@/hooks/api'
 import { deepClone, ErrorTip } from '@/hooks/utils'
 import { select } from 'd3-selection'
-import useUserStore from './user'
-import * as handler from './handler'
+import { mapApi } from '@/hooks/http'
 
 const useMapStore = defineStore('map', {
   state: () => ({
@@ -127,30 +125,23 @@ const useMapStore = defineStore('map', {
       }
     },
     async fetchMap(docId) {
-      const { user } = useUserStore()
-      const url = `${API.getDocContent}/${user._id}/${docId}`
-      const res = await handler.asyncHttp(url)
+      const res = await mapApi.fetchMap()
       this.setData(res)
       // eslint-disable-next-line semi-style
       ;[this.treedData, this.noteList] = this.transform(deepClone(this.content))
     },
     async remoteUpdateMap(data) {
-      const { user } = useUserStore()
-      const url = `${API.setDocContent}/${user._id}`
-      const res = await handler.asyncHttp(url, { method: 'post', data })
+      const res = await mapApi.remoteUpdateMap(data)
       this.isSaving = false
       this.setData(res)
     },
     async pasteImg({ file, nodeId, width, height }) {
-      const { user } = useUserStore()
-      const url = `${API.uploadImg}/${user._id}`
       const formData = new FormData()
       if (file) {
         formData.append('file', file)
       }
       // 首先上传图片，获得图片的url
-      const imgUrl = await handler.asyncHttp(url, {
-        method: 'post',
+      const imgUrl = await mapApi.uploadImg({
         data: formData,
         headers: {
           'Content-Type': 'multipart/form-data;'

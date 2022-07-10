@@ -1,12 +1,12 @@
-export default {
+const apis = {
   register: '/users/register',
   login: '/users/login',
   editProfile: 'users/editProfile',
+  getCurrentUser: 'users/getUser',
 
   getCode: '/code/generate',
   getCodeStatus: '/code/getStatus',
 
-  getCurrentUser: 'users/getUser',
   getAllDocs: 'docs/getAllDocs',
   getDocContent: 'docs/getDocContent',
   setFolder: 'docs/setFolder',
@@ -17,3 +17,5 @@ export default {
 
   getStyles: 'styles'
 }
+
+export default apis

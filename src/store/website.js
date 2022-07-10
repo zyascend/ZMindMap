@@ -2,8 +2,7 @@
  * 网站页面相关状态
  */
 import { defineStore } from 'pinia'
-import API from '@/hooks/api'
-import { asyncHttp } from './handler'
+import { websiteApi } from '@/hooks/http'
 
 const useWebsiteStore = defineStore({
   id: 'website',
@@ -36,7 +35,7 @@ const useWebsiteStore = defineStore({
       window.document.documentElement.setAttribute('data-theme', mode)
     },
     async fetchMapStyles() {
-      const data = await asyncHttp(API.getStyles)
+      const data = await websiteApi.fetchMapStyles()
       this.styles = data
     }
   },
