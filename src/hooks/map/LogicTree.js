@@ -1,9 +1,9 @@
 /* eslint-disable no-param-reassign */
 import { linkHorizontal } from 'd3-shape'
+import { select } from 'd3-selection'
 
 export default class LogicTree {
-  constructor(measureSvg) {
-    this.measureSvg = measureSvg
+  constructor() {
     this.defaultWidth = 30
     this.maxWidth = 250
     this.defaultHeight = 40
@@ -58,9 +58,6 @@ export default class LogicTree {
   }
 
   measureTextSize(node) {
-    if (!this.measureSvg) {
-      throw new Error('measureSvg undefined')
-    }
     const {
       depth,
       data: { html }
@@ -68,7 +65,8 @@ export default class LogicTree {
     // 根节点字大一点
     const fontSize = depth === 0 ? 16 : 14
     const lineHeight = fontSize + 2
-    const t = this.measureSvg.append('text')
+    const elMeasureSvg = select(document.getElementById('measureSvg'))
+    const t = elMeasureSvg.append('text')
     t.selectAll('tspan')
       .data([html])
       .enter()
@@ -186,7 +184,7 @@ export default class LogicTree {
       } else if (depth > lastDepth) {
         node.x = x + cw + this.gapX
       } else {
-        const bro = this.findLastBrother(node)
+        const bro = this.findRealLastNode(node)
         node.x = bro.x
       }
       lastNode = node

@@ -4,21 +4,10 @@
  */
 import { defineStore } from 'pinia'
 import { deepClone, ErrorTip } from '@/hooks/utils'
-import { select } from 'd3-selection'
 import { mapApi } from '@/hooks/http'
 
 const useMapStore = defineStore('map', {
   state: () => ({
-    refs: {
-      mainSvg: undefined,
-      mainG: undefined,
-      measureSvg: undefined
-    },
-    selections: {
-      mainSvg: undefined,
-      mainG: undefined,
-      measureSvg: undefined
-    },
     mapData: undefined,
     content: undefined,
     noteList: undefined,
@@ -34,12 +23,6 @@ const useMapStore = defineStore('map', {
       state.noteList ? state.noteList.splice(1) : undefined
   },
   actions: {
-    setRefs(refs) {
-      this.refs = refs
-      Object.keys(refs).forEach(key => {
-        this.selections[key] = select(refs[key])
-      })
-    },
     setIdFocused(id) {
       this.idFocused = id
     },
@@ -125,7 +108,7 @@ const useMapStore = defineStore('map', {
       }
     },
     async fetchMap(docId) {
-      const res = await mapApi.fetchMap()
+      const res = await mapApi.fetchMap(docId)
       this.setData(res)
       // eslint-disable-next-line semi-style
       ;[this.treedData, this.noteList] = this.transform(deepClone(this.content))

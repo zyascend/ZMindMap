@@ -1,12 +1,7 @@
 <template>
   <div class="map-container" id="mapContainer">
-    <svg
-      id="main-svg"
-      ref="mainSvg"
-      class="main-svg"
-      :style="allStyles.svgStyle"
-    >
-      <g class="main-g" ref="mainG">
+    <svg id="mainSvg" class="main-svg" :style="allStyles.svgStyle">
+      <g class="main-g" id="mainG">
         <g v-if="!!pathData">
           <path
             class="link"
@@ -83,7 +78,6 @@
         </g>
       </g>
     </svg>
-    <svg ref="measureSvg"></svg>
   </div>
   <el-dialog
     v-model="showEditDialog"
@@ -116,7 +110,7 @@
 </template>
 
 <script>
-import { defineComponent, onMounted, ref, onUnmounted, computed } from 'vue'
+import { defineComponent, ref, onUnmounted, computed } from 'vue'
 import useMapStore from 'store/map'
 import * as useContent from 'hooks/useContent'
 import useMapStyle from 'hooks/useMapStyle'
@@ -136,10 +130,6 @@ export default defineComponent({
     }
   },
   setup(props) {
-    const mainSvg = ref()
-    const mainG = ref()
-    const measureSvg = ref()
-
     const pathData = computed(() => props.renderData?.paths || undefined)
     const nodeData = computed(() => props.renderData?.nodes || [])
     const allStyles = computed(() => useMapStyle(props.curStyle))
@@ -151,13 +141,6 @@ export default defineComponent({
 
     const store = useMapStore()
 
-    onMounted(() => {
-      store.setRefs({
-        mainSvg: mainSvg.value,
-        mainG: mainG.value,
-        measureSvg: measureSvg.value
-      })
-    })
     onUnmounted(() => {
       document.onkeydown = undefined
     })
@@ -237,10 +220,7 @@ export default defineComponent({
       onRemoveMarkers,
       submitEdit,
       isShowCollapse,
-      onNodeFocus,
-      mainSvg,
-      mainG,
-      measureSvg
+      onNodeFocus
     }
   }
 })
@@ -251,6 +231,7 @@ export default defineComponent({
 .map-container {
   width: 100%;
   height: calc(100% - 46px);
+  overflow: hidden;
   .main-svg {
     width: 100%;
     height: 100%;
