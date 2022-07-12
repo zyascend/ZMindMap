@@ -1,7 +1,10 @@
 /* eslint-disable no-param-reassign */
-export default class TreeTable {
-  constructor(measureSvg) {
-    this.measureSvg = measureSvg
+import Tree from './Tree'
+
+export default class TableTree extends Tree {
+  constructor() {
+    super()
+
     this.defaultWidth = 150
     this.maxWidth = 350
     this.defaultHeight = 60
@@ -51,74 +54,6 @@ export default class TreeTable {
       node.outLineW = node.cw - 2 * node.outLineOffset
       node.outLineH = node.ch - 2 * node.outLineOffset
     })
-  }
-
-  measureImageSize(node) {
-    const { imgInfo } = node.data
-    if (imgInfo) {
-      node.iw = imgInfo.width
-      node.ih = imgInfo.height
-    } else {
-      node.iw = 0
-      node.ih = 0
-    }
-  }
-
-  measureTextSize(node) {
-    if (!this.measureSvg) {
-      throw new Error('measureSvg undefined')
-    }
-    const {
-      depth,
-      data: { html }
-    } = node
-    // 根节点字大一点
-    const fontSize = depth === 0 ? 16 : 14
-    const lineHeight = fontSize + 2
-    const t = this.measureSvg.append('text')
-    t.selectAll('tspan')
-      .data([html])
-      .enter()
-      .append('tspan')
-      .text(d => d)
-      .attr('x', 0)
-      .attr('style', `font-size:${fontSize}px;line-height:${lineHeight}px;`)
-    const { width, height } = t.node().getBBox()
-    t.remove()
-
-    if (width < this.maxWidth) {
-      node.multiline = [html]
-      node.tw = width
-      node.th = height
-      node.tspanDy = height
-      return
-    }
-
-    const lines =
-      Math.floor(width / this.maxWidth) + (width % this.maxWidth ? 1 : 0)
-    const multiline = []
-    const lineLength = Math.floor((html.length * this.maxWidth) / width)
-    for (let i = 0; i < html.length; i += lineLength) {
-      multiline.push(html.substr(i, lineLength))
-    }
-    node.multiline = multiline
-    node.tw = this.maxWidth
-    node.th = height * lines
-    node.tspanDy = height
-  }
-
-  measureMarkers(node) {
-    const {
-      data: { markerList }
-    } = node
-    if (!markerList?.length) {
-      node.mw = 0
-      node.mh = 0
-      return
-    }
-    node.mh = this.defaultMarkerHeight
-    const size = markerList.length
-    node.mw = this.defaultMarkerWidth * size - this.markerOverlap * (size - 1)
   }
 
   measureWH(node) {

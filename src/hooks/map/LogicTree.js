@@ -1,9 +1,10 @@
 /* eslint-disable no-param-reassign */
 import { linkHorizontal } from 'd3-shape'
-import { select } from 'd3-selection'
+import Tree from './Tree'
 
-export default class LogicTree {
+export default class LogicTree extends Tree {
   constructor() {
+    super()
     this.defaultWidth = 30
     this.maxWidth = 250
     this.defaultHeight = 40
@@ -13,10 +14,8 @@ export default class LogicTree {
     this.defaultMarkerWidth = 18
     this.markerOverlap = 7
     this.textMarkersGap = 10
-
     this.gapY = 20
     this.gapX = 40
-
     this.rectRadius = 5
     this.strokeWidth = 0
 
@@ -43,73 +42,6 @@ export default class LogicTree {
       this.measureMarkers(node)
       this.measureWH(node)
     })
-  }
-
-  measureImageSize(node) {
-    const { imgInfo } = node.data
-    if (imgInfo) {
-      node.iw = imgInfo.width
-      node.ih = imgInfo.height
-      console.log(node.ih)
-    } else {
-      node.iw = 0
-      node.ih = 0
-    }
-  }
-
-  measureTextSize(node) {
-    const {
-      depth,
-      data: { html }
-    } = node
-    // 根节点字大一点
-    const fontSize = depth === 0 ? 16 : 14
-    const lineHeight = fontSize + 2
-    const elMeasureSvg = select(document.getElementById('measureSvg'))
-    const t = elMeasureSvg.append('text')
-    t.selectAll('tspan')
-      .data([html])
-      .enter()
-      .append('tspan')
-      .text(d => d)
-      .attr('x', 0)
-      .attr('style', `font-size:${fontSize}px;line-height:${lineHeight}px;`)
-    const { width, height } = t.node().getBBox()
-    t.remove()
-
-    if (width < this.maxWidth) {
-      node.multiline = [html]
-      node.tw = width
-      node.th = height
-      node.tspanDy = height
-      return
-    }
-
-    const lines =
-      Math.floor(width / this.maxWidth) + (width % this.maxWidth ? 1 : 0)
-    const multiline = []
-    const lineLength = Math.floor((html.length * this.maxWidth) / width)
-    for (let i = 0; i < html.length; i += lineLength) {
-      multiline.push(html.substr(i, lineLength))
-    }
-    node.multiline = multiline
-    node.tw = this.maxWidth
-    node.th = height * lines
-    node.tspanDy = height
-  }
-
-  measureMarkers(node) {
-    const {
-      data: { markerList }
-    } = node
-    if (!markerList?.length) {
-      node.mw = 0
-      node.mh = 0
-      return
-    }
-    node.mh = this.defaultMarkerHeight
-    const size = markerList.length
-    node.mw = this.defaultMarkerWidth * size - this.markerOverlap * (size - 1)
   }
 
   measureWH(node) {
