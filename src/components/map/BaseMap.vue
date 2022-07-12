@@ -4,20 +4,12 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  onMounted,
-  ref,
-  onUnmounted,
-  nextTick,
-  watchEffect,
-  computed
-} from 'vue'
+import { defineComponent, ref, onUnmounted, watchEffect, computed } from 'vue'
 import useMapStore from 'store/map'
 import useMap from 'hooks/map/useMap'
-import useZoomMap from 'hooks/useZoomMap'
 import MapRender from 'components/map/MapRender'
 import MapBar from 'components/map/MapBar'
+import useAutoZoom from '@/hooks/map/useAutoZoom'
 
 export default defineComponent({
   name: 'BaseMap',
@@ -28,48 +20,14 @@ export default defineComponent({
     const curStyle = computed(() => store?.mapData.styles || {})
     const renderData = ref({})
 
-    const MutationObserver =
-      window.MutationObserver ||
-      window.WebKitMutationObserver ||
-      window.MozMutationObserver
-    let sizeObserver
-    let zoomTimer
-
-    onMounted(() => {
-      setObserver()
-    })
+    useAutoZoom(renderData)
     onUnmounted(() => {
       document.onkeydown = undefined
-      if (sizeObserver) {
-        sizeObserver.disconnect()
-        sizeObserver.takeRecords()
-        sizeObserver = null
-      }
-      clearTimeout(zoomTimer)
     })
     watchEffect(() => {
       if (!store.treedData) return
       renderData.value = useMap(store.treedData, curStyle.value.mapStyleId)
-      nextTick(() => {
-        zoomTimer = setTimeout(() => {
-          useZoomMap()
-        }, 350)
-      })
     })
-    const setObserver = () => {
-      // 监听侧边栏的打开/折叠 使Map适应屏幕
-      sizeObserver = new MutationObserver(mutations => {
-        zoomTimer = setTimeout(() => {
-          useZoomMap()
-        }, 500)
-      })
-      const sideContent = document.getElementById('siderContent')
-      sizeObserver.observe(sideContent, {
-        attributes: true,
-        attributeFilter: ['style'],
-        attributeOldValue: true
-      })
-    }
     return {
       curStyle,
       renderData

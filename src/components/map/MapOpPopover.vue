@@ -22,7 +22,7 @@ import { defineComponent, computed, onUnmounted } from 'vue'
 import useMapStore from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
 import { ErrorTip, convertToImg } from '@/hooks/utils'
-import useZoomMap from '@/hooks/useZoomMap'
+import zoomMap from '@/hooks/map/zoomMap'
 import { ElLoading } from 'element-plus'
 
 export default defineComponent({
@@ -51,7 +51,7 @@ export default defineComponent({
         text: '努力导出中...',
         background: 'rgba(0, 0, 0, 0.5)'
       })
-      useZoomMap()
+      zoomMap()
       timer = setTimeout(async () => {
         await convertToImg(mapData.value?.name)
         loading.close()

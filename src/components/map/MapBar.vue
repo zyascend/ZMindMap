@@ -98,7 +98,7 @@
 import { computed } from 'vue'
 import useWebsiteStore from '@/store/website'
 import useMapStore from '@/store/map'
-import useZoomMap from 'hooks/useZoomMap'
+import zoomMap from '@/hooks/map/zoomMap'
 import SvgIcon from 'components/SvgIcon.vue'
 
 const websiteStore = useWebsiteStore()
@@ -109,7 +109,7 @@ const styles = computed(() => websiteStore.styles)
 const curStyle = computed(() => mapStore?.mapData.styles)
 
 const fitView = () => {
-  useZoomMap()
+  zoomMap()
 }
 
 const onChangeMapStyle = async mapStyleId => {
