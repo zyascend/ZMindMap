@@ -21,9 +21,9 @@
 import { defineComponent, computed, onUnmounted } from 'vue'
 import useMapStore from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
-import { ErrorTip, convertToImg } from '@/hooks/utils'
-import zoomMap from '@/hooks/map/zoomMap'
-import { ElLoading } from 'element-plus'
+import { ErrorTip } from '@/hooks/utils'
+import svg2Png from '@/hooks/svg2Png'
+import { ElLoading, ElMessage } from 'element-plus'
 
 export default defineComponent({
   name: 'MapOpPopover',
@@ -40,8 +40,7 @@ export default defineComponent({
     const store = useMapStore()
     const mapData = computed(() => store.mapData)
     let loading
-    let timer
-    const download = () => {
+    const download = async () => {
       if (!props.isMap) {
         ErrorTip('请切换到导图再试')
         return
@@ -51,15 +50,18 @@ export default defineComponent({
         text: '努力导出中...',
         background: 'rgba(0, 0, 0, 0.5)'
       })
-      zoomMap()
-      timer = setTimeout(async () => {
-        await convertToImg(mapData.value?.name)
-        loading.close()
-      }, 1000)
+      svg2Png('mainSvg', mapData.value?.name)
+        .then(() => {
+          loading.close()
+          ElMessage.success('导出成功')
+        })
+        .catch(err => {
+          loading.close()
+          ElMessage.error(err.message)
+        })
     }
     onUnmounted(() => {
       loading && loading.close()
-      clearTimeout(timer)
     })
     return {
       download
