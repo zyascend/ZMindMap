@@ -34,44 +34,52 @@
       <base-map v-else/>
     </keep-alive> -->
     <keep-alive>
-      <component :is="curComponent"></component>
+      <component :is="curComponent" :key="curComponent"></component>
     </keep-alive>
   </div>
 </template>
 <script>
 import { computed, defineComponent, ref } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import useMapStore from '@/store/map'
-import BaseMap from '@/components/map/BaseMap.vue'
 import Note from '@/components/note/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import MapOpPopover from '@/components/map/MapOpPopover.vue'
+import Map from '@/components/map/Map.vue'
 
 export default defineComponent({
   components: {
-    BaseMap,
-    SvgIcon,
+    Map,
     Note,
+    SvgIcon,
     MapOpPopover
   },
   setup() {
     const store = useMapStore()
     const route = useRoute()
+
+    const router = useRouter()
+
     const docId = route.params?.id
     const mapData = computed(() => store.mapData)
-    const showMap = ref(true)
-    const curComponent = ref('BaseMap')
+    const curComponent = ref(route.params?.view === 'note' ? 'note' : 'map')
+    const showMap = computed(() => curComponent.value === 'map')
     const isSaving = computed(() => store.isSaving)
 
     store.fetchMap(docId)
 
     const toggleShowMap = () => {
-      showMap.value = !showMap.value
-      if (curComponent.value === 'BaseMap') {
-        curComponent.value = 'Note'
+      const nextView = curComponent.value === 'map' ? 'note' : 'map'
+      let nextPath
+      if (!route.params?.view) {
+        nextPath = `${route.path}/${nextView}`
       } else {
-        curComponent.value = 'BaseMap'
+        nextPath = route.path.replace(/(note|map)/gm, nextView)
       }
+      console.log(nextPath)
+      router.replace({
+        path: nextPath
+      })
     }
     return {
       docId,

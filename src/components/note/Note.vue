@@ -74,15 +74,7 @@
 </template>
 
 <script>
-import {
-  defineComponent,
-  onUnmounted,
-  nextTick,
-  computed,
-  watch,
-  onActivated,
-  onDeactivated
-} from 'vue'
+import { defineComponent, onUnmounted, nextTick, computed, watch } from 'vue'
 import useMapStore from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
 import NotePopover from '@/components/note/NotePopover.vue'
@@ -91,7 +83,7 @@ import Snapshot from '@/hooks/useSnapshot'
 import * as useContent from '@/hooks/useContent'
 
 export default defineComponent({
-  name: 'Note',
+  name: 'note',
   components: {
     SvgIcon,
     NotePopover
@@ -117,12 +109,6 @@ export default defineComponent({
     const snap = () => {
       snapshot.snap({ content: store.content })
     }
-    onActivated(() => {
-      console.log('onActivated')
-    })
-    onDeactivated(() => {
-      console.log('onDeactivated')
-    })
     watch(rootNode, (newVal, oldVal) => {
       if (!oldVal) {
         // 首次进入页面 需要将初始值存入快照
@@ -238,19 +224,18 @@ export default defineComponent({
       }
     }
     const onChangeFontColor = async prams => {
-      // const { color, node } = prams
-      // TODOd
+      // TODO 待完善
       await useContent.changeNodeHtml('new html')
       snap()
     }
     const onNodeInput = debounce(async (event, node) => {
       const newText = event.target.innerText
       await useContent.changeNodeHtml(node.id, newText)
-      nextTick(() => {
-        useContent.moveToLastFocus(`note-node-${node.id}`)
-      })
+      // nextTick(() => {
+      //   useContent.moveToLastFocus(`note-node-${node.id}`)
+      // })
       snap()
-    }, 500)
+    }, 800)
     const onNameInput = debounce(async (event, node) => {
       const newText = event.target.innerText
       await useContent.changeNodeHtml(node.id, newText)

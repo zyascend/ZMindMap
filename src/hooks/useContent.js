@@ -134,7 +134,7 @@ export async function changeNodeHtml(id, html) {
   // ! 由于debounce 此事件可能发生在deleteNode之后 此id节点可能被删除 需要判空
   if (!content[id]) return
   content[id].html = xss(html)
-  await store.setContent(content)
+  await store.setContent(content, true)
 }
 
 export async function changeNodeMarkers(id, markerList) {

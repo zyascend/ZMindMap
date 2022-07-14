@@ -75,19 +75,6 @@ export default class LogicTree extends Tree {
     node.outLineH = node.ch - node.outLineOffset * 2
   }
 
-  findRealLastNode(node) {
-    const brothers = node.parent.children
-    let bro
-    // eslint-disable-next-line no-restricted-syntax
-    for (const index in brothers) {
-      if (node.data.id === brothers[index].data.id) {
-        bro = brothers[index - 1]
-        break
-      }
-    }
-    return bro
-  }
-
   calculateInnerXY(node) {
     const { mw, th, mh, ch } = node
     node.mx = this.padding
@@ -100,48 +87,59 @@ export default class LogicTree extends Tree {
   }
 
   calculateXY(root) {
-    let lastNode
+    let anchor
     // 前序遍历 计算X
     root.eachBefore(node => {
       this.calculateInnerXY(node)
       const { depth } = node
       if (depth === 0) {
         node.x = 140
-        lastNode = node
+        anchor = node
         return
       }
-      const { depth: lastDepth, cw, x } = lastNode
+      const { depth: lastDepth, cw, x } = anchor
       if (depth === lastDepth) {
         node.x = x
       } else if (depth > lastDepth) {
         node.x = x + cw + this.gapX
       } else {
-        const bro = this.findRealLastNode(node)
+        const bro = this.findPrevBrother(node)
         node.x = bro.x
       }
-      lastNode = node
+      anchor = node
     })
     // 后序遍历 计算Y
-    lastNode = undefined
+    anchor = undefined
     root.eachAfter(node => {
       const { depth } = node
-      if (!lastNode) {
+      if (!anchor) {
         node.y = 100
-        lastNode = node
+        anchor = node
         return
       }
-      const { depth: lastDepth, ch, y } = lastNode
+      const { depth: lastDepth, ch, y } = anchor
       if (depth < lastDepth) {
         const firstChild = node.children[0]
         node.y = firstChild.y + (y - firstChild.y + ch) / 2 - node.ch / 2
+        // ![BUG]父节点很高 超过了第一个子节点
+        if (node.y - node.ch / 2 < firstChild.y - firstChild.ch / 2) {
+          // !TODO 还需要递归的处理该子节点的所有子代
+          // !F**K 麻烦啊
+          node.y = firstChild.y + 1
+        }
       } else {
-        const bottom = this.findBottom(lastNode)
+        const bottom = this.findBottom(anchor)
         node.y = Math.max(bottom.y + bottom.ch + this.gapY, y + ch + this.gapY)
       }
-      lastNode = node
+      anchor = node
     })
   }
 
+  /**
+   * 在已经计算过的节点中寻找与之最靠近的节点
+   * @param {*} node
+   * @returns
+   */
   findBottom(node) {
     let bottom = node
     while (bottom?.children) {

@@ -52,7 +52,7 @@
                 />
                 <span>{{ scope.data.name }}</span>
               </router-link>
-              <operate-popover :data="scope.data" />
+              <doc-popover :data="scope.data" />
             </div>
           </template>
         </el-tree>
@@ -82,13 +82,15 @@
 
 <script>
 import { defineComponent, computed, ref } from 'vue'
+import { useRoute } from 'vue-router'
+
 import useDocStore from '@/store/doc'
 import useUserStore from '@/store/user'
 import useWebsiteStore from '@/store/website'
-import { useRoute } from 'vue-router'
+
 import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
-import OperatePopover from '@/components/DocPopover.vue'
+import DocPopover from '@/components/DocPopover.vue'
 import ProfilePopover from '@/components/ProfilePopover.vue'
 
 export default defineComponent({
@@ -96,14 +98,15 @@ export default defineComponent({
   components: {
     Sider,
     SvgIcon,
-    OperatePopover,
+    DocPopover,
     ProfilePopover
   },
   setup() {
+    const route = useRoute()
     const store = useDocStore()
     const userStore = useUserStore()
     const websiteStore = useWebsiteStore()
-    const route = useRoute()
+
     const asideData = computed(() => store.allTreeDocs || [])
     const isDrawerOpen = ref(true)
     const showDeleteDialog = ref(false)
@@ -113,19 +116,14 @@ export default defineComponent({
     store.fetchAllDocuments()
     websiteStore.fetchMapStyles()
 
-    const getUrl = row => {
-      const isFolder = 'folderType' in row
-      if (isFolder) {
-        return `/app/folder/${row.id}`
-      }
-      return `/app/edit/${row.id}`
-    }
     const isFolder = row => 'folderType' in row
+    const getUrl = row =>
+      `/app/${isFolder(row) ? 'folder' : 'edit'}/${row.id}/map`
+
     const addNew = addFolder => {
       const newData = {
         name: `${addFolder ? '新文件夹' : '无标题'}`,
         folderId: '0',
-        // eslint-disable-next-line no-underscore-dangle
         userId: userStore.user._id
       }
       if (addFolder) {
@@ -134,6 +132,7 @@ export default defineComponent({
         store.postSetDoc(newData)
       }
     }
+
     return {
       asideData,
       route,

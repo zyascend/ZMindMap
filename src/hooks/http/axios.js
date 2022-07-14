@@ -7,15 +7,7 @@ import { ErrorTip } from '@/hooks/utils'
  * 携带当前页面路由，以期在登录页面完成登录后返回当前页面
  */
 const toLogin = () => {
-  // console.log(router)
-  // router.replace({
-  //   path: '/login',
-  //   query: {
-  //     redirect: router.currentRoute.fullPath
-  //   }
-  // })
-  console.log(window.location.href)
-  window.location.replace(`/login?redirect=${window.location.href}`)
+  window.location.replace(`/login?redirect=${window.location.pathname}`)
 }
 
 /**

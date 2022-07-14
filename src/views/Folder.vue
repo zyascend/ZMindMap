@@ -85,24 +85,27 @@ export default defineComponent({
     const websiteStore = useWebsiteStore()
     const router = useRouter()
     const route = useRoute()
+
+    console.log(route)
+    console.log(window.location)
+
     const folderId = route.params?.id || '0'
     const navigationList = computed(() => docStore.getNavigationLists(folderId))
     const docTableData = computed(() => docStore.getAllDocuments(folderId))
     const hasData = computed(() => docTableData.value?.length)
     const showTable = computed(() => websiteStore.showTable)
+
     const isFolder = row => 'folderType' in row
     const onRowClick = (row, column, event) => {
       if (isFolder(row)) {
-        // 修改路由URL
         // `params` 不能与 `path` 一起使用
         router.push({ path: `/app/folder/${row.id}` })
-        // 更新面包屑导航
       } else {
-        router.push({ path: `/app/edit/${row.id}` })
+        router.push({ path: `/app/edit/${row.id}/map` })
       }
     }
     const onSortTable = () => {
-      console.log('')
+      console.log('todo')
     }
     const onToggleStyle = () => {
       websiteStore.toggleShowTable()

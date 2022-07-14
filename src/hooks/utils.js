@@ -172,3 +172,8 @@ export function getImageWH(url) {
     })
   })
 }
+
+export function escape2Html(str) {
+  const escapeMap = { lt: '<', gt: '>', nbsp: ' ', amp: '&', quot: '"' }
+  return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, (all, t) => escapeMap[t])
+}

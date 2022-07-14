@@ -5,14 +5,14 @@
 
 <script>
 import { defineComponent, ref, onUnmounted, watchEffect, computed } from 'vue'
-import useMapStore from 'store/map'
-import useMap from 'hooks/map/useMap'
-import MapRender from 'components/map/MapRender'
-import MapBar from 'components/map/MapBar'
+import useMapStore from '@/store/map'
+import useMap from '@/hooks/map/useMap'
+import MapRender from '@/components/map/MapRender'
+import MapBar from '@/components/map/MapBar'
 import useAutoZoom from '@/hooks/map/useAutoZoom'
 
 export default defineComponent({
-  name: 'BaseMap',
+  name: 'mindmap',
   components: { MapRender, MapBar },
   setup() {
     const store = useMapStore()

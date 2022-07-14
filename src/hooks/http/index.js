@@ -96,6 +96,14 @@ export const userApi = {
       ...config
     })
     return res
+  },
+  generateCode: async () => {
+    const res = await normalGet(apis.getCode, false)
+    return res
+  },
+  getCodeStatus: async qid => {
+    const res = await normalGet(`${apis.getCodeStatus}?qid=${qid}`, false)
+    return res
   }
 }
 

@@ -30,72 +30,64 @@
 <script setup>
 import { ref, onUnmounted } from 'vue'
 import vueQr from 'vue-qr/src/packages/vue-qr.vue'
-import axios from '@/hooks/useHttp'
-import api from '@/hooks/api'
 import useUserStore from '@/store/user'
+import { userApi } from '@/hooks/http'
 import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
 const route = useRoute()
 const store = useUserStore()
+
 const codeUrl = ref('')
 const codeStatus = ref('EMPTY')
 const username = ref('')
 const avatar = ref('')
 const tip = ref('正在获取登录码，请稍等...')
+
 let timer
 let qid
 
 const getStatus = async () => {
-  await axios(`${api.getCodeStatus}?qid=${qid}`, { method: 'get' })
-    .then(res => {
-      const { status, data } = res.data
-      codeStatus.value = status
-      switch (status) {
-        case 'CONFIRMING':
-          tip.value = '扫码成功，请在手机上确认'
-          username.value = data?.name
-          avatar.value = data?.avatar
-          break
-        case 'CONFIRMED':
-          timer && clearInterval(timer)
-          console.log('CONFIRMED > ', data)
-          store.setUser(data)
-          if (store.getToken) {
-            // 登录/注册成功
-            router.replace({ path: route?.query?.redirect || '/' })
-          }
-          break
-        case 'EXPIRED':
-          tip.value = '二维码已过期，请刷新'
-          timer && clearInterval(timer)
-          break
-        default:
-          break
+  const { status, data } = await userApi.getCodeStatus(qid)
+  codeStatus.value = status
+  switch (status) {
+    case 'CONFIRMING':
+      tip.value = '扫码成功，请在手机上确认'
+      username.value = data?.name
+      avatar.value = data?.avatar
+      break
+    case 'CONFIRMED':
+      timer && clearInterval(timer)
+      store.setUser(data)
+      if (store.getToken) {
+        // 登录/注册成功
+        router.replace({ path: route?.query?.redirect || '/' })
       }
-    })
-    .catch(err => {
-      // TODO
-      console.log('getStatus > catch: ', err)
-    })
+      break
+    case 'EXPIRED':
+      tip.value = '二维码已过期，请刷新'
+      timer && clearInterval(timer)
+      break
+    default:
+      break
+  }
 }
+
 const generateCode = async () => {
   codeStatus.value = 'EMPTY'
   tip.value = '正在获取登录码，请稍等...'
   timer && clearInterval(timer)
-  await axios(api.getCode, { method: 'get' })
-    .then(res => {
-      qid = res.data
-      codeUrl.value = `${window.location.origin}/mlogin?qid=${res.data}`
-      codeStatus.value = 'UNUSED'
-      tip.value = '请使用手机扫码登录'
-      console.log('generateCode > then: ', codeUrl.value)
-      timer = setInterval(getStatus, 2000)
-    })
-    .catch(err => {
-      // TODO
-      console.log('generateCode > catch: ', err)
-    })
+
+  qid = await userApi.generateCode()
+  if (!qid) return
+
+  codeUrl.value = `${window.location.origin}/mlogin?qid=${qid}`
+  codeStatus.value = 'UNUSED'
+  tip.value = '请使用手机扫码登录'
+
+  timer = setInterval(getStatus, 2000)
+
+  console.log('generateCode > then: ', codeUrl.value)
 }
 
 generateCode()

@@ -1,8 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import { useUserStore } from '@/store/user'
+import useUserStore from '@/store/user'
 import Home from '@/views/Home.vue'
 import Folder from '@/views/Folder.vue'
 import NotFound from '@/views/NotFound.vue'
+import Intro from '@/views/Intro.vue'
 
 const routes = [
   {
@@ -16,8 +17,9 @@ const routes = [
     redirect: '/app/folder',
     children: [
       {
-        path: 'edit/:id',
-        component: () => import(/* webpackChunkName: "edit-patch" */ '@/views/Edit.vue')
+        path: 'edit/:id/:view?',
+        component: () =>
+          import(/* webpackChunkName: "edit-patch" */ '@/views/Edit.vue')
       },
       {
         path: 'folder/:id?',
@@ -34,11 +36,16 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "login-patch" */ '../views/Login.vue')
+    component: () =>
+      import(/* webpackChunkName: "login-patch" */ '../views/Login.vue')
   },
   {
     path: '/404',
     component: NotFound
+  },
+  {
+    path: '/intro',
+    component: Intro
   },
   {
     path: '/:catchAll(.*)', // 不识别的path自动匹配404
@@ -59,13 +66,11 @@ router.beforeEach((to, from, next) => {
   if (to.meta.isLogin) {
     // 如果去登陆页的话 不用验证token
     next()
-  } else {
+  } else if (store?.token || localStorage.getItem('token')) {
     // 验证是否登录了
-    if (store?.token || localStorage.getItem('token')) {
-      next()
-    } else {
-      next({ path: '/login', query: { redirect: to.path } })
-    }
+    next()
+  } else {
+    next({ path: '/login', query: { redirect: to.path } })
   }
 })
 

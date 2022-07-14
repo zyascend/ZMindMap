@@ -1,5 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { select } from 'd3-selection'
+import { escape2Html } from '@/hooks/utils'
 /**
  * 所有导图计算class的父类
  * 提取了公共计算方法 这些方法的逻辑不会随导图的风格变化所改变
@@ -62,7 +63,7 @@ export default class Tree {
     const multiline = []
     const lineLength = Math.floor((html.length * this.maxWidth) / width)
     for (let i = 0; i < html.length; i += lineLength) {
-      multiline.push(html.substr(i, lineLength))
+      multiline.push(escape2Html(html.substr(i, lineLength)))
     }
     node.multiline = multiline
     node.tw = this.maxWidth
@@ -87,5 +88,23 @@ export default class Tree {
     node.mh = this.defaultMarkerHeight
     const size = markerList.length
     node.mw = this.defaultMarkerWidth * size - this.markerOverlap * (size - 1)
+  }
+
+  /**
+   * 找到前一个兄弟节点
+   * @param {*} node
+   * @returns
+   */
+  findPrevBrother(node) {
+    const brothers = node.parent.children
+    let bro
+    brothers.every((item, index) => {
+      if (node.data.id === item.data.id) {
+        bro = brothers[index - 1]
+        return false
+      }
+      return true
+    })
+    return bro
   }
 }

@@ -2,10 +2,13 @@
 node_modules
 /dist
 
+output_prod.js
+output_dev.js
+
 # local env files
 .env.local
 .env.*.local
-
+.sentryclirc
 # Log files
 npm-debug.log*
 yarn-debug.log*

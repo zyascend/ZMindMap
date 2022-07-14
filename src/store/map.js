@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable no-restricted-syntax */
 /**
  * 导图和大纲笔记页面相关状态
@@ -20,7 +21,7 @@ const useMapStore = defineStore('map', {
   getters: {
     getRootNode: state => (state.noteList ? state.noteList[0] : null),
     getChildNode: state =>
-      state.noteList ? state.noteList.splice(1) : undefined
+      state.noteList ? state.noteList.slice(1) : undefined
   },
   actions: {
     setIdFocused(id) {
@@ -59,6 +60,7 @@ const useMapStore = defineStore('map', {
       this.isSaving = true
       this.content = content
       // ! 必须使用deepClone 否则会改变this.content
+      processTreeData(deepClone(this.content))
       ;[this.treedData, this.noteList] = this.transform(deepClone(content))
       // 只在本地更新
       if (isLocal) {
@@ -111,6 +113,7 @@ const useMapStore = defineStore('map', {
       const res = await mapApi.fetchMap(docId)
       this.setData(res)
       // eslint-disable-next-line semi-style
+      processTreeData(deepClone(this.content))
       ;[this.treedData, this.noteList] = this.transform(deepClone(this.content))
     },
     async remoteUpdateMap(data) {
@@ -144,5 +147,25 @@ const useMapStore = defineStore('map', {
     enabled: false
   }
 })
+
+function processTreeData(data) {
+  if (!data) return
+  const values = Object.values(data)
+  console.log('values', values)
+  const treeData = values.filter(item => {
+    const { _children, id } = item
+    if (_children.length) {
+      item._children = values.filter(e => {
+        return id === e.parent
+      })
+    } else {
+      item.children = values.filter(e => {
+        return id === e.parent
+      })
+    }
+    return item.parent === '-1'
+  })
+  console.log('treeData', treeData)
+}
 
 export default useMapStore

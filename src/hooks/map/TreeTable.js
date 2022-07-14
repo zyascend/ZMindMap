@@ -28,14 +28,14 @@ export default class TableTree extends Tree {
   }
 
   measureWidthAndHeight(root) {
-    // 后续遍历 初步计算 父依赖于子
+    // 后序遍历 初步计算 父依赖于子
     root.eachAfter(node => {
       this.measureTextSize(node)
       this.measureMarkers(node)
       this.measureImageSize(node)
       this.measureWH(node)
     })
-    // 前续遍历 修正计算 用于宽度充满 子依赖于父
+    // 前序遍历 修正计算 用于宽度充满 子依赖于父
     root.eachBefore(node => {
       const { children, parent } = node
       if (node.depth === 0) return
@@ -127,6 +127,10 @@ export default class TableTree extends Tree {
     }
   }
 
+  /**
+   * 计算节点内部元素的位置
+   * @param {*} node
+   */
   calculateInnerXY(node) {
     const { mw, cw, tw, th, mh, ch, iw, children } = node
     if (children) {
@@ -137,20 +141,24 @@ export default class TableTree extends Tree {
       node.ix = node.tx
       node.iy = this.padding
     } else {
+      // 文字
       node.ty = ch - this.padding - th - 4
       node.tx = cw - this.padding - tw
-
+      // 标记
       node.mx = node.tx - (mw ? this.textMarkersGap : 0) - mw
       node.my = node.ty + th / 2 - mh / 2 + 4
-
+      // 图片
       node.ix = cw - this.padding - iw
       node.iy = this.padding
     }
   }
 
+  /**
+   * 计算节点的位置
+   * @param {*} root
+   */
   calculateXY(root) {
-    // 算X值-前序遍历
-    let lastNode
+    let anchor
     root.eachBefore(node => {
       this.calculateInnerXY(node)
       const { depth } = node
@@ -158,39 +166,32 @@ export default class TableTree extends Tree {
         node.x = 140
         node.y = 100
       } else if (depth === 1) {
-        if (depth < lastNode.depth) {
-          const realLastNode = this.findRealLastNode(node)
-          node.x = realLastNode.x
-          node.y = realLastNode.y + realLastNode.h
+        // 第一层的节点需要特殊处理
+        if (depth < anchor.depth) {
+          // 上一个被计算的节点不是当前节点的真正兄弟 需要重新找
+          const realAnchor = this.findPrevBrother(node)
+          node.x = realAnchor.x
+          node.y = realAnchor.y + realAnchor.h
         } else {
-          node.x = lastNode.x
-          node.y = lastNode.y + lastNode.ch
+          // 上一个被计算的节点是当前节点的上一个兄弟
+          node.x = anchor.x
+          node.y = anchor.y + anchor.ch
         }
-      } else if (depth < lastNode.depth) {
-        const realLastNode = this.findRealLastNode(node)
-        node.x = realLastNode.x
-        node.y = realLastNode.y + realLastNode.h
-      } else if (depth === lastNode.depth) {
-        node.x = lastNode.x
-        node.y = lastNode.y + lastNode.h
+      } else if (depth < anchor.depth) {
+        // 上一个被计算的节点不是当前节点的真正兄弟 需要重新找
+        const realAnchor = this.findPrevBrother(node)
+        node.x = realAnchor.x
+        node.y = realAnchor.y + realAnchor.h
+      } else if (depth === anchor.depth) {
+        // 上一个被计算的节点是当前节点的上一个兄弟
+        node.x = anchor.x
+        node.y = anchor.y + anchor.h
       } else {
-        node.x = lastNode.x + lastNode.cw
-        node.y = lastNode.y
+        // 上一个被计算的节点是当前节点的父节点 当前节点是第一个孩子
+        node.x = anchor.x + anchor.cw
+        node.y = anchor.y
       }
-      lastNode = node
+      anchor = node
     })
-  }
-
-  findRealLastNode(node) {
-    const brothers = node.parent.children
-    let bro
-    // eslint-disable-next-line no-restricted-syntax
-    for (const index in brothers) {
-      if (node.data.id === brothers[index].data.id) {
-        bro = brothers[index - 1]
-        break
-      }
-    }
-    return bro
   }
 }

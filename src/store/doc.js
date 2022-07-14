@@ -14,15 +14,15 @@ const useDocStore = defineStore({
   }),
   getters: {
     getAllDocuments: state => id => {
-      if (!id) {
-        return state.allTreeDocs
-      }
+      if (!state.originAllDocs) return []
+      if (!id) return state.allTreeDocs
       const { folders, documents } = state.originAllDocs
       return [...folders, ...documents].filter(doc => doc.folderId === id)
     },
     getNavigationLists: state => curFolderId => {
       const paths = []
-      const folderList = state.originAllDocs.folders
+      const folderList = state.originAllDocs?.folders
+      if (!folderList || !folderList.length) return []
       const curFolder = folderList.find(f => f.id === curFolderId)
       if (curFolder) {
         paths.unshift(curFolder)
@@ -36,12 +36,12 @@ const useDocStore = defineStore({
         }
       }
       paths.unshift({ name: '我的文件', id: '0' })
-      console.log(paths, curFolderId)
       return paths
     }
   },
   actions: {
     setDoc(data) {
+      if (!data) return
       this.originAllDocs = data
       this.allTreeDocs = processTreeData(data)
     },
@@ -50,23 +50,14 @@ const useDocStore = defineStore({
       this.setDoc(data)
     },
     async postSetFolder(data) {
-      // const { user } = useUserStore()
-      // const url = `${API.setFolder}/${user._id}`
-      // const res = await handler.asyncHttp(url, { method: 'post', data })
       const res = await docApi.postSetFolder(data)
       this.setDoc(res)
     },
     async postSetDoc(data) {
-      // const { user } = useUserStore()
-      // const url = `${API.setDoc}/${user._id}`
-      // const res = await handler.asyncHttp(url, { method: 'post', data })
       const res = await docApi.postSetDoc(data)
       this.setDoc(res)
     },
     async postRemove(data) {
-      // const { user } = useUserStore()
-      // const url = `${API.remove}/${user._id}`
-      // const res = await handler.asyncHttp(url, { method: 'post', data })
       const res = await docApi.postRemove(data)
       this.setDoc(res)
     }
@@ -83,6 +74,7 @@ const useDocStore = defineStore({
 })
 
 function processTreeData(data) {
+  if (!data) return null
   const docs = [...data.folders, ...data.documents]
   const treeData = docs.filter(item => {
     item.formatedUpdateTime = dateFormatter(item.updateTime)

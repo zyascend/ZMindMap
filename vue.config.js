@@ -11,6 +11,7 @@ const IS_PROD = process.env.NODE_ENV === 'production'
 const getAliasPath = dir => path.join(__dirname, dir)
 
 module.exports = {
+  productionSourceMap: false,
   publicPath: IS_PROD ? 'https://cdn.kimjisoo.cn/' : '/',
   pages: {
     index: {
@@ -20,7 +21,6 @@ module.exports = {
       chunks: [
         'chunk-vendors',
         'chunk-vendors-2',
-        'chunk-common',
         'chunk-ele',
         'index'
       ]
@@ -29,22 +29,21 @@ module.exports = {
       entry: './src/mlogin/main.js',
       template: './public/mlogin.html',
       title: '扫码登录ZMindMap',
-      chunks: ['chunk-vendors', 'chunk-vendors-2', 'chunk-common', 'mlogin']
+      chunks: ['chunk-vendors', 'chunk-vant', 'mlogin']
     }
   },
   chainWebpack: config => {
-    if (IS_PROD) {
+    config.when(IS_PROD, config => {
+      // 移除prefetch插件 减少对首页加载的带宽占用
+      config.plugins.delete('prefetch')
+      config.optimization.runtimeChunk({
+        //
+        // https://webpack.docschina.org/configuration/optimization/#optimizationruntimechunk
+        name: (entrypoint) => `runtime~${entrypoint.name}`,
+      }),
       config.optimization.splitChunks({
         cacheGroups: {
-          common: {
-            name: 'chunk-common',
-            chunks: 'initial',
-            minChunks: 2,
-            maxInitialRequests: 5,
-            minSize: 0,
-            priority: 1,
-            reuseExistingChunk: true
-          },
+          // 其他的第三方库集中在一起
           vendors: {
             name: 'chunk-vendors',
             test: /[\\/]node_modules[\\/]/,
@@ -53,25 +52,47 @@ module.exports = {
             reuseExistingChunk: true,
             enforce: true
           },
+          // @sentry|@vueuse|cropperjs 很大 单独分包
           vendors2: {
             name: 'chunk-vendors-2',
-            test: /[\\/]node_modules[\\/][@sentry,@vueuse]/,
+            test: /[\\/]node_modules[\\/]@sentry|@vueuse|cropperjs/,
             chunks: 'initial',
             priority: 3,
             reuseExistingChunk: true,
             enforce: true
           },
-          elementui: {
-            name: 'chunk-ele',
-            test: /[\\/]node_modules[\\/]@?element-plus[\\/]/,
+          // 只有mlogin入口用 单独打包
+          vant: {
+            name: 'chunk-vant',
+            test: /[\\/]node_modules[\\/]@?vant[\\/]/,
             chunks: 'initial',
             priority: 4,
             reuseExistingChunk: true,
             enforce: true
+          },
+          // 只有index入口用 且很大 需要单独打包
+          elementui: {
+            name: 'chunk-ele',
+            test: /[\\/]node_modules[\\/]@?element-plus[\\/]/,
+            chunks: 'initial',
+            priority: 5,
+            reuseExistingChunk: true,
+            enforce: true
           }
         }
+      }),
+      config.optimization.minimizer('terser').tap(args => {
+        // 移除 debugger
+        args[0].terserOptions.compress.drop_debugger = true
+        // 移除 console.log
+        args[0].terserOptions.compress.pure_funcs = ['console.log']
+        // 移除 注释
+        args[0].terserOptions.output = {
+          comments: false
+        }
+        return args
       })
-    }
+    })
     const svgRule = config.module.rule('svg')
     svgRule.uses.clear()
     svgRule
@@ -97,8 +118,15 @@ module.exports = {
       .test(/\.svg$/)
       .exclude.add(path.resolve(__dirname, 'src/assets/pic'))
       .end()
-      .use('file-loader')
-      .loader('file-loader')
+    // const fileRule = config.module.rule('file')
+    // fileRule.uses.clear()
+    // fileRule
+    //   .test(/\.svg$/)
+    //   .exclude.add(path.resolve(__dirname, 'src/assets/pic'))
+    //   .end()
+    //   .use('file-loader')
+    //   .loader('file-loader')
+
     config.module
       .rule('worker')
       .test(/\.worker\.js$/)
@@ -116,6 +144,9 @@ module.exports = {
       .set('components', getAliasPath('src/components'))
   },
   configureWebpack: {
+    resolveLoader: {
+      modules: ['node_modules', path.resolve(__dirname, 'loaders')],
+    },
     module: {
       rules: [
         {
@@ -141,8 +172,17 @@ module.exports = {
       new SentryWebpackPlugin({
         dryRun: !IS_PROD, // 只有生成环境才上传source map
         include: 'dist',
-        ignore: ['node_modules', 'webpack.config.js']
+        ignore: ['node_modules', 'vue.config.js']
       }),
+      //* 实际上 七牛cdn对打包好的源文件自动进行了gzip
+      // new CompressionWebpackPlugin({
+      //   filename: '[path].gz[query]',
+      //   algorithm: 'gzip',
+      //   test: /\.js$|\.css$|\.html$|\.ttf$|\.eot$|\.woff$/,
+      //   threshold: 10240,
+      //   minRatio: 0.8,
+      //   deleteOriginalAssets: false
+      // }),
       new SpeedMeasurePlugin()
     ]
   }
