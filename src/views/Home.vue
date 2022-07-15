@@ -117,8 +117,12 @@ export default defineComponent({
     websiteStore.fetchMapStyles()
 
     const isFolder = row => 'folderType' in row
-    const getUrl = row =>
-      `/app/${isFolder(row) ? 'folder' : 'edit'}/${row.id}/map`
+    const getUrl = row => {
+      if (isFolder(row)) {
+        return `/app/folder/${row.id}`
+      }
+      return `/app/edit/${row.id}/map`
+    }
 
     const addNew = addFolder => {
       const newData = {

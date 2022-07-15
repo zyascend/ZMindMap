@@ -40,7 +40,7 @@
 </template>
 <script>
 import { computed, defineComponent, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import useMapStore from '@/store/map'
 import Note from '@/components/note/Note.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
@@ -58,8 +58,6 @@ export default defineComponent({
     const store = useMapStore()
     const route = useRoute()
 
-    const router = useRouter()
-
     const docId = route.params?.id
     const mapData = computed(() => store.mapData)
     const curComponent = ref(route.params?.view === 'note' ? 'note' : 'map')
@@ -72,14 +70,12 @@ export default defineComponent({
       const nextView = curComponent.value === 'map' ? 'note' : 'map'
       let nextPath
       if (!route.params?.view) {
-        nextPath = `${route.path}/${nextView}`
+        nextPath = `${route.fullPath}/${nextView}`
       } else {
-        nextPath = route.path.replace(/(note|map)/gm, nextView)
+        nextPath = route.fullPath.replace(/(note|map)/gm, nextView)
       }
-      console.log(nextPath)
-      router.replace({
-        path: nextPath
-      })
+      window.history.replaceState('', '', nextPath)
+      curComponent.value = nextView
     }
     return {
       docId,

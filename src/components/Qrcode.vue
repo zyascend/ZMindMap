@@ -30,9 +30,10 @@
 <script setup>
 import { ref, onUnmounted } from 'vue'
 import vueQr from 'vue-qr/src/packages/vue-qr.vue'
-import useUserStore from '@/store/user'
-import { userApi } from '@/hooks/http'
+import io from 'socket.io-client'
 import { useRouter, useRoute } from 'vue-router'
+
+import useUserStore from '@/store/user'
 
 const router = useRouter()
 const route = useRoute()
@@ -45,10 +46,10 @@ const avatar = ref('')
 const tip = ref('正在获取登录码，请稍等...')
 
 let timer
-let qid
 
-const getStatus = async () => {
-  const { status, data } = await userApi.getCodeStatus(qid)
+const getStatus = statusData => {
+  if (!statusData) return
+  const { status, data } = statusData
   codeStatus.value = status
   switch (status) {
     case 'CONFIRMING':
@@ -73,26 +74,43 @@ const getStatus = async () => {
   }
 }
 
-const generateCode = async () => {
-  codeStatus.value = 'EMPTY'
-  tip.value = '正在获取登录码，请稍等...'
-  timer && clearInterval(timer)
-
-  qid = await userApi.generateCode()
+const renderQrCode = qid => {
   if (!qid) return
-
   codeUrl.value = `${window.location.origin}/mlogin?qid=${qid}`
   codeStatus.value = 'UNUSED'
   tip.value = '请使用手机扫码登录'
-
-  timer = setInterval(getStatus, 2000)
-
-  console.log('generateCode > then: ', codeUrl.value)
+  // console.log('generateCode > then: ', codeUrl.value, currentQid)
 }
 
-generateCode()
+const socket = io('http://localhost:3010', {
+  autoConnect: true,
+  transports: ['websocket'],
+  reconnect: true,
+  reconnectionAttempts: 5
+})
+
+const generateCode = () => {
+  socket.emit('genCode')
+}
+
+socket.on('connect', res => {
+  // console.log('connect!')
+  generateCode()
+})
+socket.on('sendedCode', res => {
+  // console.log('sendedCode!', res)
+  const qid = res?.data
+  renderQrCode(qid)
+  timer = setInterval(() => socket.emit('checkExpired', qid), 1000)
+})
+socket.on('statusChanged', res => {
+  // console.log('statusChanged > ', res)
+  getStatus(res?.data)
+})
+
 onUnmounted(() => {
   timer && clearInterval(timer)
+  socket.disconnect()
 })
 </script>
 

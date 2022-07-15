@@ -72,7 +72,7 @@
               :dy="node.tspanDy"
               :fill="allStyles.textStyle(node).color"
             >
-              {{ node.data.id }}
+              {{ line }}
             </tspan>
           </text>
         </g>
