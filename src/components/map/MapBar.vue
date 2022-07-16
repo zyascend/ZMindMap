@@ -100,13 +100,16 @@ import useWebsiteStore from '@/store/website'
 import useMapStore from '@/store/map'
 import zoomMap from '@/hooks/map/zoomMap'
 import SvgIcon from 'components/SvgIcon.vue'
+import { websiteCfg } from '@/configs'
 
 const websiteStore = useWebsiteStore()
 const mapStore = useMapStore()
 // 所有可选的主题列表
 const styles = computed(() => websiteStore.styles)
 // 当前导图的主题id
-const curStyle = computed(() => mapStore?.mapData.styles)
+const curStyle = computed(
+  () => mapStore?.mapData?.styles || websiteCfg.defaultMapStyle
+)
 
 const fitView = () => {
   zoomMap()

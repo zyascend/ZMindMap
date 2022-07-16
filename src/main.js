@@ -4,6 +4,7 @@ import { BrowserTracing } from '@sentry/tracing'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { sentryCfg } from './configs'
 import '@/assets/css/reset.css'
 
 // 一次性引入所有svg图
@@ -24,17 +25,18 @@ window.document.documentElement.setAttribute(
   'data-theme',
   isDark ? 'dark' : 'light'
 )
-
-Sentry.init({
-  app,
-  dsn: 'https://286635702ecc437687d97885795599be@o1237174.ingest.sentry.io/6387522',
-  integrations: [
-    new BrowserTracing({
-      routingInstrumentation: Sentry.vueRouterInstrumentation(router),
-      tracingOrigins: ['map.kimjisoo.cn']
-    })
-  ],
-  tracesSampleRate: 1.0
-})
+if (sentryCfg.tracingOrigins.includes(window.location.hostname)) {
+  Sentry.init({
+    app,
+    dsn: sentryCfg.dsn,
+    integrations: [
+      new BrowserTracing({
+        routingInstrumentation: Sentry.vueRouterInstrumentation(router),
+        tracingOrigins: sentryCfg.tracingOrigins
+      })
+    ],
+    tracesSampleRate: sentryCfg.tracesSampleRate
+  })
+}
 
 app.use(store).use(router).mount('#app')

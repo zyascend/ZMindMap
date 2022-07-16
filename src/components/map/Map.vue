@@ -10,6 +10,7 @@ import useMap from '@/hooks/map/useMap'
 import MapRender from '@/components/map/MapRender'
 import MapBar from '@/components/map/MapBar'
 import useAutoZoom from '@/hooks/map/useAutoZoom'
+import { websiteCfg } from '@/configs'
 
 export default defineComponent({
   name: 'mindmap',
@@ -17,7 +18,9 @@ export default defineComponent({
   setup() {
     const store = useMapStore()
     // 当前文档的style
-    const curStyle = computed(() => store?.mapData.styles || {})
+    const curStyle = computed(
+      () => store?.mapData?.styles || websiteCfg.defaultMapStyle
+    )
     const renderData = ref({})
 
     useAutoZoom(renderData)
