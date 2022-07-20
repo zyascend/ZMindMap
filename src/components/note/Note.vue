@@ -81,6 +81,7 @@ import NotePopover from '@/components/note/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
 import Snapshot from '@/hooks/useSnapshot'
 import * as useContent from '@/hooks/useContent'
+import useNoteList from '@/hooks/note/useNote'
 
 export default defineComponent({
   name: 'note',
@@ -90,8 +91,7 @@ export default defineComponent({
   },
   setup() {
     const store = useMapStore()
-    const rootNode = computed(() => store.getRootNode)
-    const childNodes = computed(() => store.getChildNode)
+    const [rootNode, childNodes] = useNoteList()
     const imgSrcList = computed(() => {
       if (!childNodes.value) return []
       const srcList = []
