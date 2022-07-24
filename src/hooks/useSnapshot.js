@@ -1,9 +1,11 @@
 /**
  * 配合[ctrl + z]实现操作可撤回
  */
+import { onMounted, onUnmounted } from 'vue'
+import useMapStore from '@/store/map'
 import { deepClone } from './utils'
 
-export default class Snapshot {
+class Snapshot {
   constructor(length = 20) {
     this.length = length
     this.snapshots = []
@@ -36,4 +38,26 @@ export default class Snapshot {
     }
     return null
   }
+}
+
+export default function useSnapShot() {
+  const snapshot = new Snapshot()
+  const store = useMapStore()
+  onMounted(() => {
+    document.onkeydown = ev => {
+      if (ev.ctrlKey && ev.keyCode === 90) {
+        ev.preventDefault()
+        if (snapshot.hasPrev) {
+          store.setContent(snapshot.prev().content)
+        }
+      }
+    }
+  })
+  onUnmounted(() => {
+    document.onkeydown = undefined
+  })
+  const addSnapShot = () => {
+    snapshot.snap({ content: store.content })
+  }
+  return addSnapShot
 }

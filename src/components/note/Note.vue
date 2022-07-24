@@ -23,7 +23,7 @@
             >
               <svg-icon
                 icon="triangle"
-                :class="`${node.collapsed ? 'icon-collapsed' : ''}`"
+                :class="`${node._children.length ? 'icon-collapsed' : ''}`"
               />
             </div>
             <note-popover :node="node" @onColorSelect="onChangeFontColor" />
@@ -75,11 +75,10 @@
 
 <script>
 import { defineComponent, onUnmounted, nextTick, computed, watch } from 'vue'
-import useMapStore from '@/store/map'
 import SvgIcon from '@/components/SvgIcon.vue'
 import NotePopover from '@/components/note/NotePopover.vue'
 import { debounce } from '@/hooks/utils'
-import Snapshot from '@/hooks/useSnapshot'
+import useSnapShot from '@/hooks/useSnapshot'
 import * as useContent from '@/hooks/useContent'
 import useNoteList from '@/hooks/note/useNote'
 
@@ -90,8 +89,8 @@ export default defineComponent({
     NotePopover
   },
   setup() {
-    const store = useMapStore()
     const [rootNode, childNodes] = useNoteList()
+    const addSnapShot = useSnapShot()
     const imgSrcList = computed(() => {
       if (!childNodes.value) return []
       const srcList = []
@@ -102,23 +101,19 @@ export default defineComponent({
       })
       return srcList
     })
-    const snapshot = new Snapshot()
     onUnmounted(() => {
       document.onkeydown = undefined
     })
-    const snap = () => {
-      snapshot.snap({ content: store.content })
-    }
     watch(rootNode, (newVal, oldVal) => {
       if (!oldVal) {
         // 首次进入页面 需要将初始值存入快照
-        snap()
+        addSnapShot()
       }
     })
     // 折叠or打开节点
     const onCollapse = async _id => {
       await useContent.collapse(_id)
-      snap()
+      addSnapShot()
     }
     const onDeleteNode = async (node, event) => {
       // 节点文字删除完毕才删除此节点
@@ -134,7 +129,7 @@ export default defineComponent({
         // 上一个节点自动获得光标 并将光标移动到最后的位置
         useContent.moveToLastFocus(`note-node-${prevId}`)
       })
-      snap()
+      addSnapShot()
     }
     const onTabNode = async (node, event) => {
       event.preventDefault()
@@ -144,7 +139,7 @@ export default defineComponent({
           // 将光标移动到最后的位置
           useContent.moveToLastFocus(`note-node-${newId}`)
         })
-      snap()
+      addSnapShot()
     }
     const onAddNewNode = async (event, node) => {
       event.preventDefault()
@@ -159,7 +154,7 @@ export default defineComponent({
       nextTick(() => {
         useContent.moveToLastFocus(`note-node-${newId}`)
       })
-      snap()
+      addSnapShot()
     }
     const onUpDownArrow = (event, node) => {
       event.preventDefault()
@@ -185,15 +180,6 @@ export default defineComponent({
         )
       }
     }
-    /**
-     * ctrl+z 撤回操作
-     */
-    const onSnapBack = async event => {
-      event.preventDefault()
-      if (snapshot.hasPrev) {
-        await store.setContent(snapshot.prev().content)
-      }
-    }
     const onKeyDown = (event, node) => {
       switch (event.keyCode) {
         case 13:
@@ -213,12 +199,6 @@ export default defineComponent({
           // 上下键处理逻辑
           onUpDownArrow(event, node)
           break
-        case 90:
-          // ctrl + z 撤回逻辑
-          if (event.ctrlKey) {
-            onSnapBack(event)
-          }
-          break
         default:
           break
       }
@@ -226,7 +206,7 @@ export default defineComponent({
     const onChangeFontColor = async prams => {
       // TODO 待完善
       await useContent.changeNodeHtml('new html')
-      snap()
+      addSnapShot()
     }
     const onNodeInput = debounce(async (event, node) => {
       const newText = event.target.innerText
@@ -234,7 +214,7 @@ export default defineComponent({
       // nextTick(() => {
       //   useContent.moveToLastFocus(`note-node-${node.id}`)
       // })
-      snap()
+      addSnapShot()
     }, 800)
     const onNameInput = debounce(async (event, node) => {
       const newText = event.target.innerText
@@ -269,7 +249,8 @@ export default defineComponent({
 <style lang="scss" scoped>
 @import '@/assets/css/handler';
 .note-container {
-  @include wh100;
+  width: 100%;
+  height: calc(100% - 46px);
   overflow-y: auto;
   .doc-main {
     max-width: 872px;
