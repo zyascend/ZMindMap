@@ -177,3 +177,14 @@ export function escape2Html(str) {
   const escapeMap = { lt: '<', gt: '>', nbsp: ' ', amp: '&', quot: '"' }
   return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, (all, t) => escapeMap[t])
 }
+
+// TODO 如何实现取消
+export function betterInterval(callback, delay) {
+  const timer = (cb, wait) => {
+    setTimeout(() => {
+      callback() // 执行callback
+      timer(cb, wait) // 递归
+    }, wait)
+  }
+  timer(callback, delay)
+}

@@ -103,3 +103,4 @@ https://cdn.kimjisoo.cn/videos%2Fpresentation_v1.0.mp4
 - [ ] 使用自定义的loader处理svg图标
   - [ ] 将svg icon处理为SFC
   - [ ] 封装SFC为Icon组件：绑定属性 灵活使用
+- [ ] 所有配置项由`window.CFG`注入

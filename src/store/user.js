@@ -25,6 +25,7 @@ const useUserStore = defineStore('user', {
       this.setUser(data)
     },
     setUser(data) {
+      if (!data) return
       this.token = data?.token
       // ? 更安全的做法：不用[token]关键字
       localStorage.setItem('token', this.token)

@@ -4,7 +4,6 @@ import { BrowserTracing } from '@sentry/tracing'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { sentryCfg } from './configs'
 import '@/assets/css/reset.css'
 
 // 一次性引入所有svg图
@@ -25,6 +24,7 @@ window.document.documentElement.setAttribute(
   'data-theme',
   isDark ? 'dark' : 'light'
 )
+const { sentryCfg } = window.CFG
 if (sentryCfg.tracingOrigins.includes(window.location.hostname)) {
   Sentry.init({
     app,

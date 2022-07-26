@@ -4,6 +4,7 @@ const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
+const HtmlWebpackPlugin = require("html-webpack-plugin")
 
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
@@ -112,21 +113,6 @@ module.exports = {
         params: { attrs: 'fill' }
       })
       .end()
-    const fileRule = config.module.rule('file')
-    fileRule.uses.clear()
-    fileRule
-      .test(/\.svg$/)
-      .exclude.add(path.resolve(__dirname, 'src/assets/pic'))
-      .end()
-    // const fileRule = config.module.rule('file')
-    // fileRule.uses.clear()
-    // fileRule
-    //   .test(/\.svg$/)
-    //   .exclude.add(path.resolve(__dirname, 'src/assets/pic'))
-    //   .end()
-    //   .use('file-loader')
-    //   .loader('file-loader')
-
     config.module
       .rule('worker')
       .test(/\.worker\.js$/)

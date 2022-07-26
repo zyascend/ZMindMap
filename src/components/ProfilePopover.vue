@@ -285,7 +285,7 @@ export default defineComponent({
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 @import '@/assets/css/handler';
 .avatar {
   width: 28px;
@@ -414,7 +414,7 @@ export default defineComponent({
   @include background_color(bc_dialog_right);
   box-shadow: rgb(0 0 0 / 16%) 0 2px 30px 0 !important;
   .el-dialog__body {
-    padding: 0 0;
+    padding: 0;
     .settings {
       display: flex;
       width: 700px;

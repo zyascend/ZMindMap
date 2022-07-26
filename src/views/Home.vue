@@ -42,6 +42,7 @@
           v-if="asideData.length"
           :expand-on-click-node="false"
           :data="asideData"
+          highlight-current="true"
         >
           <template #default="scope">
             <div class="node">
@@ -258,6 +259,14 @@ export default defineComponent({
   }
   .el-tree {
     background-color: transparent;
+    .is-current {
+      .el-tree-node__content {
+        @include background_color(bc_tree_node_hover);
+        .more {
+          visibility: visible;
+        }
+      }
+    }
     .el-tree-node:focus > .el-tree-node__content {
       background-color: transparent !important;
     }

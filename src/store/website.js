@@ -14,7 +14,11 @@ const useWebsiteStore = defineStore({
     // 侧边栏是否折叠
     siderCollapse: true,
     // 导图风格
-    styles: undefined
+    styles: {
+      colorList: [],
+      mapList: [],
+      markerList: []
+    }
   }),
   actions: {
     toggleShowTable() {

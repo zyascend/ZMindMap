@@ -3,7 +3,7 @@ import { linkHorizontal } from 'd3-shape'
 import Tree from './Tree'
 
 export default class LogicTree extends Tree {
-  constructor() {
+  constructor(nodeMap) {
     super()
     this.defaultWidth = 30
     this.maxWidth = 250
@@ -19,44 +19,64 @@ export default class LogicTree extends Tree {
     this.rectRadius = 5
     this.strokeWidth = 0
 
+    this.map = nodeMap
+    console.log('map ', this.map)
+
     this.bézierCurveGenerator = linkHorizontal()
       .x(d => d.x)
       .y(d => d.y)
   }
 
   create(root) {
-    const tagWH = '[TIME] 计算宽高耗时: '
-    const tagXY = '[TIME] 计算位置耗时: '
-    const tagPATH = '[TIME] 计算路径耗时: '
-    const tagAll = '[TIME] 计算总耗时: '
-    console.time(tagAll)
-
-    console.time(tagWH)
+    console.time('TIME WH')
     this.measureWidthAndHeight(root)
-    console.timeEnd(tagWH)
-
-    console.time(tagXY)
+    console.timeEnd('TIME WH')
+    console.time('TIME XY')
     this.calculateXY(root)
-    console.timeEnd(tagXY)
-
-    console.time(tagPATH)
+    console.timeEnd('TIME XY')
+    console.time('TIME PATH')
     const paths = this.calculatePath(root)
-    console.timeEnd(tagPATH)
-
-    console.timeEnd(tagAll)
+    console.timeEnd('TIME PATH')
     return {
       paths,
-      nodes: root.descendants()
+      root
     }
   }
 
   measureWidthAndHeight(root) {
     // 后续遍历 初步计算 父依赖于子
     root.eachAfter(node => {
-      this.measureImageSize(node)
-      this.measureTextSize(node)
-      this.measureMarkers(node)
-      this.measureWH(node)
+      const { id } = node.data
+      const preNode = this.map.get(id)
+      if (!preNode) {
+        console.log('新增的节点')
+        // 新增的节点
+        if (node.parent) {
+          node.parent.data.patchFlags = 1
+        }
+        this.measureTextSize(node)
+        this.measureMarkers(node)
+        this.measureWH(node)
+      } else {
+        // 是否需要重新计算
+        const flag = root.data?.patchFlags ?? 0
+        const needUpdate = flag > 0
+        if (needUpdate) {
+          console.log('重新计算 > ', root.data.name)
+          // 需要 那么父节点也需要
+          if (node.parent) {
+            node.parent.data.patchFlags = 1
+          }
+          // 重新计算
+          this.measureTextSize(node)
+          this.measureMarkers(node)
+          this.measureWH(node)
+        } else {
+          // 不需要重新计算
+          console.log('不需要重新计算 > ', root.data.name)
+          root = preNode
+        }
+      }
     })
   }
 

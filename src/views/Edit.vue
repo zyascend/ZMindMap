@@ -22,17 +22,6 @@
       </div>
       <map-op-popover :isMap="showMap" />
     </header>
-    <!-- v-show导致缩放的bug 暂时未解决 先用v-if -->
-    <!-- <template v-if="!showMap">
-      <note />
-    </template>
-    <template v-if="showMap">
-      <base-map />
-    </template> -->
-    <!-- <keep-alive>
-      <note v-if="!showMap"/>
-      <base-map v-else/>
-    </keep-alive> -->
     <keep-alive>
       <component :is="curComponent" :key="curComponent"></component>
     </keep-alive>
@@ -93,6 +82,7 @@ export default defineComponent({
 .map-wrapper {
   @include wh100;
   position: relative;
+  overflow: hidden;
   .map-header {
     position: relative;
     display: flex;

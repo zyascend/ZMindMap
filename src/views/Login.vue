@@ -3,13 +3,13 @@
     <div class="main">
       <div class="box signin">
         <h2 class="title">没有账号？</h2>
-        <el-button type="primary" @click="isLogin = !isLogin" class="btn"
+        <el-button type="primary" @click="toggleLogin" class="btn"
           >去注册</el-button
         >
       </div>
       <div class="box signup">
         <h2 class="title">已有账号？</h2>
-        <el-button type="primary" @click="isLogin = !isLogin" class="btn"
+        <el-button type="primary" @click="toggleLogin" class="btn"
           >去登录</el-button
         >
       </div>
@@ -50,7 +50,7 @@
             {{ isLogin ? '登录' : '注册' }}
           </el-button>
         </template>
-        <template v-else>
+        <template v-if="isLogin && qrLogin">
           <div class="btn-pc" v-show="isLogin" @click="qrLogin = !qrLogin" />
           <qrcode />
         </template>
@@ -98,11 +98,16 @@ export default defineComponent({
           })
           isSubmitting.value = false
           if (store.getToken) {
+            console.log(store.getToken, typeof store.getToken)
             // 登录/注册成功
             router.replace({ path: route?.query?.redirect || '/' })
           }
         }
       })
+    }
+    const toggleLogin = () => {
+      isLogin.value = !isLogin.value
+      qrLogin.value = false
     }
     return {
       loginFormRef,
@@ -111,7 +116,8 @@ export default defineComponent({
       isLogin,
       qrLogin,
       isSubmitting,
-      submitForm
+      submitForm,
+      toggleLogin
     }
   }
 })

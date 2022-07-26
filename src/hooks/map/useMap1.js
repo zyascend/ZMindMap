@@ -1,18 +1,21 @@
 import { hierarchy } from 'd3-hierarchy'
 import TreeTable from './TreeTable'
-import LogicTree from './LogicTree'
+import LogicTree from './LogicTree1.js'
 
-const useMap = (content, mapStyleId) => {
+const useMap = (content, name, nodeMap, mapStyleId) => {
+  const timerTag = `[TIMER] > ${name} > `
+  console.time(timerTag)
   const hierarchyData = hierarchy(content)
-  // TODO 当导图风格变多的时候 怎么优雅地处理？
-  // 考虑proxy策略模式？
+  // TODO content 变动的patchFlags的还原
   let renderData
   if (mapStyleId === 'MAPID-TreeTable') {
     const treeTable = new TreeTable()
     renderData = treeTable.create(hierarchyData)
   }
-  const logicTree = new LogicTree()
+  const logicTree = new LogicTree(nodeMap)
+  console.timeEnd(timerTag)
   renderData = logicTree.create(hierarchyData)
+  console.timeEnd(timerTag)
   return renderData
 }
 

@@ -20,6 +20,7 @@ module.exports = {
     ],
     // "order/properties-order": null,
     'declaration-empty-line-before': null,
-    'no-descending-specificity': null
+    'no-descending-specificity': null,
+    'selector-pseudo-class-no-unknown': null
   }
 }

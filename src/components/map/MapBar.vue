@@ -100,8 +100,8 @@ import useWebsiteStore from '@/store/website'
 import useMapStore from '@/store/map'
 import zoomMap from '@/hooks/map/zoomMap'
 import SvgIcon from 'components/SvgIcon.vue'
-import { websiteCfg } from '@/configs'
 
+const { websiteCfg } = window.CFG
 const websiteStore = useWebsiteStore()
 const mapStore = useMapStore()
 // 所有可选的主题列表

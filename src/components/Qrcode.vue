@@ -29,10 +29,9 @@
 
 <script setup>
 import { ref, onUnmounted } from 'vue'
-import vueQr from 'vue-qr/src/packages/vue-qr.vue'
+import VueQr from 'vue-qr/src/packages/vue-qr.vue'
 import io from 'socket.io-client'
 import { useRouter, useRoute } from 'vue-router'
-
 import useUserStore from '@/store/user'
 
 const router = useRouter()
@@ -46,7 +45,9 @@ const avatar = ref('')
 const tip = ref('正在获取登录码，请稍等...')
 
 let timer
-
+const { socketCfg } = window.CFG
+const isPrd = process.env.NODE_ENV === 'production'
+const socketUrl = isPrd ? socketCfg.prdHost : socketCfg.devHost
 const getStatus = statusData => {
   if (!statusData) return
   const { status, data } = statusData
@@ -79,10 +80,8 @@ const renderQrCode = qid => {
   codeUrl.value = `${window.location.origin}/mlogin?qid=${qid}`
   codeStatus.value = 'UNUSED'
   tip.value = '请使用手机扫码登录'
-  // console.log('generateCode > then: ', codeUrl.value, currentQid)
 }
-
-const socket = io('http://localhost:3010', {
+const socket = io(socketUrl, {
   autoConnect: true,
   transports: ['websocket'],
   reconnect: true,
@@ -94,17 +93,15 @@ const generateCode = () => {
 }
 
 socket.on('connect', res => {
-  // console.log('connect!')
   generateCode()
 })
 socket.on('sendedCode', res => {
-  // console.log('sendedCode!', res)
   const qid = res?.data
   renderQrCode(qid)
-  timer = setInterval(() => socket.emit('checkExpired', qid), 1000)
+  // TODO 使用setTimeOut模拟setInterval
+  timer = setInterval(() => socket.emit('checkExpired', qid), 2000)
 })
 socket.on('statusChanged', res => {
-  // console.log('statusChanged > ', res)
   getStatus(res?.data)
 })
 

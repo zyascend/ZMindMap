@@ -2,15 +2,9 @@ import { onMounted, onUnmounted, onActivated, watch, nextTick } from 'vue'
 import zoomMap from './zoomMap'
 import { debounce } from '../utils'
 
-export default function useAutoZoom(renderData) {
+export default function useAutoZoom(deps) {
   const observedEles = []
   const observers = []
-
-  // ? 关于options https://developer.mozilla.org/zh-CN/docs/conflicting/Web/API/MutationObserver/observe_2f2addbfa1019c23a6255648d6526387
-  const options = {
-    attributes: true,
-    attributeFilter: ['style']
-  }
 
   const updateCb = debounce(() => {
     zoomMap()
@@ -23,7 +17,10 @@ export default function useAutoZoom(renderData) {
 
     observedEles.forEach(ele => {
       const watcher = new MutationObserver(updateCb)
-      watcher.observe(ele, options)
+      watcher.observe(ele, {
+        attributes: true,
+        attributeFilter: ['style']
+      })
       observers.push(watcher)
     })
     // 监听窗口大小变化
@@ -31,7 +28,7 @@ export default function useAutoZoom(renderData) {
   })
   // 监听导图数据变化
   watch(
-    renderData,
+    deps,
     () => {
       nextTick(updateCb)
     },

@@ -62,6 +62,8 @@ export default function svg2Png(svgId, picName) {
     resolve($clonedSvg)
   }).then(ele => {
     // saveSvg.saveSvgAsPng 返回转化处理的Promise
-    return saveSvg.saveSvgAsPng(ele, `${picName}.png`)
+    return saveSvg.saveSvgAsPng(ele, `${picName}.png`, {
+      excludeCss: true
+    })
   })
 }

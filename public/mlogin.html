@@ -9,6 +9,23 @@
     <link ref="dns-prefetch" href="//mapapi.kimjisoo.cn" />
     <link rel="icon" href="<%= BASE_URL %>favicon.ico">
     <title><%= htmlWebpackPlugin.options.title %></title>
+    <script>
+      window.CFG = {
+        sentryCfg: {
+          tracingOrigins: ['map.kimjisoo.cn'],
+          dsn: 'https://286635702ecc437687d97885795599be@o1237174.ingest.sentry.io/6387522',
+          tracesSampleRate: 1.0
+        },
+        apiCfg: {
+          prdHost: 'https://mapapi.kimjisoo.cn',
+          devHost: 'http://localhost:3003'
+        },
+        socketCfg: {
+          prdHost: 'https://mapapi.kimjisoo.cn',
+          devHost: 'http://localhost:3003'
+        }
+      }
+    </script>
   </head>
   <body>
     <noscript>

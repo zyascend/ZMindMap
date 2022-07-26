@@ -10,11 +10,11 @@ import { mapApi } from '@/hooks/http'
 const useMapStore = defineStore('map', {
   state: () => ({
     // ? 【还是TypeScript好】
-    mapData: null, // 导图所有原始数据：包括id，内容，风格等
-    content: null, // 导图内容的纯数据扁平结构
-    treeContent: null, // 导图内容的纯数据树形结构
+    mapData: undefined, // 导图所有原始数据：包括id，内容，风格等
+    content: undefined, // 导图内容的纯数据扁平结构
+    treeContent: undefined, // 导图内容的纯数据树形结构
     isSaving: false, // 设置Edit页面的数据的加载状态
-    idFocused: null // 当前时刻被选中的节点ID
+    idFocused: undefined // 当前时刻被选中的节点ID
   }),
   actions: {
     setIdFocused(id) {
@@ -131,7 +131,6 @@ const useMapStore = defineStore('map', {
 function flatToTree(data) {
   if (!data) return null
   const values = Object.values(data)
-  console.log('values', values)
   const treeData = values.filter(item => {
     const { _children, id } = item
     if (_children.length) {
@@ -145,7 +144,6 @@ function flatToTree(data) {
     }
     return item.parent === '-1'
   })
-  console.log('[processTreeData]', treeData[0])
   return treeData[0]
 }
 

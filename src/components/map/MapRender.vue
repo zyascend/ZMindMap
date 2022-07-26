@@ -257,7 +257,8 @@ export default defineComponent({
         stroke: none;
       }
     }
-    .link {
+    /* stylelint-disable-next-line comment-empty-line-before */
+    /* .link {
       stroke-dasharray: 100%, 100%;
       animation: move 5s ease forwards;
     }
@@ -268,7 +269,7 @@ export default defineComponent({
       100% {
         stroke-dashoffset: 0;
       }
-    }
+    } */
   }
 }
 .node-edit-dialog {
