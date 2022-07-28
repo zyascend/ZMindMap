@@ -1,3 +1,8 @@
+<template>
+  <svg :class="className" aria-hidden="true">
+    <use :xlink:href="iconName" />
+  </svg>
+</template>
 <script>
 import { defineComponent, computed } from 'vue'
 
@@ -15,14 +20,13 @@ export default defineComponent({
       }
       return 'svg-icon'
     })
-    const icon = computed(() => {
+    const iconName = computed(() => {
       return `#icon-${props.icon}`
     })
-    return () => (
-      <svg class={className.value} aria-hidden="true">
-        <use xlinkHref={icon.value} />
-      </svg>
-    )
+    return {
+      className,
+      iconName
+    }
   }
 })
 </script>

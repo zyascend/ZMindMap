@@ -20,6 +20,7 @@ declare module '@vue/runtime-core' {
     ElTooltip: typeof import('element-plus/es')['ElTooltip']
     ElTree: typeof import('element-plus/es')['ElTree']
     Map: typeof import('./src/components/map/Map.vue')['default']
+    Map1: typeof import('./src/components/map/Map1.vue')['default']
     MapBar: typeof import('./src/components/map/MapBar.vue')['default']
     MapOpPopover: typeof import('./src/components/map/MapOpPopover.vue')['default']
     MapRender: typeof import('./src/components/map/MapRender.vue')['default']

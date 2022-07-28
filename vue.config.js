@@ -4,7 +4,8 @@ const AutoImport = require('unplugin-auto-import/webpack')
 const Components = require('unplugin-vue-components/webpack')
 const SentryWebpackPlugin = require('@sentry/webpack-plugin')
 const SpeedMeasurePlugin = require('speed-measure-webpack-plugin')
-const HtmlWebpackPlugin = require("html-webpack-plugin")
+const HardSourceWebpackPlugin = require('hard-source-webpack-plugin')
+const { ESBuildMinifyPlugin } = require('esbuild-loader')
 
 const { ElementPlusResolver } = require('unplugin-vue-components/resolvers')
 
@@ -13,6 +14,7 @@ const getAliasPath = dir => path.join(__dirname, dir)
 
 module.exports = {
   productionSourceMap: false,
+  lintOnSave: !IS_PROD,
   publicPath: IS_PROD ? 'https://cdn.kimjisoo.cn/' : '/',
   pages: {
     index: {
@@ -34,6 +36,25 @@ module.exports = {
     }
   },
   chainWebpack: config => {
+    config.when(!IS_PROD, config => {
+      const rule = config.module.rule('js');
+      // 清理自带的 babel-loader
+      rule.uses.clear();
+      // 添加 esbuild-loader
+      rule
+        .use('esbuild-loader')
+        .loader('esbuild-loader')
+        .options({
+          target: 'es2015'
+        })
+      // 删除底层 terser, 换用esbuild-minimize-plugin
+      config.optimization.minimizers.delete('terser');
+      // 使用 esbuild 优化 css 压缩
+      config.optimization
+        .minimizer('esbuild')
+        .use(ESBuildMinifyPlugin, [{ minify: true, css: true }]);
+    })
+
     config.when(IS_PROD, config => {
       // 移除prefetch插件 减少对首页加载的带宽占用
       config.plugins.delete('prefetch')
@@ -143,6 +164,7 @@ module.exports = {
       ]
     },
     plugins: [
+      new HardSourceWebpackPlugin(),
       new webpack.DefinePlugin({
         BASE_API_URL: IS_PROD
           ? JSON.stringify('https://mapapi.kimjisoo.cn')

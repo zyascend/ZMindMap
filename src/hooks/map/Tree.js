@@ -58,11 +58,14 @@ export default class Tree {
     }
 
     // 文字太长 需要分为多行
+    // 计算行数
     const lines =
       Math.floor(width / this.maxWidth) + (width % this.maxWidth ? 1 : 0)
     const multiline = []
+    // 计算一行消耗多少字符
     const lineLength = Math.floor((html.length * this.maxWidth) / width)
     for (let i = 0; i < html.length; i += lineLength) {
+      // 切分lines行 每行lineLength长
       multiline.push(escape2Html(html.substr(i, lineLength)))
     }
     node.multiline = multiline
