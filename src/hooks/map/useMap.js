@@ -10,6 +10,7 @@ const useMap = (content, mapStyleId) => {
   if (mapStyleId === 'MAPID-TreeTable') {
     const treeTable = new TreeTable()
     renderData = treeTable.create(hierarchyData)
+    return renderData
   }
   const logicTree = new LogicTree()
   renderData = logicTree.create(hierarchyData)

@@ -59,7 +59,6 @@ module.exports = {
       // 移除prefetch插件 减少对首页加载的带宽占用
       config.plugins.delete('prefetch')
       config.optimization.runtimeChunk({
-        //
         // https://webpack.docschina.org/configuration/optimization/#optimizationruntimechunk
         name: (entrypoint) => `runtime~${entrypoint.name}`,
       }),

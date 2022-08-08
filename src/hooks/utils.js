@@ -178,13 +178,15 @@ export function escape2Html(str) {
   return str.replace(/&(lt|gt|nbsp|amp|quot);/gi, (all, t) => escapeMap[t])
 }
 
-// TODO 如何实现取消
-export function betterInterval(callback, delay) {
-  const timer = (cb, wait) => {
-    setTimeout(() => {
-      callback() // 执行callback
-      timer(cb, wait) // 递归
-    }, wait)
+export function betterInterval(cb, wait) {
+  let timer
+  const timeUp = () => {
+    clearTimeout(timer)
+    cb && cb()
+    timer = setTimeout(timeUp, wait)
   }
-  timer(callback, delay)
+  timer = setTimeout(timeUp, wait)
+  return {
+    clear: () => clearTimeout(timer)
+  }
 }

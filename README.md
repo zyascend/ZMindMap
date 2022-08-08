@@ -54,8 +54,7 @@
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export03.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export04.png?raw=true" style="zoom:20%;" /> |
 | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export05.png?raw=true" style="zoom:20%;" /> | <img src="https://github.com/zyascend/ZMindMap/blob/main/assets/export06.png?raw=true" style="zoom:20%;" /> |
 
-视频版：
-https://cdn.kimjisoo.cn/videos%2Fpresentation_v1.0.mp4
+视频版：[点击播放](https://cdn.kimjisoo.cn/videos%2Fpresentation_v1.0.mp4)
 
 ## Features
 - Vue3 CompositionApi
@@ -69,6 +68,7 @@ https://cdn.kimjisoo.cn/videos%2Fpresentation_v1.0.mp4
   - splitChunks单独打包
 - 基于七牛云的CDN加速
 - JWT & 二维码扫码登录
+- 夜间模式
 - 前端监控
   - 使用Sentry收集错误信息
   - 百度统计
@@ -97,10 +97,17 @@ https://cdn.kimjisoo.cn/videos%2Fpresentation_v1.0.mp4
   - [x] 可拓展性：提取各种样式导图的公共dom结构 方便切换导图风格
   - [x] 公共逻辑抽取 方便随时切换颜色样式
   - [x] 导图计算：抽取公共逻辑  + 继承封装
-  - [ ] map store 逻辑优化
+  - [x] map store 逻辑优化
 - [ ] 页面的loading 和 错误处理
 - [ ] 监听全局异常 error boundary
 - [ ] 使用自定义的loader处理svg图标
   - [ ] 将svg icon处理为SFC
   - [ ] 封装SFC为Icon组件：绑定属性 灵活使用
-- [ ] 所有配置项由`window.CFG`注入
+- [x] 所有配置项由`window.CFG`注入
+
+
+
+
+
+
+

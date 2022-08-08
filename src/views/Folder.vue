@@ -86,9 +86,6 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
 
-    console.log(route)
-    console.log(window.location)
-
     const folderId = route.params?.id || '0'
     const navigationList = computed(() => docStore.getNavigationLists(folderId))
     const docTableData = computed(() => docStore.getAllDocuments(folderId))

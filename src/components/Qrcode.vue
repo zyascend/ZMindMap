@@ -32,6 +32,7 @@ import { ref, onUnmounted } from 'vue'
 import VueQr from 'vue-qr/src/packages/vue-qr.vue'
 import io from 'socket.io-client'
 import { useRouter, useRoute } from 'vue-router'
+import { betterInterval } from '@/hooks/utils'
 import useUserStore from '@/store/user'
 
 const router = useRouter()
@@ -68,7 +69,7 @@ const getStatus = statusData => {
       break
     case 'EXPIRED':
       tip.value = '二维码已过期，请刷新'
-      timer && clearInterval(timer)
+      timer && timer.clear()
       break
     default:
       break
@@ -98,15 +99,15 @@ socket.on('connect', res => {
 socket.on('sendedCode', res => {
   const qid = res?.data
   renderQrCode(qid)
-  // TODO 使用setTimeOut模拟setInterval
-  timer = setInterval(() => socket.emit('checkExpired', qid), 2000)
+  timer = betterInterval(() => socket.emit('checkExpired', qid), 2000)
 })
 socket.on('statusChanged', res => {
   getStatus(res?.data)
 })
 
 onUnmounted(() => {
-  timer && clearInterval(timer)
+  timer && timer.clear()
+  timer = null
   socket.disconnect()
 })
 </script>
