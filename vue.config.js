@@ -27,12 +27,6 @@ module.exports = {
         'chunk-ele',
         'index'
       ]
-    },
-    mlogin: {
-      entry: './src/mlogin/main.js',
-      template: './public/mlogin.html',
-      title: '扫码登录ZMindMap',
-      chunks: ['chunk-vendors', 'chunk-vant', 'mlogin']
     }
   },
   chainWebpack: config => {
@@ -57,11 +51,11 @@ module.exports = {
 
     config.when(IS_PROD, config => {
       // 移除prefetch插件 减少对首页加载的带宽占用
-      config.plugins.delete('prefetch')
-      config.optimization.runtimeChunk({
-        // https://webpack.docschina.org/configuration/optimization/#optimizationruntimechunk
-        name: (entrypoint) => `runtime~${entrypoint.name}`,
-      }),
+      // config.plugins.delete('prefetch')
+      // config.optimization.runtimeChunk({
+      //   // https://webpack.docschina.org/configuration/optimization/#optimizationruntimechunk
+      //   name: (entrypoint) => `runtime~${entrypoint.name}`,
+      // }),
       config.optimization.splitChunks({
         cacheGroups: {
           // 其他的第三方库集中在一起
@@ -79,15 +73,6 @@ module.exports = {
             test: /[\\/]node_modules[\\/]@sentry|@vueuse|cropperjs/,
             chunks: 'initial',
             priority: 3,
-            reuseExistingChunk: true,
-            enforce: true
-          },
-          // 只有mlogin入口用 单独打包
-          vant: {
-            name: 'chunk-vant',
-            test: /[\\/]node_modules[\\/]@?vant[\\/]/,
-            chunks: 'initial',
-            priority: 4,
             reuseExistingChunk: true,
             enforce: true
           },

@@ -78,7 +78,9 @@ const getStatus = statusData => {
 
 const renderQrCode = qid => {
   if (!qid) return
-  codeUrl.value = `${window.location.origin}/mlogin?qid=${qid}`
+  codeUrl.value = `${window.location.origin}/login?qid=${qid}`
+  // codeUrl.value = `http://localhost:4000/login?qid=${qid}`
+  console.log(codeUrl.value)
   codeStatus.value = 'UNUSED'
   tip.value = '请使用手机扫码登录'
 }
