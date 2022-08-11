@@ -21,6 +21,7 @@ module.exports = {
     'arrow-parens': 'off',
     'import/no-cycle': 'warn',
     'no-underscore-dangle': 'off',
-    'class-methods-use-this': 'off'
+    'class-methods-use-this': 'off',
+    'prefer-destructuring': 'off'
   }
 }

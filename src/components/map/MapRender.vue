@@ -1,30 +1,34 @@
 <template>
   <div class="map-container" id="mapContainer">
     <svg id="mainSvg" class="main-svg" :style="allStyles.svgStyle">
-      <g class="main-g" id="mainG">
+      <g
+        class="main-g"
+        id="mainG"
+        @keydown="onKeyDown($event)"
+        @dblclick="onEditContent($event)"
+      >
         <g v-if="!!pathData">
           <path
             class="link"
-            :style="allStyles.pathStyle"
             v-for="p in pathData"
+            :style="allStyles.pathStyle"
             :key="p.id"
             :d="p.data"
           ></path>
         </g>
         <g
-          v-for="(node, index) in nodeData"
           class="g-info"
-          :key="node._id"
-          :id="node._id"
+          v-for="(node, index) in nodeData"
+          :key="node.data.id"
+          :id="node.data.id"
           :transform="`translate(${node.x},${node.y})`"
           :tabindex="index"
           @focus="onNodeFocus(node.data)"
-          @dblclick="onEditHtml($event, node.data)"
-          @keydown="onKeyDown($event, node.data)"
         >
           <rect
-            x="0"
             y="0"
+            x="0"
+            :id="node.data.id"
             :rx="node.rectRadius"
             :ry="node.rectRadius"
             :width="node.cw"
@@ -33,13 +37,14 @@
           />
           <rect
             class="border-rect"
+            style="fill: transparent"
+            :id="node.data.id"
             :x="node.outLineOffset"
             :y="node.outLineOffset"
             :rx="node.rectRadius"
             :ry="node.rectRadius"
             :width="node.outLineW"
             :height="node.outLineH"
-            style="fill: transparent"
           />
           <g v-if="node.mw" :transform="`translate(${node.mx},${node.my})`">
             <image
@@ -53,6 +58,7 @@
           </g>
           <image
             v-if="node.iw"
+            :id="node.data.id"
             preserveAspectRatio="xMaxYMax meet"
             :transform="`translate(${node.ix} ${node.iy})`"
             :width="node.iw"
@@ -60,6 +66,7 @@
             :xlink:href="node.data.imgInfo.url"
           />
           <text
+            :id="node.data.id"
             :transform="`translate(${node.tx},${node.ty})`"
             :width="node.tw"
             :height="node.th"
@@ -67,6 +74,7 @@
           >
             <tspan
               v-for="line in node.multiline"
+              :id="node.data.id"
               :key="line"
               :x="0"
               :dy="node.tspanDy"
@@ -137,7 +145,7 @@ export default defineComponent({
     const showEditDialog = ref(false)
     const nodeHtml = ref()
     const markersOnEdit = ref()
-    let idFocused = ''
+    let focusedId = ''
 
     const store = useMapStore()
 
@@ -153,17 +161,10 @@ export default defineComponent({
     const onAddClick = async d => {
       await useContent.addNode(d.id, { isMap: true })
     }
-    const onEditHtml = async (event, node) => {
-      event.preventDefault()
-      idFocused = node.id
-      nodeHtml.value = node.html
-      markersOnEdit.value = node.markerList
-      showEditDialog.value = true
-    }
     const submitEdit = async () => {
       showEditDialog.value = false
-      await useContent.changeNodeHtml(idFocused, nodeHtml.value)
-      await useContent.changeNodeMarkers(idFocused, markersOnEdit.value)
+      await useContent.changeNodeHtml(focusedId, nodeHtml.value)
+      await useContent.changeNodeMarkers(focusedId, markersOnEdit.value)
     }
     const onTabNode = async (event, node) => {
       event.preventDefault()
@@ -177,7 +178,11 @@ export default defineComponent({
       event.preventDefault()
       await useContent.deleteNode(node.id)
     }
-    const onKeyDown = (event, node) => {
+    const onKeyDown = event => {
+      const id = event.target.id
+      if (!id) return
+      const content = store.content
+      const node = content[id]
       switch (event.keyCode) {
         case 13:
           // 回车键处理逻辑
@@ -185,7 +190,7 @@ export default defineComponent({
           break
         case 16:
           // Shift键处理逻辑
-          onCollapse(event, { id: idFocused })
+          onCollapse(event, { id: focusedId })
           break
         case 9:
           // Tab键处理逻辑
@@ -200,11 +205,22 @@ export default defineComponent({
       }
     }
     const onNodeFocus = data => {
-      idFocused = data.id
+      console.log('onNodeFocus > ', data)
+      focusedId = data.id
       store.setIdFocused(data.id)
     }
     const onRemoveMarkers = marker => {
       markersOnEdit.value = markersOnEdit.value.filter(m => m !== marker)
+    }
+    const onEditContent = event => {
+      event.preventDefault()
+      focusedId = event.target.id
+      if (!focusedId) return
+      const content = store.content
+      const node = content[focusedId]
+      nodeHtml.value = node.html
+      markersOnEdit.value = node.markerList
+      showEditDialog.value = true
     }
     return {
       pathData,
@@ -216,7 +232,7 @@ export default defineComponent({
       onCollapse,
       onAddClick,
       onKeyDown,
-      onEditHtml,
+      onEditContent,
       onRemoveMarkers,
       submitEdit,
       isShowCollapse,

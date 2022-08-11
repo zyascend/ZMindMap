@@ -124,16 +124,19 @@ const onColorStyle = async colorId => {
   if (colorId === curStyle.value.colorId) return
   await mapStore.setStyle({ ...curStyle.value, colorId })
 }
-/**
- * ! [demo] 事件委托处理
- */
-const addMarkers = e => {
-  // const makerUrl = e.target.getAttribute('data-url')
+
+const addMarkers = async e => {
   const makerUrl = e.target.dataset.url
   if (!makerUrl) return
-  const markerList = mapStore.content[mapStore.idFocused]?.markerList
+
+  const content = mapStore.content
+  const idFocused = mapStore.idFocused
+
+  const markerList = content[idFocused]?.markerList
   if (markerList?.includes(makerUrl)) return
-  mapStore.setMarkers(markerList.concat(makerUrl))
+
+  content[idFocused].markerList = markerList.concat(makerUrl)
+  await mapStore.setContent(content)
 }
 </script>
 

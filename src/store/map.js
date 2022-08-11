@@ -52,16 +52,6 @@ const useMapStore = defineStore('map', {
         }
       })
     },
-    // async setMarkers(markerList) {
-    //   if (!this.idFocused) return
-    //   this.updateWithLoading(() => {
-    //     this.content[this.idFocused].markerList = markerList
-    //     return {
-    //       ...this.mapData,
-    //       definition: JSON.stringify(this.content)
-    //     }
-    //   })
-    // },
     /**
      * 从网络拿到导图信息后 放入store
      * @param {*} data

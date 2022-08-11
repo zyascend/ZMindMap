@@ -16,14 +16,16 @@
 </p>
 
 ## 简介
-**仿[幕布](https://mubu.com)思维导图。**  
+**仿[幕布](https://mubu.com)思维导图网站。支持导图编辑、大纲编辑、图片导出、扫码登录。**  
 
 ## 项目地址：
 项目总结：[ZMindMap-Wiki](https://github.com/zyascend/ZMindMap/wiki)  
 
 预览地址：[ZMind思维导图](https://map.kimjisoo.cn)
 
-后台地址：[mind-map-node](https://github.com/zyascend/mind-map-node)  
+移动端地址: [ZMindMap-Mobile](https://github.com/zyascend/ZMindMap-Mobile)  
+
+Node端地址：[mind-map-node](https://github.com/zyascend/mind-map-node)  
 
 ## 下载&安装
 
