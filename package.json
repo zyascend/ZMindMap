@@ -86,7 +86,7 @@
     "svgo-loader": "^3.0.0",
     "unplugin-auto-import": "^0.7.1",
     "unplugin-element-plus": "^0.4.0",
-    "unplugin-vue-components": "^0.19.3",
+    "unplugin-vue-components": "^0.22.4",
     "worker-loader": "^3.0.8"
   }
 }

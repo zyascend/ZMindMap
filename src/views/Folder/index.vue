@@ -3,8 +3,8 @@
     <div class="header">
       <bread-crumb :list="navigationList" />
       <div class="btn-wrapper">
-        <div class="btn-show" @click="onToggleStyle">
-          <SvgIcon class="icon" :icon="showTable ? 'table' : 'grid'" />
+        <div class="btn-show" @click="onToggleStyle" title="切换显示方式">
+          <SvgIcon class="icon" :icon="showTable ? 'grid' : 'table'" />
         </div>
       </div>
     </div>
@@ -36,7 +36,7 @@
         <template #default="scope">
           <div class="end-col">
             <p class="">{{ scope.row.formatedCreateTime }}</p>
-            <operate-popover :data="scope.row" />
+            <doc-popover :data="scope.row" />
           </div>
         </template>
       </el-table-column>
@@ -54,7 +54,7 @@
         />
         <span>{{ row.name }}</span>
         <div class="popover">
-          <operate-popover :data="row" />
+          <doc-popover :data="row" />
         </div>
       </div>
     </div>
@@ -65,20 +65,22 @@
   </div>
 </template>
 <script>
-import { defineComponent, computed } from 'vue'
-import useDocStore from '@/store/doc'
-import useWebsiteStore from '@/store/website'
+import { computed } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import BreadCrumb from '@/components/BreadCrumb.vue'
-import SvgIcon from '@/components/SvgIcon.vue'
-import OperatePopover from '@/components/DocPopover.vue'
-import ICON_EMPTY from '@/assets/pic/empty.png'
 
-export default defineComponent({
+import useWebsiteStore from '@/store/website'
+import useDocStore from '@/store/doc'
+
+import SvgIcon from '@/components/SvgIcon.vue'
+import DocPopover from '@/components/DocPopover.vue'
+import ICON_EMPTY from '@/assets/pic/empty.png'
+import BreadCrumb from './components/BreadCrumb.vue'
+
+export default {
   components: {
     BreadCrumb,
     SvgIcon,
-    OperatePopover
+    DocPopover
   },
   setup() {
     const docStore = useDocStore()
@@ -101,9 +103,6 @@ export default defineComponent({
         router.push({ path: `/app/edit/${row.id}/map` })
       }
     }
-    const onSortTable = () => {
-      console.log('todo')
-    }
     const onToggleStyle = () => {
       websiteStore.toggleShowTable()
     }
@@ -114,12 +113,11 @@ export default defineComponent({
       docTableData,
       onRowClick,
       onToggleStyle,
-      onSortTable,
       isFolder,
       ICON_EMPTY
     }
   }
-})
+}
 </script>
 
 <style lang="scss">

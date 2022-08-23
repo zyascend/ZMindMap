@@ -49,6 +49,7 @@ let timer
 const { socketCfg } = window.CFG
 const isPrd = process.env.NODE_ENV === 'production'
 const socketUrl = isPrd ? socketCfg.prdHost : socketCfg.devHost
+
 const getStatus = statusData => {
   if (!statusData) return
   const { status, data } = statusData
@@ -161,7 +162,7 @@ onUnmounted(() => {
       width: 48px;
       height: 48px;
       cursor: pointer;
-      background: url(../assets/pic/refresh.png) no-repeat;
+      background: url(../../../assets/pic/refresh.png) no-repeat;
       transform: translate(-50%, -50%);
       &:hover {
         animation: refresh 1s linear infinite;

@@ -1,7 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import useUserStore from '@/store/user'
-import Home from '@/views/Home.vue'
-import Folder from '@/views/Folder.vue'
+import Home from '@/views/Home'
+import Folder from '@/views/Folder'
 import NotFound from '@/views/NotFound.vue'
 import Intro from '@/views/Intro.vue'
 
@@ -37,7 +37,7 @@ const routes = [
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
     component: () =>
-      import(/* webpackChunkName: "login-patch" */ '../views/Login.vue')
+      import(/* webpackChunkName: "login-patch" */ '../views/Login')
   },
   {
     path: '/404',

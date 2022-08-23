@@ -6,7 +6,7 @@
 <script>
 import { defineComponent, ref, onUnmounted, watchEffect, computed } from 'vue'
 import useMapStore from '@/store/map'
-import useMap from '@/hooks/map/useMap1'
+import useMap from '@/hooks/map/useMap-beta'
 import MapRender from '@/components/map/MapRender'
 import MapBar from '@/components/map/MapBar'
 import useAutoZoom from '@/hooks/map/useAutoZoom'

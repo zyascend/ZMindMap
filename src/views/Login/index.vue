@@ -14,8 +14,12 @@
         >
       </div>
       <div class="form" :class="{ active: isLogin }">
-        <template v-if="!qrLogin">
-          <div class="btn-qr" v-show="isLogin" @click="qrLogin = !qrLogin" />
+        <template v-if="!isQrcodeLogin">
+          <div
+            class="btn-qr"
+            v-show="isLogin"
+            @click="isQrcodeLogin = !isQrcodeLogin"
+          />
           <h3 class="title">
             {{ isLogin ? '登录' : '注册' }}<span>ZMindMap</span>
           </h3>
@@ -50,8 +54,12 @@
             {{ isLogin ? '登录' : '注册' }}
           </el-button>
         </template>
-        <template v-if="isLogin && qrLogin">
-          <div class="btn-pc" v-show="isLogin" @click="qrLogin = !qrLogin" />
+        <template v-if="isLogin && isQrcodeLogin">
+          <div
+            class="btn-pc"
+            v-show="isLogin"
+            @click="isQrcodeLogin = !isQrcodeLogin"
+          />
           <qrcode />
         </template>
       </div>
@@ -60,14 +68,14 @@
 </template>
 
 <script>
-import { ref, defineComponent, reactive } from 'vue'
+import { ref, reactive } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import useUserStore from '@/store/user'
 import md5 from 'js-md5'
-import useLogin from '@/hooks/useLogin'
-import Qrcode from '@/components/Qrcode.vue'
+import { getLoginRules } from '@/hooks/utils'
+import Qrcode from './components/Qrcode.vue'
 
-export default defineComponent({
+export default {
   components: {
     Qrcode
   },
@@ -75,52 +83,50 @@ export default defineComponent({
     const router = useRouter()
     const route = useRoute()
     const store = useUserStore()
-    const qrLogin = ref(false)
-    const loginForm = reactive({
-      email: '',
-      pwd: ''
-    })
-    const loginFormRef = ref()
+
+    const isQrcodeLogin = ref(false)
     const isLogin = ref(true)
     const isSubmitting = ref(false)
-    // 定义校验规则
-    const rules = reactive(useLogin.loginRules)
+
+    const loginForm = reactive({ email: '', pwd: '' })
+    const loginFormRef = ref()
+    const rules = getLoginRules()
+
     const submitForm = () => {
       loginFormRef.value.validate(async valid => {
-        if (valid) {
-          isSubmitting.value = true
-          await store.login({
-            loginForm: {
-              ...loginForm,
-              pwd: md5(loginForm.pwd)
-            },
-            isLogin: isLogin.value
-          })
-          isSubmitting.value = false
-          if (store.getToken) {
-            console.log(store.getToken, typeof store.getToken)
-            // 登录/注册成功
-            router.replace({ path: route?.query?.redirect || '/' })
-          }
+        if (!valid) return
+        isSubmitting.value = true
+        await store.login({
+          loginForm: {
+            ...loginForm,
+            pwd: md5(loginForm.pwd)
+          },
+          isLogin: isLogin.value
+        })
+        isSubmitting.value = false
+        if (store.getToken) {
+          // 登录/注册成功
+          router.replace({ path: route?.query?.redirect || '/' })
         }
       })
     }
     const toggleLogin = () => {
       isLogin.value = !isLogin.value
-      qrLogin.value = false
+      isQrcodeLogin.value = false
     }
+
     return {
       loginFormRef,
       loginForm,
       rules,
       isLogin,
-      qrLogin,
+      isQrcodeLogin,
       isSubmitting,
       submitForm,
       toggleLogin
     }
   }
-})
+}
 </script>
 
 <style lang="scss" scoped>
@@ -194,10 +200,10 @@ export default defineComponent({
         }
       }
       .btn-pc {
-        background: url(../assets/pic/pc.png) no-repeat;
+        background: url(../../assets/pic/pc.png) no-repeat;
       }
       .btn-qr {
-        background: url(../assets/pic/qrcode.png) no-repeat;
+        background: url(../../assets/pic/qrcode.png) no-repeat;
       }
     }
     .active {

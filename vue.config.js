@@ -31,7 +31,7 @@ module.exports = {
   },
   chainWebpack: config => {
     config.when(!IS_PROD, config => {
-      const rule = config.module.rule('js');
+      const rule = config.module.rule('js')
       // 清理自带的 babel-loader
       rule.uses.clear();
       // 添加 esbuild-loader
@@ -42,11 +42,11 @@ module.exports = {
           target: 'es2015'
         })
       // 删除底层 terser, 换用esbuild-minimize-plugin
-      config.optimization.minimizers.delete('terser');
+      config.optimization.minimizers.delete('terser')
       // 使用 esbuild 优化 css 压缩
       config.optimization
         .minimizer('esbuild')
-        .use(ESBuildMinifyPlugin, [{ minify: true, css: true }]);
+        .use(ESBuildMinifyPlugin, [{ minify: true, css: true }])
     })
 
     config.when(IS_PROD, config => {

@@ -14,10 +14,10 @@
 </template>
 
 <script>
-import { defineComponent, computed } from 'vue'
+import { computed } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 
-export default defineComponent({
+export default {
   name: 'BreadCrumb',
   components: {
     SvgIcon
@@ -36,11 +36,11 @@ export default defineComponent({
       showSeparator
     }
   }
-})
+}
 </script>
 
 <style lang="scss" scoped>
-@import '../assets/css/handler';
+@import '@/assets/css/handler';
 .bread-wrapper {
   align-items: center;
   width: 100%;

@@ -39,10 +39,10 @@
           <span>我的文档</span>
         </router-link>
         <el-tree
-          v-if="asideData.length"
+          v-if="docTreeData.length"
           :expand-on-click-node="false"
-          :data="asideData"
-          highlight-current="true"
+          :data="docTreeData"
+          :highlight-current="true"
         >
           <template #default="scope">
             <div class="node">
@@ -82,19 +82,19 @@
 </template>
 
 <script>
-import { defineComponent, computed, ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useRoute } from 'vue-router'
 
 import useDocStore from '@/store/doc'
 import useUserStore from '@/store/user'
 import useWebsiteStore from '@/store/website'
 
-import Sider from '@/components/Sider.vue'
 import SvgIcon from '@/components/SvgIcon.vue'
 import DocPopover from '@/components/DocPopover.vue'
-import ProfilePopover from '@/components/ProfilePopover.vue'
+import Sider from './components/Sider.vue'
+import ProfilePopover from './components/ProfilePopover.vue'
 
-export default defineComponent({
+export default {
   name: 'Home',
   components: {
     Sider,
@@ -108,22 +108,18 @@ export default defineComponent({
     const userStore = useUserStore()
     const websiteStore = useWebsiteStore()
 
-    const asideData = computed(() => store.allTreeDocs || [])
+    const docTreeData = computed(() => store.allTreeDocs || [])
     const isDrawerOpen = ref(true)
-    const showDeleteDialog = ref(false)
-    const showRenameDialog = ref(false)
+    const isShowDeleteDialog = ref(false)
+    const isShowRenameDialog = ref(false)
     const searchText = ref('')
 
     store.fetchAllDocuments()
     websiteStore.fetchMapStyles()
 
     const isFolder = row => 'folderType' in row
-    const getUrl = row => {
-      if (isFolder(row)) {
-        return `/app/folder/${row.id}`
-      }
-      return `/app/edit/${row.id}/map`
-    }
+    const getUrl = row =>
+      isFolder(row) ? `/app/folder/${row.id}` : `/app/edit/${row.id}/map`
 
     const addNew = addFolder => {
       const newData = {
@@ -139,18 +135,18 @@ export default defineComponent({
     }
 
     return {
-      asideData,
       route,
+      docTreeData,
       isDrawerOpen,
-      showDeleteDialog,
-      showRenameDialog,
+      isShowDeleteDialog,
+      isShowRenameDialog,
       searchText,
       getUrl,
       isFolder,
       addNew
     }
   }
-})
+}
 </script>
 
 <style lang="scss">
