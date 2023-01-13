@@ -129,6 +129,71 @@ export async function tabNode(id, noteList) {
   return id
 }
 
+// 获取当前光标位置
+export function getCursortPosition(element) {
+  var caretOffset = 0;
+  var doc = element.ownerDocument || element.document;
+  var win = doc.defaultView || doc.parentWindow;
+  var sel;
+  // 谷歌、火狐
+  if (typeof win.getSelection != "undefined") {
+    sel = win.getSelection();
+    // 选中的区域
+    if (sel.rangeCount > 0) {
+      var range = win.getSelection().getRangeAt(0);
+      // 克隆一个选中区域
+      var preCaretRange = range.cloneRange();
+      // 设置选中区域的节点内容为当前节点
+      preCaretRange.selectNodeContents(element);
+      // 重置选中区域的结束位置
+      preCaretRange.setEnd(range.endContainer, range.endOffset);
+      caretOffset = preCaretRange.toString().length;
+    }
+    // IE浏览器
+  } else if ((sel = doc.selection) && sel.type != "Control") {
+    var textRange = sel.createRange();
+    var preCaretTextRange = doc.body.createTextRange();
+    preCaretTextRange.moveToElementText(element);
+    preCaretTextRange.setEndPoint("EndToEnd", textRange);
+    caretOffset = preCaretTextRange.text.length;
+  }
+  return caretOffset;
+}
+
+// 设置光标位置
+export function setCaretPosition(element, pos) {
+  var range, selection;
+  // Firefox, Chrome, Opera, Safari, IE 9+
+  if (document.createRange) {
+    // 创建一个选中区域
+    range = document.createRange();
+    // 选中节点的内容
+    range.selectNodeContents(element);
+    if (element.innerHTML.length > 0) {
+      // 设置光标起始为指定位置
+      range.setStart(element.childNodes[0], pos);
+    }
+    // 设置选中区域为一个点
+    range.collapse(true);
+    // 获取当前选中区域
+    selection = window.getSelection();
+    // 移除所有的选中范围
+    selection.removeAllRanges();
+    // 添加新建的范围
+    selection.addRange(range);
+    //IE 8 and lower
+  }else if (document.selection){
+    // 创建一个范围（范围与所选内容类似但不可见）
+    range = document.body.createTextRange();
+    // 选择范围的元素的全部内容
+    range.moveToElementText(element);
+    // 将范围折叠到终点
+    range.collapse(false);
+    // 选择范围
+    range.select();
+  }
+}
+
 export async function changeNodeHtml(id, html) {
   const { content } = store
   // ! 由于debounce 此事件可能发生在deleteNode之后 此id节点可能被删除 需要判空

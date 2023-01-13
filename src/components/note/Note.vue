@@ -34,6 +34,8 @@
                 contenteditable="true"
                 v-html="node.html"
                 @paste="onPaste($event, node)"
+                @compositionstart="onHandleCompositionStart($event)"
+                @compositionend="onHandleCompositionEnd($event)"
                 @input="onNodeInput($event, node)"
                 @keydown="onKeyDown($event, node)"
               ></div>
@@ -89,6 +91,7 @@ export default defineComponent({
     NotePopover
   },
   setup() {
+    let flag = false
     const [rootNode, childNodes] = useNoteList()
     const addSnapShot = useSnapShot()
     const imgSrcList = computed(() => {
@@ -208,9 +211,19 @@ export default defineComponent({
       await useContent.changeNodeHtml('new html')
       addSnapShot()
     }
+    const onHandleCompositionStart = (event) => {
+        flag = false
+    }
+    const onHandleCompositionEnd = (event) => {
+        flag = true
+    }
     const onNodeInput = debounce(async (event, node) => {
       const newText = event.target.innerText
-      await useContent.changeNodeHtml(node.id, newText)
+      const cur = useContent.getCursortPosition(event.target);
+      if ((event.isComposing == true && flag) || !(event.isComposing)) {
+        await useContent.changeNodeHtml(node.id, newText)
+        useContent.setCaretPosition(event.target, cur)
+      }
       // nextTick(() => {
       //   useContent.moveToLastFocus(`note-node-${node.id}`)
       // })
@@ -236,6 +249,8 @@ export default defineComponent({
       imgSrcList,
       onCollapse,
       onKeyDown,
+      onHandleCompositionStart,
+      onHandleCompositionEnd,
       onNodeInput,
       onNameInput,
       onChangeFontColor,
