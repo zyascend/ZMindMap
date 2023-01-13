@@ -119,7 +119,7 @@ export default {
 
     const isFolder = row => 'folderType' in row
     const getUrl = row =>
-      isFolder(row) ? `/app/folder/${row.id}` : `/app/edit/${row.id}/map`
+      isFolder(row) ? `/app/folder/${row.id}` : `/app/edit/${row.id}/note`  // 默认展示大纲
 
     const addNew = addFolder => {
       const newData = {

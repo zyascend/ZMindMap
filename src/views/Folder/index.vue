@@ -100,7 +100,8 @@ export default {
         // `params` 不能与 `path` 一起使用
         router.push({ path: `/app/folder/${row.id}` })
       } else {
-        router.push({ path: `/app/edit/${row.id}/map` })
+        // 默认展示大纲
+        router.push({ path: `/app/edit/${row.id}/note` })
       }
     }
     const onToggleStyle = () => {
