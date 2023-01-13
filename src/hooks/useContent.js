@@ -28,7 +28,7 @@ export async function addNode(pid, options = { isMap: false, cid: undefined }) {
     node.children.splice(index + 1, 0, id)
   }
   const child = {
-    html: '请输入内容',
+    html: '',
     id,
     children: [],
     _children: [],
