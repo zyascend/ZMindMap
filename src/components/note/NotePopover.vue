@@ -45,6 +45,7 @@
 <script>
 import { defineComponent, ref } from 'vue'
 import SvgIcon from '@/components/SvgIcon.vue'
+import * as useContent from '@/hooks/useContent'
 
 export default defineComponent({
   name: 'BreadCrumb',
@@ -60,7 +61,7 @@ export default defineComponent({
   },
   setup(props, context) {
     const colorList = ref([
-      '#66666d',
+      '#1d1d1f',
       '#eab363',
       '#bd4a37',
       '#79c466',
@@ -78,7 +79,10 @@ export default defineComponent({
         .classList.add('node-hover')
     }
     const onColorSelect = color => {
-      context.emit('onColorSelect', { color, node: props.node })
+      // context.emit('onColorSelect', { color, node: props.node })
+      const content = document.getElementById(`node-${props.node.id}`)
+      content.style.color = color
+      useContent.changeColorHtml(props.node.id, content.style.color)
     }
     return {
       colorList,

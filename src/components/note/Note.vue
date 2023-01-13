@@ -15,7 +15,7 @@
             v-for="i in node.level"
             :key="`ident-${node.id}-${i}`"
           />
-          <div class="node-content" :id="`node-${node.id}`">
+          <div class="node-content" :style="`color: ${node.color}`" :id="`node-${node.id}`">
             <div
               class="action-wrapper"
               @click="onCollapse(node.id)"

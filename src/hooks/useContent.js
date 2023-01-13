@@ -202,6 +202,13 @@ export async function changeNodeHtml(id, html) {
   await store.setContent(content, true)
 }
 
+export async function changeColorHtml(id, color) {
+  const { content } = store
+  if (!content[id]) return
+  content[id].color = color
+  await store.setContent(content, true)
+}
+
 export async function changeNodeMarkers(id, markerList) {
   const { content } = store
   // ! 由于debounce 此事件可能发生在deleteNode之后 此id节点可能被删除 需要判空
